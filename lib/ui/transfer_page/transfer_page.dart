@@ -1,23 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_transfer_page.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
+import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../page_router.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 List<_CoinItem> _coins = [
-  _CoinItem(Images.wusdCoinIcon, 'WUSD'),
-  _CoinItem(Images.wqtCoinIcon, 'WQT'),
-  _CoinItem(Images.wbnbCoinIcon, 'wBNB'),
-  _CoinItem(Images.wethCoinIcon, 'wETH'),
+  _CoinItem(Images.wusdCoinIcon, 'WUSD', true),
+  _CoinItem(Images.wqtCoinIcon, 'WQT', true),
+  _CoinItem(Images.wbnbCoinIcon, 'wBNB', false),
+  _CoinItem(Images.wethCoinIcon, 'wETH', false),
 ];
 
 class TransferPage extends StatefulWidget {
@@ -32,25 +38,30 @@ class TransferPage extends StatefulWidget {
 class _TransferPageState extends State<TransferPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-
+  final _key = GlobalKey<FormState>();
   _CoinItem? _currentCoin;
 
-  bool get _selectedCoin => _currentCoin != null;
+  TransferStore store = TransferStore();
 
-  bool get _statusTransferButton =>
-      _selectedCoin &&
-      _addressController.text.isNotEmpty &&
-      _amountController.text.isNotEmpty;
+  bool get _selectedCoin => _currentCoin != null;
 
   @override
   void initState() {
     super.initState();
-    _addressController.addListener(() {
-      setState(() {});
-    });
+    store.getFee();
     _amountController.addListener(() {
-      setState(() {});
+      store.setAmount(_amountController.text);
     });
+    _addressController.addListener(() {
+      store.setAddressTo(_addressController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    // _addressController.dispose();
+    // _amountController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,7 +96,8 @@ class _TransferPageState extends State<TransferPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 15.0, vertical: 12.5),
                   decoration: BoxDecoration(
-                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    color:
+                        _selectedCoin ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -144,16 +156,26 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 5,
               ),
-              DefaultTextField(
-                controller: _addressController,
-                hint: 'Enter address',
-                suffixIcon: null,
-                inputFormatters: [
-                  MaskTextInputFormatter(
-                    mask: 'dxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                    initialText: _addressController.text,
-                  )
-                ],
+              Form(
+                key: _key,
+                child: DefaultTextField(
+                  controller: _addressController,
+                  hint: 'Enter address',
+                  suffixIcon: null,
+                  inputFormatters: [
+                    MaskTextInputFormatter(
+                      mask: '0x########################################',
+                      filter: {"#": RegExp(r'[0-9a-f]')},
+                      initialText: _addressController.text,
+                    )
+                  ],
+                  validator: (value) {
+                    if (_addressController.text.length != 42) {
+                      return "Invalid format address";
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -168,36 +190,55 @@ class _TransferPageState extends State<TransferPage> {
               DefaultTextField(
                 controller: _amountController,
                 hint: 'Enter amount',
-                keyboardType: TextInputType.number,
-                suffixIcon: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: const Text(
-                    'Max',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.enabledButton,
-                    ),
-                  ),
-                  onPressed: () {
-                    _amountController.text = '9999';
+                // keyboardType: TextInputType.number,
+                suffixIcon: ObserverListener(
+                  store: store,
+                  onFailure: () => false,
+                  onSuccess: () {
+                    _amountController.text = store.amount;
                   },
+                  child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: const Text(
+                      'Max',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.enabledButton,
+                      ),
+                    ),
+                    onPressed: () async {
+                      print('click getMaxAmount');
+                      store.getMaxAmount();
+                    },
+                  ),
                 ),
-                inputFormatters: null,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                ],
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Expanded(
                 child: Container(),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: SizedBox(
                   width: double.infinity,
-                  child: DefaultButton(
-                    title: 'Transfer',
-                    onPressed: _statusTransferButton
-                        ? _pushConfirmTransferPage
-                        : null,
+                  child: Observer(
+                    builder: (_) => DefaultButton(
+                      title: 'Transfer',
+                      onPressed: store.statusButtonTransfer
+                          ? _pushConfirmTransferPage
+                          : null,
+                    ),
                   ),
                 ),
               )
@@ -208,9 +249,33 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 
-  void _pushConfirmTransferPage() {
-    print("address -> ${_addressController.text}");
-    PageRouter.pushNewRoute(context, const ConfirmTransferPage());
+  Future<void> _pushConfirmTransferPage() async {
+    if (_key.currentState!.validate()) {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+      await store.getFee();
+      final result = await PageRouter.pushNewRoute(
+        context,
+        ConfirmTransferPage(
+          fee: store.fee,
+          titleCoin: store.titleSelectedCoin,
+          addressTo: store.addressTo,
+          amount: store.amount,
+        ),
+      );
+      if (result != null && result) {
+        setState(() {
+          store.setTitleSelectedCoin('');
+          store.setAddressTo('');
+          store.setAmount('');
+          _amountController.clear();
+          _addressController.clear();
+          _currentCoin = null;
+        });
+      }
+    }
   }
 
   void _chooseCoin() {
@@ -268,10 +333,12 @@ class _TransferPageState extends State<TransferPage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 6.5),
                                   child: GestureDetector(
-                                    onTap: () {
-                                      _selectCoin(coin);
-                                      Navigator.pop(context);
-                                    },
+                                    onTap: coin.isEnable
+                                        ? () {
+                                            _selectCoin(coin);
+                                            Navigator.pop(context);
+                                          }
+                                        : null,
                                     child: Container(
                                       height: 32,
                                       width: double.infinity,
@@ -304,9 +371,11 @@ class _TransferPageState extends State<TransferPage> {
                                           ),
                                           Text(
                                             coin.title,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 16,
-                                              color: Colors.black,
+                                              color: coin.isEnable
+                                                  ? Colors.black
+                                                  : AppColor.disabledText,
                                             ),
                                           ),
                                         ],
@@ -338,12 +407,14 @@ class _TransferPageState extends State<TransferPage> {
     setState(() {
       _currentCoin = coin;
     });
+    store.setTitleSelectedCoin(coin.title);
   }
 }
 
 class _CoinItem {
   String iconPath;
   String title;
+  bool isEnable;
 
-  _CoinItem(this.iconPath, this.title);
+  _CoinItem(this.iconPath, this.title, this.isEnable);
 }

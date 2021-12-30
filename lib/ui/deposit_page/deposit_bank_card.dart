@@ -27,6 +27,13 @@ class _DepositBankCardState extends State<DepositBankCard>
 
   @override
   Widget build(BuildContext context) {
+    return _NotBankCards(
+      onTab: () {
+        setState(() {
+          _addingBankCard = !_addingBankCard;
+        });
+      },
+    );
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
       firstChild: _firstShow

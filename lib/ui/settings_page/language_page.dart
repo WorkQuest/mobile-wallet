@@ -8,15 +8,15 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
 const _languages = [
   'English',
-  'Mandarin Chinese',
-  'Hindi',
-  'Spanish',
-  'French',
-  'Standart Arabic',
-  'Bengali',
+  // 'Mandarin Chinese',
+  // 'Hindi',
+  // 'Spanish',
+  // 'French',
+  // 'Standart Arabic',
+  // 'Bengali',
   'Russian',
-  'Portuguese',
-  'Indonesian',
+  // 'Portuguese',
+  // 'Indonesian',
 ];
 
 class LanguagePage extends StatefulWidget {

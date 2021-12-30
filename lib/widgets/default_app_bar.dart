@@ -33,9 +33,10 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       leading: CupertinoButton(
         onPressed: () {
-          Navigator.pop(context);
           if (onPressed != null) {
             onPressed!.call();
+          } else {
+            Navigator.pop(context);
           }
         },
         child: const Icon(

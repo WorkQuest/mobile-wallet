@@ -124,10 +124,16 @@ class _WithdrawInfoPageState extends State<WithdrawInfoPage> {
               child: Container(),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: SizedBox(
                 width: double.infinity,
-                child: DefaultButton(title: 'Confirm', onPressed: () {  },),
+                child: DefaultButton(
+                  title: 'Confirm',
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                ),
               ),
             )
           ],

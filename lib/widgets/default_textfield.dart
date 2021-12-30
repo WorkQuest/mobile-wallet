@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workquest_wallet_app/constants.dart';
 
-class DefaultTextField extends StatelessWidget {
+class DefaultTextField extends StatefulWidget {
   final TextEditingController controller;
   final Widget? suffixIcon;
   final Widget? prefitIcon;
@@ -25,18 +25,38 @@ class DefaultTextField extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DefaultTextField> createState() => _DefaultTextFieldState();
+}
+
+class _DefaultTextFieldState extends State<DefaultTextField> {
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      inputFormatters: inputFormatters,
-      keyboardType: keyboardType ?? TextInputType.text,
-      validator: validator,
-      obscureText: obscureText,
+      controller: widget.controller,
+      inputFormatters: widget.inputFormatters,
+      keyboardType: widget.keyboardType ?? TextInputType.text,
+      validator: widget.validator,
+      obscureText: widget.obscureText,
       decoration: InputDecoration(
         filled: true,
         fillColor:
-            controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
-        hintText: hint,
+            widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
+        hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
         hintStyle: const TextStyle(
@@ -86,9 +106,10 @@ class DefaultTextField extends StatelessWidget {
             style: BorderStyle.solid,
           ),
         ),
-        suffixIcon: suffixIcon,
-        prefixIcon: prefitIcon,
+        suffixIcon: widget.suffixIcon,
+        prefixIcon: widget.prefitIcon,
       ),
     );
   }
+
 }

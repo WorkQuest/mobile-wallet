@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/mobx/sign_up_profile_store.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
+import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
+import '../../../page_router.dart';
+import '../sign_up/sign_up_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 final _emailRegExp = RegExp(
   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
 );
-
 final _firstNameRegExp = RegExp(r'^[a-zA-Z]+$');
-
 final _passwordRegExp = RegExp(r'^[а-яА-Я]');
 
 class SignUpCreateProfile extends StatefulWidget {
@@ -26,43 +29,9 @@ class SignUpCreateProfile extends StatefulWidget {
 }
 
 class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _repeatPasswordController = TextEditingController();
-
   final _key = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _firstNameController.addListener(() {
-      setState(() {});
-    });
-    _lastNameController.addListener(() {
-      setState(() {});
-    });
-    _emailController.addListener(() {
-      setState(() {});
-    });
-    _passwordController.addListener(() {
-      setState(() {});
-    });
-    _repeatPasswordController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _repeatPasswordController.dispose();
-    super.dispose();
-  }
+  SignUpProfileStore store = SignUpProfileStore();
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +63,16 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 30,
                 ),
                 DefaultTextField(
-                  controller: _firstNameController,
+                  controller: store.firstName,
                   hint: 'First name',
                   validator: (value) {
-                    if (_firstNameController.text.isEmpty) {
+                    if (store.firstName.text.isEmpty) {
                       return "Field is empty";
                     }
-                    if (_firstNameController.text.length < 4) {
+                    if (store.firstName.text.length < 4) {
                       return "Incorrect format";
                     }
-                    if (!_firstNameRegExp.hasMatch(_firstNameController.text)) {
+                    if (!_firstNameRegExp.hasMatch(store.firstName.text)) {
                       return "Incorrect format";
                     }
                     return null;
@@ -124,16 +93,16 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 20,
                 ),
                 DefaultTextField(
-                  controller: _lastNameController,
+                  controller: store.lastName,
                   hint: 'Last name',
                   validator: (value) {
-                    if (_lastNameController.text.isEmpty) {
+                    if (store.lastName.text.isEmpty) {
                       return "Field is empty";
                     }
-                    if (_lastNameController.text.length < 4) {
+                    if (store.lastName.text.length < 4) {
                       return "Incorrect format";
                     }
-                    if (!_firstNameRegExp.hasMatch(_lastNameController.text)) {
+                    if (!_firstNameRegExp.hasMatch(store.lastName.text)) {
                       return "Incorrect format";
                     }
                     return null;
@@ -154,16 +123,17 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 20,
                 ),
                 DefaultTextField(
-                  controller: _emailController,
+                  controller: store.email,
                   hint: 'Email',
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (_emailController.text.isEmpty) {
+                    if (store.email.text.isEmpty) {
                       return "Field is empty";
                     }
-                    if (_emailController.text.contains(" ")) {
+                    if (store.email.text.contains(" ")) {
                       return "Incorrect format";
                     }
-                    if (!_emailRegExp.hasMatch(_emailController.text)) {
+                    if (!_emailRegExp.hasMatch(store.email.text)) {
                       return "Incorrect format";
                     }
                     return null;
@@ -184,17 +154,17 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 20,
                 ),
                 DefaultTextField(
-                  controller: _passwordController,
+                  controller: store.password,
                   hint: 'Password',
                   obscureText: true,
                   validator: (value) {
-                    if (_passwordController.text.isEmpty) {
+                    if (store.password.text.isEmpty) {
                       return "Field is empty";
                     }
-                    if (_passwordController.text.length < 4) {
+                    if (store.password.text.length < 4) {
                       return "Incorrect format";
                     }
-                    if (_passwordRegExp.hasMatch(_passwordController.text)) {
+                    if (_passwordRegExp.hasMatch(store.password.text)) {
                       return "Incorrect format";
                     }
                     return null;
@@ -215,15 +185,14 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 20,
                 ),
                 DefaultTextField(
-                  controller: _repeatPasswordController,
+                  controller: store.passwordConfirm,
                   hint: 'Repeat password',
                   obscureText: true,
                   validator: (value) {
-                    if (_repeatPasswordController.text.isEmpty) {
+                    if (store.passwordConfirm.text.isEmpty) {
                       return "Field is empty";
                     }
-                    if (_repeatPasswordController.text !=
-                        _passwordController.text) {
+                    if (store.passwordConfirm.text != store.password.text) {
                       return "Passwords don't match";
                     }
                     return null;
@@ -243,16 +212,28 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 const SizedBox(
                   height: 30,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: DefaultButton(
-                    title: 'Generate address',
-                    onPressed: () {
-                      if (_key.currentState!.validate()) {
-                        print('Generate address');
-                      }
-
-                    },
+                ObserverListener(
+                  store: store,
+                  onFailure: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    return false;
+                  },
+                  onSuccess: () async {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    await AlertDialogUtils.showSuccessDialog(context);
+                    PageRouter.pushNewReplacementRoute(context, const SignUpPage());
+                  },
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: DefaultButton(
+                      title: 'Generate address',
+                      onPressed: () async {
+                        if (_key.currentState!.validate()) {
+                          AlertDialogUtils.showLoadingDialog(context);
+                          store.register();
+                        }
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -272,9 +253,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        if (_key.currentState!.validate()) {
-                          print('validate');
-                        }
+                        Navigator.pop(context);
                       },
                       child: const Text(
                         'Sign In',

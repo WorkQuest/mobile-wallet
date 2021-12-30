@@ -38,19 +38,15 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
   void initState() {
     super.initState();
     _numberCardController.addListener(() {
-      setState(() {});
       _formNumberCardKey.currentState!.validate();
     });
     _nameCardHolderController.addListener(() {
-      setState(() {});
       _formNameCardHolderKey.currentState!.validate();
     });
     _dateCardController.addListener(() {
-      setState(() {});
       _formDateCardKey.currentState!.validate();
     });
     _cvvCardController.addListener(() {
-      setState(() {});
       _formCvvCardKey.currentState!.validate();
     });
   }

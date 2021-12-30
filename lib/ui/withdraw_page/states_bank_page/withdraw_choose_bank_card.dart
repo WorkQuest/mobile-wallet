@@ -36,7 +36,7 @@ class WithdrawChooseBankCard extends StatefulWidget {
 }
 
 class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
-  final TextEditingController _amountController = TextEditingController();
+  final _amountController = TextEditingController();
   final _formAmount = GlobalKey<FormState>();
 
   _CardBank _currentCard = _cardsBanks[0];
@@ -45,14 +45,13 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
   void initState() {
     super.initState();
     _amountController.addListener(() {
-      setState(() {});
       _formAmount.currentState!.validate();
     });
   }
 
   @override
   void dispose() {
-    _amountController.dispose();
+    // _amountController.dispose();
     super.dispose();
   }
 

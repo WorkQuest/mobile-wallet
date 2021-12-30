@@ -89,7 +89,9 @@ class DepositInfoPage extends StatelessWidget {
                     bottom: MediaQuery.of(context).padding.bottom),
                 child: DefaultButton(
                   title: 'Confirm',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
                 ),
               ),
             )

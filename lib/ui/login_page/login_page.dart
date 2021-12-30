@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
+import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_create_profile.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
+import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -18,6 +22,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -49,17 +58,16 @@ class _ContentScreen extends StatefulWidget {
 }
 
 class _ContentScreenState extends State<_ContentScreen> {
-  TextEditingController controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final mnemonicController = TextEditingController();
 
-  bool statusButton = false;
+  LoginStore store = LoginStore();
 
   @override
   void initState() {
     super.initState();
-    controller.addListener(() {
-      setState(() {});
-      statusButton = _formKey.currentState!.validate();
+    mnemonicController.addListener(() {
+      store.setMnemonic(mnemonicController.text);
     });
   }
 
@@ -84,16 +92,20 @@ class _ContentScreenState extends State<_ContentScreen> {
         Form(
           key: _formKey,
           child: DefaultTextField(
-            controller: controller,
+            controller: mnemonicController,
             hint: 'Enter mnemonic phrase',
             suffixIcon: null,
             inputFormatters: null,
             validator: (value) {
-              if (controller.text.length <= 10) {
+              if (mnemonicController.text.length <= 24) {
                 return "A small number of words";
               }
+              if (mnemonicController.text.split(' ').toList().length < 12) {
+                return "Incorrect mnemonic format";
+              }
               return null;
-            }, prefitIcon: null,
+            },
+            prefitIcon: null,
           ),
         ),
         const SizedBox(
@@ -102,11 +114,34 @@ class _ContentScreenState extends State<_ContentScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: DefaultButton(
-                onPressed: statusButton ? () => _pushMainPage() : null,
-                title: 'Login',
+            ObserverListener(
+              store: store,
+              onFailure: () {
+                Navigator.of(context, rootNavigator: true).pop();
+                return false;
+              },
+              onSuccess: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await AlertDialogUtils.showSuccessDialog(context);
+                PageRouter.pushNewReplacementRoute(context, const MainPage());
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Observer(
+                  builder: (_) {
+                    return DefaultButton(
+                      onPressed: store.statusButton
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                AlertDialogUtils.showLoadingDialog(context);
+                                store.login(mnemonicController.text);
+                              }
+                            }
+                          : null,
+                      title: 'Login',
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(
@@ -135,12 +170,6 @@ class _ContentScreenState extends State<_ContentScreen> {
         )
       ],
     );
-  }
-
-  void _pushMainPage() {
-    if (_formKey.currentState!.validate()) {
-      PageRouter.pushNewReplacementRoute(context, const MainPage());
-    }
   }
 }
 
@@ -173,7 +202,7 @@ class _HeaderScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           Text(
-            'Welcome to WorkQuest Wallet',
+            'Welcome to\nWorkQuest Wallet',
             style: TextStyle(
               fontSize: 34,
               color: Colors.white,

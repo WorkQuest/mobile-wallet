@@ -10,6 +10,7 @@ class Images {
   static const networkSettingsImage = "$_imagePath/network_settings_image.png";
   static const scanQRExample = "$_imagePath/scan_qr_example.png";
 
+  static const wqLogo = "$_svgPath/wq_logo.svg";
   static const transferIconBar = "$_svgPath/transfer_icon_bar.svg";
   static const walletIconBar = "$_svgPath/wallet_icon_bar.svg";
   static const settingsIconBar = "$_svgPath/settings_icon_bar.svg";

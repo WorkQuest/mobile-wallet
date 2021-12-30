@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_bank_card.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
@@ -76,21 +79,26 @@ class _WalletAddress extends StatelessWidget {
         const SizedBox(
           height: 25,
         ),
-        Container(
-          height: 206,
-          width: 206,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColor.disabledButton,
-            ),
-            borderRadius: BorderRadius.circular(6.0),
-            image: const DecorationImage(
-              image: AssetImage(
-                Images.scanQRExample,
-              ),
-            ),
-          ),
+        QrImage(
+          data: AccountRepository().userAddress!,
+          version: QrVersions.auto,
+          size: 206,
         ),
+        // Container(
+        //   height: 206,
+        //   width: 206,
+        //   decoration: BoxDecoration(
+        //     border: Border.all(
+        //       color: AppColor.disabledButton,
+        //     ),
+        //     borderRadius: BorderRadius.circular(6.0),
+        //     image: const DecorationImage(
+        //       image: AssetImage(
+        //         Images.scanQRExample,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         const SizedBox(
           height: 20,
         ),
@@ -113,9 +121,10 @@ class _WalletAddress extends StatelessWidget {
               color: AppColor.disabledButton,
             ),
           ),
-          child: const Text(
-            '0xf376g...G7f3g8b',
-            style: TextStyle(
+          child: Text(
+            // '0xf376g...G7f3g8b',
+            '${AccountRepository().userAddress!.substring(0, 7)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 7, AccountRepository().userAddress!.length)}',
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -165,12 +174,11 @@ class _WalletAddress extends StatelessWidget {
   }
 
   void _sharePressed() {
-    //TODO Make a copy of the address
-    Share.share('test');
+    Share.share('${AccountRepository().userAddress}');
   }
 
   void _copyPressed(BuildContext context) {
-    //TODO Make a copy of the address
+    Clipboard.setData(ClipboardData(text: AccountRepository().userAddress));
     SnackBarUtils.success(context,
         title: 'Copied!', duration: const Duration(milliseconds: 500));
   }

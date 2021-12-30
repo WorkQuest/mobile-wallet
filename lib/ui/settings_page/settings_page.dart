@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/settings_page/language_page.dart';
 import 'package:workquest_wallet_app/ui/settings_page/network_page.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/widgets/alert_success.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
@@ -45,20 +48,23 @@ class SettingsPage extends StatelessWidget {
                 height: 20,
                 width: double.infinity,
               ),
-              _SettingsItem(
-                title: 'Network',
-                subtitle: 'Mainnet',
-                imagePath: Images.settingsNetworkIcon,
-                onTab: () {
-                  PageRouter.pushNewRoute(context, const NetworkPage());
-                },
-              ),
+              // _SettingsItem(
+              //   title: 'Network',
+              //   subtitle: 'Mainnet',
+              //   imagePath: Images.settingsNetworkIcon,
+              //   onTab: () {
+              //     PageRouter.pushNewRoute(context, const NetworkPage());
+              //   },
+              // ),
               Expanded(child: Container()),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: CupertinoButton(
-                  onPressed: () {
-                    PageRouter.pushNewReplacementRoute(context, const LoginPage());
+                  onPressed: () async {
+                    await Storage.deleteAllFromSecureStorage();
+                    AccountRepository().clearData();
+                    PageRouter.pushNewRemoveRoute(
+                        context, const LoginPage());
                   },
                   child: Container(
                     height: 43,
@@ -104,7 +110,7 @@ class _SettingsItem extends StatelessWidget {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: onTab,
-      pressedOpacity: 0.2,
+      pressedOpacity: 0.4,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
         decoration: BoxDecoration(

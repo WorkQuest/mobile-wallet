@@ -38,23 +38,18 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
   void initState() {
     super.initState();
     _amountController.addListener(() {
-      setState(() {});
       _formsKeys[0].currentState!.validate();
     });
     _numberCardController.addListener(() {
-      setState(() {});
       _formsKeys[1].currentState!.validate();
     });
     _nameCardHolderController.addListener(() {
-      setState(() {});
       _formsKeys[2].currentState!.validate();
     });
     _dateController.addListener(() {
-      setState(() {});
       _formsKeys[3].currentState!.validate();
     });
     _cvvController.addListener(() {
-      setState(() {});
       _formsKeys[4].currentState!.validate();
     });
   }
@@ -77,7 +72,10 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height -
               50.0 -
+              20.0 -
               50.0 -
+              50.0 -
+              10.0 -
               5.0 -
               MediaQuery.of(context).padding.bottom,
           child: Column(
@@ -309,21 +307,19 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                   ],
                 ),
               ),
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height * 0.2,
-              // ),
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: Container(),
-              ),
+              const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: DefaultButton(
                   title: 'Withdraw',
-                  onPressed: () {
-                    PageRouter.pushNewRoute(context, WithdrawInfoPage());
+                  onPressed: () async {
+                    final result = await PageRouter.pushNewRoute(context, WithdrawInfoPage());
+                    if (result != null && result) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               )

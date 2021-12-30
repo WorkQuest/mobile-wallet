@@ -72,18 +72,22 @@ class _WithdrawWalletAddress extends StatefulWidget {
 }
 
 class _WithdrawWalletAddressState extends State<_WithdrawWalletAddress> {
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  late TextEditingController _addressController;
+  late TextEditingController _amountController;
 
   @override
   void initState() {
     super.initState();
-    _addressController.addListener(() {
-      setState(() {});
-    });
-    _amountController.addListener(() {
-      setState(() {});
-    });
+    _addressController = TextEditingController();
+    _amountController = TextEditingController();
+  }
+
+
+  @override
+  void dispose() {
+    // _addressController.dispose();
+    // _amountController.dispose();
+    super.dispose();
   }
 
   @override

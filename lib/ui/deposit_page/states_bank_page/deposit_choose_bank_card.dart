@@ -36,7 +36,6 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
   void initState() {
     super.initState();
     _amountController.addListener(() {
-      setState(() {});
       _formAmount.currentState!.validate();
     });
   }
@@ -56,6 +55,7 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
           height: MediaQuery.of(context).size.height -
               50.0 -
               20.0 -
+              50.0 -
               50.0 -
               10.0 -
               MediaQuery.of(context).padding.bottom,
@@ -208,7 +208,7 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(child: Container()),
+              const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -226,9 +226,12 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
     );
   }
 
-  void _depositPressed() {
+  Future<void> _depositPressed() async {
     if (_formAmount.currentState!.validate()) {
-      PageRouter.pushNewRoute(context, const DepositInfoPage());
+      final result = await PageRouter.pushNewRoute(context, const DepositInfoPage());
+      if (result != null && result) {
+        Navigator.pop(context);
+      }
     }
   }
 

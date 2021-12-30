@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/ui/settings_page/settings_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
-import 'package:workquest_wallet_app/ui/wallet_page/wallet_page.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
 import '../../constants.dart';
 
 
@@ -21,6 +24,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I.get<TransactionsStore>().getTransactions();
+    GetIt.I.get<WalletStore>().getCoins();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
