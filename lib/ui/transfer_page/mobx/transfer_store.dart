@@ -53,14 +53,14 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           amount = (count - gas.getInEther).toString();
           break;
         case "WQT":
-          final count = balance.getValueInUnitBI(EtherUnit.ether).toDouble() * 0.3;
+          final count = await AccountRepository().client!.getBalanceFromContract('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
           amount = (count - gas.getInEther.toDouble() * 0.3).toString();
           break;
         default:
           break;
       }
       onSuccess(true);
-    } on SocketException catch (e) {
+    } on SocketException catch (_) {
       onError("Lost connection to server");
     } on FormatException catch (e) {
       onError(e.message);
@@ -73,8 +73,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   getFee() async {
     try {
       final gas = await AccountRepository().client!.getGas();
+
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
-    } on SocketException catch (e) {
+    } on SocketException catch (_) {
       onError("Lost connection to server");
     }
   }

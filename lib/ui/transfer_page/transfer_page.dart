@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,8 +69,8 @@ class _TransferPageState extends State<TransferPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const MainAppBar(
-        title: "Transfer",
+      appBar: MainAppBar(
+        title: "wallet.transfer".tr(),
       ),
       body: LayoutWithScroll(
         child: Padding(
@@ -81,9 +82,9 @@ class _TransferPageState extends State<TransferPage> {
                 height: 10,
                 width: double.infinity,
               ),
-              const Text(
-                'Choose coin',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+              Text(
+                'wallet.chooseCoin'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
               const SizedBox(
                 height: 5,
@@ -93,11 +94,9 @@ class _TransferPageState extends State<TransferPage> {
                 child: Container(
                   height: 46,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 15.0, vertical: 12.5),
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.5),
                   decoration: BoxDecoration(
-                    color:
-                        _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -127,12 +126,10 @@ class _TransferPageState extends State<TransferPage> {
                           ),
                         ),
                       Text(
-                        _selectedCoin ? _currentCoin!.title : 'Enter coin',
+                        _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: _selectedCoin
-                              ? Colors.black
-                              : AppColor.disabledText,
+                          color: _selectedCoin ? Colors.black : AppColor.disabledText,
                         ),
                       ),
                       const Spacer(),
@@ -149,9 +146,9 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Recipient address',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+              Text(
+                'wallet.recipientsAddress'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
               const SizedBox(
                 height: 5,
@@ -160,12 +157,12 @@ class _TransferPageState extends State<TransferPage> {
                 key: _key,
                 child: DefaultTextField(
                   controller: _addressController,
-                  hint: 'Enter address',
+                  hint: 'wallet.enterAddress'.tr(),
                   suffixIcon: null,
                   inputFormatters: [
                     MaskTextInputFormatter(
                       mask: '0x########################################',
-                      filter: {"#": RegExp(r'[0-9a-f]')},
+                      filter: {"#": RegExp(r'[0-9a-fA-F]')},
                       initialText: _addressController.text,
                     )
                   ],
@@ -180,16 +177,16 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Amount',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+              Text(
+                'wallet.amount'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
               const SizedBox(
                 height: 5,
               ),
               DefaultTextField(
                 controller: _amountController,
-                hint: 'Enter amount',
+                hint: 'wallet.enterAmount'.tr(),
                 // keyboardType: TextInputType.number,
                 suffixIcon: ObserverListener(
                   store: store,
@@ -198,17 +195,16 @@ class _TransferPageState extends State<TransferPage> {
                     _amountController.text = store.amount;
                   },
                   child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: const Text(
-                      'Max',
-                      style: TextStyle(
+                    padding: const EdgeInsets.only(right: 12.5),
+                    child: Text(
+                      'wallet.max'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColor.enabledButton,
                       ),
                     ),
                     onPressed: () async {
-                      print('click getMaxAmount');
                       store.getMaxAmount();
                     },
                   ),
@@ -216,8 +212,7 @@ class _TransferPageState extends State<TransferPage> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                 ],
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(
                 height: 20,
@@ -234,10 +229,9 @@ class _TransferPageState extends State<TransferPage> {
                   width: double.infinity,
                   child: Observer(
                     builder: (_) => DefaultButton(
-                      title: 'Transfer',
-                      onPressed: store.statusButtonTransfer
-                          ? _pushConfirmTransferPage
-                          : null,
+                      title: 'wallet.transfer'.tr(),
+                      onPressed:
+                          store.statusButtonTransfer ? _pushConfirmTransferPage : null,
                     ),
                   ),
                 ),
@@ -255,7 +249,9 @@ class _TransferPageState extends State<TransferPage> {
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
         FocusManager.instance.primaryFocus?.unfocus();
       }
-      await store.getFee();
+      if (store.fee.isEmpty) {
+        await store.getFee();
+      }
       final result = await PageRouter.pushNewRoute(
         context,
         ConfirmTransferPage(
@@ -295,8 +291,7 @@ class _TransferPageState extends State<TransferPage> {
             color: Colors.white,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: LayoutWithScroll(
               child: Column(
                 children: [
@@ -314,9 +309,9 @@ class _TransferPageState extends State<TransferPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Choose coin',
-                        style: TextStyle(
+                      Text(
+                        'wallet.chooseCoin'.tr(),
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
@@ -330,8 +325,7 @@ class _TransferPageState extends State<TransferPage> {
                             (coin) => Column(
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 6.5),
+                                  padding: const EdgeInsets.symmetric(vertical: 6.5),
                                   child: GestureDetector(
                                     onTap: coin.isEnable
                                         ? () {

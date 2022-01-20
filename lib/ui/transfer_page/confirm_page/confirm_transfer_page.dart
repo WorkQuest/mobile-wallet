@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
@@ -5,7 +6,6 @@ import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
-
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -34,8 +34,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Transfer',
+      appBar: DefaultAppBar(
+        title: 'wallet.transfer'.tr(),
       ),
       body: Padding(
         padding: _padding,
@@ -52,8 +52,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             ),
             Expanded(child: Container()),
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 10.0),
+              padding:
+                  EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
               child: SizedBox(
                 width: double.infinity,
                 child: ObserverListener(
@@ -70,9 +70,10 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                   child: DefaultButton(
                     onPressed: () {
                       AlertDialogUtils.showLoadingDialog(context);
-                      store.sendTransaction(widget.addressTo, widget.amount, widget.titleCoin);
+                      store.sendTransaction(
+                          widget.addressTo, widget.amount, widget.titleCoin);
                     },
-                    title: 'Confirm',
+                    title: 'meta.confirm'.tr(),
                   ),
                 ),
               ),
@@ -104,14 +105,13 @@ class _InformationWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+          borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Recipient address',
-            style: TextStyle(
+          Text(
+            'wallet.recipientsAddress'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),
@@ -129,9 +129,9 @@ class _InformationWidget extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            'Amount',
-            style: TextStyle(
+          Text(
+            'wallet.amount'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),
@@ -149,9 +149,9 @@ class _InformationWidget extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            'Total fee',
-            style: TextStyle(
+          Text(
+            'wallet.table.trxFee'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),

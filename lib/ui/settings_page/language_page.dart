@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -7,16 +8,8 @@ import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
 const _languages = [
-  'English',
-  // 'Mandarin Chinese',
-  // 'Hindi',
-  // 'Spanish',
-  // 'French',
-  // 'Standart Arabic',
-  // 'Bengali',
-  'Russian',
-  // 'Portuguese',
-  // 'Indonesian',
+  Locale('en', 'US'),
+  Locale('ru', 'RU'),
 ];
 
 class LanguagePage extends StatefulWidget {
@@ -27,15 +20,15 @@ class LanguagePage extends StatefulWidget {
 }
 
 class _LanguagePageState extends State<LanguagePage> {
-
-  String? _currentLanguage = 'English';
+  Locale? _currentLanguage;
 
   @override
   Widget build(BuildContext context) {
+    _currentLanguage = context.locale;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Language',
+      appBar: DefaultAppBar(
+        title: 'settings'.tr(gender: 'language'),
       ),
       body: LayoutWithScroll(
         child: Padding(
@@ -45,19 +38,20 @@ class _LanguagePageState extends State<LanguagePage> {
               return Column(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _currentLanguage = language;
-                      });
+                    onTap: () async {
+                      _currentLanguage = language;
+                      if (_currentLanguage == const Locale('en', 'US')) {
+                        await context.setLocale(const Locale('en', 'US'));
+                      } else {
+                        await context.setLocale(const Locale('ru', 'RU'));
+                      }
                     },
                     child: ColoredBox(
                       color: Colors.transparent,
                       child: SizedBox(
                         height: 36,
                         width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                            children: [
+                        child: Row(mainAxisSize: MainAxisSize.max, children: [
                           DefaultRadio(
                             status: _currentLanguage == language,
                           ),
@@ -65,7 +59,7 @@ class _LanguagePageState extends State<LanguagePage> {
                             width: 10,
                           ),
                           Text(
-                            language,
+                            _getTitleLanguage(language),
                             style: const TextStyle(
                               fontSize: 16,
                               color: AppColor.subtitleText,
@@ -85,5 +79,15 @@ class _LanguagePageState extends State<LanguagePage> {
         ),
       ),
     );
+  }
+
+  String _getTitleLanguage(Locale locale) {
+    if (locale == const Locale('en', 'US')) {
+      return "English";
+    } else if (locale == const Locale('ru', 'RU')) {
+      return "Русский";
+    } else {
+      return "Arabian";
+    }
   }
 }

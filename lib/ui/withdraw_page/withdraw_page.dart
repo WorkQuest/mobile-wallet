@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -9,7 +10,7 @@ import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 
-const _padding = EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0);
+const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class WithdrawPage extends StatefulWidget {
   const WithdrawPage({Key? key}) : super(key: key);
@@ -18,8 +19,7 @@ class WithdrawPage extends StatefulWidget {
   _WithdrawPageState createState() => _WithdrawPageState();
 }
 
-class _WithdrawPageState extends State<WithdrawPage>
-    with SingleTickerProviderStateMixin {
+class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -40,21 +40,20 @@ class _WithdrawPageState extends State<WithdrawPage>
       appBar: const DefaultAppBar(
         title: 'Withdrawal',
       ),
-      body: Container(
+      body: ColoredBox(
         color: Colors.white,
-        padding: _padding,
         child: Column(
           children: [
-            CustomTabBar(
-              tabController: _tabController,
+            Padding(
+              padding: _padding,
+              child: CustomTabBar(
+                tabController: _tabController,
+              ),
             ),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: const [
-                  _WithdrawWalletAddress(),
-                  WithdrawBankCard()
-                ],
+                children: const [_WithdrawWalletAddress(), WithdrawBankCard()],
               ),
             ),
           ],
@@ -82,7 +81,6 @@ class _WithdrawWalletAddressState extends State<_WithdrawWalletAddress> {
     _amountController = TextEditingController();
   }
 
-
   @override
   void dispose() {
     // _addressController.dispose();
@@ -92,87 +90,93 @@ class _WithdrawWalletAddressState extends State<_WithdrawWalletAddress> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutWithScroll(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          const Text(
-            'Wallet address',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          DefaultTextField(
-            controller: _addressController,
-            hint: 'Enter address',
-            suffixIcon: null,
-            inputFormatters: [
-              MaskTextInputFormatter(
-                mask: 'dxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                initialText: _addressController.text,
+    return Padding(
+      padding: _padding,
+      child: Scaffold(
+        body: LayoutWithScroll(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20,
               ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          const Text(
-            'Amount',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          DefaultTextField(
-            controller: _amountController,
-            hint: 'Enter amount',
-            suffixIcon: CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: const Text(
-                'Max',
-                style: TextStyle(
+              Text(
+                'wallet.cryptoWallet'.tr(),
+                style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColor.enabledButton,
                 ),
               ),
-              onPressed: () {
-                _amountController.text = '9999';
-              },
-            ),
-            inputFormatters: [
-              MaskTextInputFormatter(
-                mask: '########',
-                initialText: _amountController.text,
+              const SizedBox(
+                height: 5,
+              ),
+              DefaultTextField(
+                controller: _addressController,
+                hint: 'wallet.enterAddress'.tr(),
+                suffixIcon: null,
+                inputFormatters: [
+                  MaskTextInputFormatter(
+                    mask: '0x########################################',
+                    filter: {"#": RegExp(r'[0-9a-fA-F]')},
+                    initialText: _addressController.text,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                'wallet.amount'.tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              DefaultTextField(
+                controller: _amountController,
+                hint: 'wallet.enterAmount'.tr(),
+                suffixIcon: CupertinoButton(
+                  padding: const EdgeInsets.only(right: 12.5),
+                  child: Text(
+                    'wallet.max'.tr(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.enabledButton,
+                    ),
+                  ),
+                  onPressed: () {
+                    _amountController.text = '9999';
+                  },
+                ),
+                inputFormatters: [
+                  MaskTextInputFormatter(
+                    mask: '########',
+                    initialText: _amountController.text,
+                  ),
+                ],
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(
+                height: 20,
               ),
             ],
-            keyboardType: TextInputType.number,
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Expanded(
-            child: Container(),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: DefaultButton(
-                title: 'Withdraw',
-                onPressed: () {},
-              ),
+        ),
+        bottomNavigationBar: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.only(
+                right: 4.0,
+                left: 4.0,
+                bottom: MediaQuery.of(context).padding.bottom + 10.0),
+            child: DefaultButton(
+              title: 'wallet.withdraw'.tr(),
+              onPressed: () {},
             ),
           ),
-        ],
+        ),
       ),
     );
   }

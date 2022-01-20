@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,8 @@ import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
+
+const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class DepositPage extends StatefulWidget {
   const DepositPage({Key? key}) : super(key: key);
@@ -40,30 +43,24 @@ class _DepositPageState extends State<DepositPage>
       appBar: const DefaultAppBar(
         title: 'Deposit',
       ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 20.0,
-          bottom: 10.0 + MediaQuery.of(context).padding.bottom,
-        ),
-        child: Column(
-          children: [
-            CustomTabBar(
+      body: Column(
+        children: [
+          Padding(
+            padding: _padding,
+            child: CustomTabBar(
               tabController: _tabController,
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  _WalletAddress(),
-                  DepositBankCard(),
-                ],
-              ),
-            )
-          ],
-        ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                _WalletAddress(),
+                DepositBankCard(),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -74,63 +71,60 @@ class _WalletAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 25,
-        ),
-        QrImage(
-          data: AccountRepository().userAddress!,
-          version: QrVersions.auto,
-          size: 206,
-        ),
-        // Container(
-        //   height: 206,
-        //   width: 206,
-        //   decoration: BoxDecoration(
-        //     border: Border.all(
-        //       color: AppColor.disabledButton,
-        //     ),
-        //     borderRadius: BorderRadius.circular(6.0),
-        //     image: const DecorationImage(
-        //       image: AssetImage(
-        //         Images.scanQRExample,
-        //       ),
-        //     ),
-        //   ),
-        // ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'Scan QR code or copy address to receive payment',
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColor.subtitleText,
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.0),
-            border: Border.all(
-              color: AppColor.disabledButton,
+    return Scaffold(
+      body: Padding(
+        padding: _padding,
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 25,
             ),
-          ),
-          child: Text(
-            // '0xf376g...G7f3g8b',
-            '${AccountRepository().userAddress!.substring(0, 7)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 7, AccountRepository().userAddress!.length)}',
-            style: const TextStyle(
-              fontSize: 16,
+            QrImage(
+              data: AccountRepository().userAddress!,
+              version: QrVersions.auto,
+              size: 206,
             ),
-          ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'wallet.scanQr'.tr(),
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColor.subtitleText,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6.0),
+                border: Border.all(
+                  color: AppColor.disabledButton,
+                ),
+              ),
+              child: Text(
+                // '0xf376g...G7f3g8b',
+                '${AccountRepository().userAddress!.substring(0, 7)}...${AccountRepository()
+                    .userAddress!.substring(AccountRepository().userAddress!.length - 7,
+                    AccountRepository().userAddress!.length)}',
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
         ),
-        Expanded(child: Container()),
-        Row(
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(right: 16.0, left: 16.0, bottom: MediaQuery
+            .of(context)
+            .padding
+            .bottom + 10,),
+        child: Row(
           children: [
             Expanded(
               flex: 1,
@@ -147,9 +141,9 @@ class _WalletAddress extends StatelessWidget {
                       color: Colors.blue.withOpacity(0.1),
                     ),
                   ),
-                  child: const Text(
-                    'Share',
-                    style: TextStyle(
+                  child: Text(
+                    'meta.share'.tr(),
+                    style: const TextStyle(
                       fontSize: 16,
                       color: AppColor.enabledButton,
                     ),
@@ -163,13 +157,13 @@ class _WalletAddress extends StatelessWidget {
             Expanded(
               flex: 1,
               child: DefaultButton(
-                title: 'Copy',
+                title: 'meta.copy'.tr(),
                 onPressed: () => _copyPressed(context),
               ),
             )
           ],
         ),
-      ],
+      ),
     );
   }
 

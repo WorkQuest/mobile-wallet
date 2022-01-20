@@ -11,11 +11,13 @@ class SnackBarUtils {
           backgroundColor: Colors.white,
           content: Row(
             children: [
-              Text(
-                title ?? 'Success',
-                style: const TextStyle(fontSize: 14, color: Colors.black),
+              Flexible(
+                child: Text(
+                  title ?? 'Success',
+                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              const Spacer(),
               const Icon(
                 Icons.check,
                 color: Colors.green,

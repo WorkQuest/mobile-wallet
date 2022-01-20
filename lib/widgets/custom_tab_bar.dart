@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
 
@@ -34,12 +35,12 @@ class _CustomTabBarState extends State<CustomTabBar>
         ),
         labelColor: Colors.black,
         unselectedLabelColor: const Color(0xff8D96A1),
-        tabs: const [
+        tabs: [
           Tab(
-            text: 'Wallet address',
+            text: 'wallet.cryptoWallet'.tr(),
           ),
           Tab(
-            text: 'Bank card',
+            text: 'wallet.bankCard'.tr(),
           ),
         ],
       ),

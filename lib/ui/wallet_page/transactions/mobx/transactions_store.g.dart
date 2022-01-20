@@ -12,15 +12,30 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   final _$transactionsAtom = Atom(name: 'TransactionsStoreBase.transactions');
 
   @override
-  ObservableList<ItemTransaction> get transactions {
+  ObservableList<Tx> get transactions {
     _$transactionsAtom.reportRead();
     return super.transactions;
   }
 
   @override
-  set transactions(ObservableList<ItemTransaction> value) {
+  set transactions(ObservableList<Tx> value) {
     _$transactionsAtom.reportWrite(value, super.transactions, () {
       super.transactions = value;
+    });
+  }
+
+  final _$isMoreLoadingAtom = Atom(name: 'TransactionsStoreBase.isMoreLoading');
+
+  @override
+  bool get isMoreLoading {
+    _$isMoreLoadingAtom.reportRead();
+    return super.isMoreLoading;
+  }
+
+  @override
+  set isMoreLoading(bool value) {
+    _$isMoreLoadingAtom.reportWrite(value, super.isMoreLoading, () {
+      super.isMoreLoading = value;
     });
   }
 
@@ -28,14 +43,16 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
       AsyncAction('TransactionsStoreBase.getTransactions');
 
   @override
-  Future getTransactions() {
-    return _$getTransactionsAsyncAction.run(() => super.getTransactions());
+  Future getTransactions({bool isForce = false}) {
+    return _$getTransactionsAsyncAction
+        .run(() => super.getTransactions(isForce: isForce));
   }
 
   @override
   String toString() {
     return '''
-transactions: ${transactions}
+transactions: ${transactions},
+isMoreLoading: ${isMoreLoading}
     ''';
   }
 }

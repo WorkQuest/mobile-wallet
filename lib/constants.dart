@@ -28,6 +28,8 @@ class Images {
   static const profileIcon = "$_svgPath/profile_icon.svg";
   static const emailIcon = "$_svgPath/email_icon.svg";
   static const passwordIcon = "$_svgPath/password_icon.svg";
+  static const biometricIcon = "$_svgPath/biometric_icon.svg";
+  static const removePinIcon = "$_svgPath/remove_pin_icon.svg";
 
 }
 

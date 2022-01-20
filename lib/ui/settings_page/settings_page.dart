@@ -7,25 +7,31 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
-import 'package:workquest_wallet_app/ui/settings_page/language_page.dart';
-import 'package:workquest_wallet_app/ui/settings_page/network_page.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
-import 'package:workquest_wallet_app/widgets/alert_success.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import 'language_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+class SettingsPage extends StatefulWidget {
+  final Function? update;
+  const SettingsPage({Key? key, required this.update}) : super(key: key);
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const MainAppBar(
-        title: 'Settings',
+      appBar: MainAppBar(
+        title: 'settings.settings'.tr(),
       ),
       body: LayoutWithScroll(
         child: Padding(
@@ -37,11 +43,12 @@ class SettingsPage extends StatelessWidget {
                 width: double.infinity,
               ),
               _SettingsItem(
-                title: 'Language',
-                subtitle: 'English',
+                title: 'settings.language'.tr(),
+                subtitle: _getTitleLanguage(context.locale),
                 imagePath: Images.settingsLanguageIcon,
-                onTab: () {
-                  PageRouter.pushNewRoute(context, const LanguagePage());
+                onTab: () async {
+                  await PageRouter.pushNewRoute(context, const LanguagePage());
+                  widget.update!.call();
                 },
               ),
               const SizedBox(
@@ -58,8 +65,9 @@ class SettingsPage extends StatelessWidget {
               // ),
               Expanded(child: Container()),
               Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
+                padding: const EdgeInsets.only(bottom: 20.0),
                 child: CupertinoButton(
+                  padding: EdgeInsets.zero,
                   onPressed: () async {
                     await Storage.deleteAllFromSecureStorage();
                     AccountRepository().clearData();
@@ -76,9 +84,9 @@ class SettingsPage extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    child: const Text(
-                      'Log out',
-                      style: TextStyle(fontSize: 16, color: Colors.red),
+                    child: Text(
+                      'meta'.tr(gender: 'log_out'),
+                      style: const TextStyle(fontSize: 16, color: Colors.red),
                     ),
                   ),
                 ),
@@ -88,6 +96,16 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getTitleLanguage(Locale locale) {
+    if (locale == const Locale('en', 'US')) {
+      return "English";
+    } else if (locale == const Locale('ru', 'RU')) {
+      return "Русский";
+    } else {
+      return "Arabian";
+    }
   }
 }
 

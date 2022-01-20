@@ -1,6 +1,5 @@
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
-import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
 
@@ -17,16 +16,19 @@ abstract class SplashStoreBase extends IStore<bool> with Store {
     onLoading();
     try {
       final refreshToken = await Storage.read(Storage.refreshKey);
-      if (refreshToken == null || AccountRepository().userAddresses!.isEmpty) {
+      if (refreshToken == null || (AccountRepository().userAddresses != null && AccountRepository().userAddresses!.isEmpty)) {
         isLoginPage = true;
         onSuccess(true);
         return;
       }
-      final refresh = await Api().refreshToken(refreshToken);
-      await Storage.write(Storage.refreshKey, refresh);
+      // final refresh = await Api().refreshToken(refreshToken);
+      // await Storage.write(Storage.refreshKey, refresh);
       isLoginPage = false;
       onSuccess(true);
-    } catch (e) {
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e, trace) {
+      print('$e\n$trace');
       onError(e.toString());
     }
   }

@@ -26,9 +26,10 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
         "WUSD",
         ether.amount,
       ));
+      final wqt = await AccountRepository().client!.getBalanceFromContract('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
       coins.add(BalanceItem(
         "WQT",
-        (double.parse(ether.amount) * 0.038).toString(),
+        wqt.toString(),
       ));
       onSuccess(true);
     } catch (e) {

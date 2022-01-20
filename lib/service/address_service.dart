@@ -5,10 +5,27 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:hex/hex.dart';
 import 'package:web3dart/credentials.dart';
 
-abstract class AddressService {
-  static const baseDerivationPath = "m/44'/60'/0'/0/0";
 
-  static String generateMnemonic() {
+const _baseDerivationPath = "m/44'/60'/0'/0/0";
+
+abstract class AddressServiceI {
+  String generateMnemonic();
+  bool validateMnemonic(String mnemonic);
+  String getPrivateKey(String mnemonic);
+  String getPublicKey(String privateKey);
+  Future<EthereumAddress> getPublicAddress(String privateKey);
+}
+
+class AddressService implements AddressServiceI {
+
+  static final AddressService _instance = AddressService._internal();
+
+  factory AddressService() => _instance;
+
+  AddressService._internal();
+
+  @override
+  String generateMnemonic() {
     try {
       return bip39.generateMnemonic(strength: 128);
     } catch (e) {
@@ -16,7 +33,8 @@ abstract class AddressService {
     }
   }
 
-  static bool validateMnemonic(String mnemonic) {
+  @override
+  bool validateMnemonic(String mnemonic) {
     try {
       return bip39.validateMnemonic(mnemonic);
     } catch (e) {
@@ -24,7 +42,8 @@ abstract class AddressService {
     }
   }
 
-  static String getPrivateKey(String mnemonic) {
+  @override
+  String getPrivateKey(String mnemonic) {
     try {
       final seed = bip39.mnemonicToSeedHex(mnemonic);
 
@@ -33,7 +52,7 @@ abstract class AddressService {
           HEX.decode(seed),
         ),
       );
-      final bip32.BIP32 child = root.derivePath(baseDerivationPath);
+      final bip32.BIP32 child = root.derivePath(_baseDerivationPath);
 
       final privateKey = HEX.encode(child.privateKey!.toList());
 
@@ -43,7 +62,8 @@ abstract class AddressService {
     }
   }
 
-  static Future<EthereumAddress> getPublicAddress(String privateKey) async {
+  @override
+  Future<EthereumAddress> getPublicAddress(String privateKey) async {
     try {
       final private = EthPrivateKey.fromHex(privateKey);
       final address = await private.extractAddress();
@@ -53,7 +73,8 @@ abstract class AddressService {
     }
   }
 
-  static String getPublicKey(String privateKey) {
+  @override
+  String getPublicKey(String privateKey) {
     try {
       final private = EthPrivateKey.fromHex(privateKey);
       final public = HEX.encode(private.encodedPublicKey);

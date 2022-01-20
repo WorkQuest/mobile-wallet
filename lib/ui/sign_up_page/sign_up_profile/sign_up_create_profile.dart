@@ -1,6 +1,8 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/sign_up_confirm.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/mobx/sign_up_profile_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -11,7 +13,6 @@ import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../constants.dart';
 import '../../../page_router.dart';
-import '../sign_up/sign_up_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -37,8 +38,8 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Back',
+      appBar: DefaultAppBar(
+        title: 'meta'.tr(gender: 'back'),
         titleCenter: false,
       ),
       body: Form(
@@ -53,18 +54,18 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   height: 30,
                 ),
                 const Text(
-                  'Sign Up',
+                  'signIn',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
                   ),
-                ),
+                ).tr(gender: 'signUp'),
                 const SizedBox(
                   height: 30,
                 ),
                 DefaultTextField(
                   controller: store.firstName,
-                  hint: 'First name',
+                  hint: 'labels'.tr(gender: 'firstName'),
                   validator: (value) {
                     if (store.firstName.text.isEmpty) {
                       return "Field is empty";
@@ -94,7 +95,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 ),
                 DefaultTextField(
                   controller: store.lastName,
-                  hint: 'Last name',
+                  hint: 'labels'.tr(gender: 'lastName'),
                   validator: (value) {
                     if (store.lastName.text.isEmpty) {
                       return "Field is empty";
@@ -155,7 +156,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 ),
                 DefaultTextField(
                   controller: store.password,
-                  hint: 'Password',
+                  hint: 'signUp'.tr(gender: 'password'),
                   obscureText: true,
                   validator: (value) {
                     if (store.password.text.isEmpty) {
@@ -186,7 +187,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 ),
                 DefaultTextField(
                   controller: store.passwordConfirm,
-                  hint: 'Repeat password',
+                  hint: 'signUp'.tr(gender: 'confirmPassword'),
                   obscureText: true,
                   validator: (value) {
                     if (store.passwordConfirm.text.isEmpty) {
@@ -221,12 +222,12 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                   onSuccess: () async {
                     Navigator.of(context, rootNavigator: true).pop();
                     await AlertDialogUtils.showSuccessDialog(context);
-                    PageRouter.pushNewReplacementRoute(context, const SignUpPage());
+                    PageRouter.pushNewReplacementRoute(context, SignUpConfirm(email: store.email.text,));
                   },
                   child: SizedBox(
                     width: double.infinity,
                     child: DefaultButton(
-                      title: 'Generate address',
+                      title: 'signUp'.tr(gender: 'generateAddress'),
                       onPressed: () async {
                         if (_key.currentState!.validate()) {
                           AlertDialogUtils.showLoadingDialog(context);
@@ -243,11 +244,11 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 Row(
                   children: [
                     const Text(
-                      'Already have an account?',
+                      'signUp',
                       style: TextStyle(
                         fontSize: 16,
                       ),
-                    ),
+                    ).tr(gender: 'haveAccount'),
                     const SizedBox(
                       width: 10,
                     ),
@@ -256,12 +257,12 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                         Navigator.pop(context);
                       },
                       child: const Text(
-                        'Sign In',
+                        'signIn',
                         style: TextStyle(
                           fontSize: 16,
                           color: AppColor.enabledButton,
                         ),
-                      ),
+                      ).tr(gender: 'title'),
                     )
                   ],
                 ),

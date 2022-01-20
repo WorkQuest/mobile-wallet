@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/widgets/alert_success.dart';
@@ -8,18 +9,18 @@ class AlertDialogUtils {
   static Future<void> showSuccessDialog(BuildContext context) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
-      children: const [
-        AlertSuccess(),
-        SizedBox(
+      children: [
+        const AlertSuccess(),
+        const SizedBox(
           height: 15,
         ),
-        Text(
-          'Success',
+        const Text(
+          'meta',
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
-        )
+        ).tr(gender: 'success')
       ],
     );
 
@@ -61,15 +62,15 @@ class AlertDialogUtils {
   static Future<void> showLoadingDialog(BuildContext context) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
-      children: const [
-        CircularProgressIndicator.adaptive(),
-        SizedBox(
+      children: [
+        const CircularProgressIndicator.adaptive(),
+        const SizedBox(
           height: 15,
           width: 15,
         ),
         Text(
-          'Loading...',
-          style: TextStyle(
+          '${'meta'.tr(gender: 'loading')}...',
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
@@ -136,7 +137,7 @@ class AlertDialogUtils {
                       }
                     },
                     child: Text(
-                      titleCancel ?? 'Cancel',
+                      titleCancel ?? 'meta'.tr(gender: 'cancel'),
                       style: TextStyle(color: colorCancel ?? Colors.black),
                     ),
                   ),
@@ -168,7 +169,7 @@ class AlertDialogUtils {
                     }
                   },
                   child: Text(
-                    titleCancel ?? 'Cancel',
+                    titleCancel ?? 'meta'.tr(gender: 'cancel'),
                     style: TextStyle(color: colorOk ?? Colors.black),
                   ),
                 ),

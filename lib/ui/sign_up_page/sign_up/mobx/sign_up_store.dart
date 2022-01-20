@@ -49,7 +49,7 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
 
   @action
   generateMnemonic() {
-    mnemonic = AddressService.generateMnemonic();
+    mnemonic = AddressService().generateMnemonic();
     final list = mnemonic!.split(' ').toList();
     firstWord = list[2];
     secondWord = list[6];
@@ -63,22 +63,23 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
 
     final list = mnemonic!.split(' ').toList();
 
-    for (var i = list.length - 1; i > 6; i--) {
+    for (var i = list.length - 1; i > 4; i--) {
       var n = _random.nextInt(i + 1);
-      if (setOfWords!.length == 6) {
+      if (setOfWords!.length == 7) {
         break;
+      }
+      while (setOfWords!.contains(list[n])) {
+        n = _random.nextInt(i + 1);
       }
       setOfWords!.add(list[n]);
     }
     if (!setOfWords!.contains(firstWord)) {
+      setOfWords!.removeLast();
       setOfWords!.add(firstWord!);
-    } else {
-      setOfWords!.add(list.last);
     }
     if (!setOfWords!.contains(secondWord)) {
+      setOfWords!.removeLast();
       setOfWords!.add(secondWord!);
-    } else {
-      setOfWords!.add(list.last);
     }
     setOfWords!.shuffle();
   }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -14,6 +15,8 @@ final List<_CardBank> _cardsBanks = [
   _CardBank('Tinkoff', '*1111'),
   _CardBank('Visa', '*0000'),
 ];
+
+const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class _CardBank {
   String nameBank;
@@ -57,171 +60,159 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
 
   @override
   Widget build(BuildContext context) {
-    return DismissKeyboard(
-      child: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          height: MediaQuery
-              .of(context)
-              .size
-              .height -
-              50.0 -
-              20.0 -
-              50.0 -
-              50.0 -
-              10.0 -
-              MediaQuery
-                  .of(context)
-                  .padding
-                  .bottom,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Amount',
-                style: TextStyle(
-                  fontSize: 16,
+    return Padding(
+      padding: _padding,
+      child: Scaffold(
+        body: DismissKeyboard(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Form(
-                      key: _formAmount,
-                      child: DefaultTextField(
-                        hint: '0 WUSD',
-                        suffixIcon: null,
-                        controller: _amountController,
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                            mask: '#######',
-                            initialText: _amountController.text,
+                Text(
+                  'wallet.amount'.tr(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Form(
+                        key: _formAmount,
+                        child: DefaultTextField(
+                          hint: '0 WUSD',
+                          suffixIcon: null,
+                          controller: _amountController,
+                          inputFormatters: [
+                            MaskTextInputFormatter(
+                              mask: '#######',
+                              initialText: _amountController.text,
+                            ),
+                          ],
+                          validator: (value) {
+                            if (_amountController.text.isEmpty) {
+                              return 'Field is empty';
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 31,
+                      height: 45,
+                      child: Center(
+                        child: Text(
+                          '=',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: InfoElement(
+                        line: '\$ 0',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.table.trxFee'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  width: double.infinity,
+                  child: InfoElement(line: '\$ 0,15'),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.chooseCard'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                GestureDetector(
+                  onTap: () => _chooseCard(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 17.0, vertical: 15),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.disabledButton,
+                      ),
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                          height: 16,
+                          width: 20,
+                          child: SvgPicture.asset(
+                            Images.notCardsIcon,
+                            color: AppColor.enabledButton,
                           ),
-                        ],
-                        validator: (value) {
-                          if (_amountController.text.isEmpty) {
-                            return 'Field is empty';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 31,
-                    height: 45,
-                    child: Center(
-                      child: Text(
-                        '=',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                  const Expanded(
-                    child: InfoElement(
-                      line: '\$ 0',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              const Text(
-                'Total fee',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(
-                width: double.infinity,
-                child: InfoElement(line: '\$ 0,15'),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              const Text(
-                'Choose card',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onTap: () => _chooseCard(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 17.0, vertical: 15),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColor.disabledButton,
-                    ),
-                    borderRadius: BorderRadius.circular(6.0),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 16,
-                        width: 20,
-                        child: SvgPicture.asset(
-                          Images.notCardsIcon,
-                          color: AppColor.enabledButton,
                         ),
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Text(
-                        '${_currentCard.nameBank} ${_currentCard.numberCard}',
-                        style: const TextStyle(
-                          fontSize: 16,
+                        const SizedBox(
+                          width: 12,
                         ),
-                      ),
-                      // Expanded(
-                      //   child: Container(),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          right: 3.5,
+                        Text(
+                          '${_currentCard.nameBank} ${_currentCard.numberCard}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
-                        child: SvgPicture.asset(
-                          Images.chooseCoinIcon,
-                          color: AppColor.enabledButton,
-                        ),
-                      )
-                    ],
+                        // Expanded(
+                        //   child: Container(),
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 3.5,
+                          ),
+                          child: SvgPicture.asset(
+                            Images.chooseCoinIcon,
+                            color: AppColor.enabledButton,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height * 0.18,
-              // ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(child: Container()),
-              SizedBox(
-                width: double.infinity,
-                child: DefaultButton(
-                  title: 'Withdraw',
-                  onPressed: () {
-                    if (_formAmount.currentState!.validate()) {
-                      widget.onTab!.call();
-                    }
-                  },
+                // SizedBox(
+                //   height: MediaQuery.of(context).size.height * 0.18,
+                // ),
+                const SizedBox(
+                  height: 20,
                 ),
-              )
-            ],
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom),
+          child: SizedBox(
+            width: double.infinity,
+            child: DefaultButton(
+              title: 'wallet.withdraw'.tr(),
+              onPressed: () {
+                if (_formAmount.currentState!.validate()) {
+                  widget.onTab!.call();
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -269,9 +260,9 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Choose bank card',
-                      style: TextStyle(
+                    Text(
+                      'wallet.chooseCard'.tr(),
+                      style: const TextStyle(
                         fontSize: 18,
                         color: Colors.black,
                         fontWeight: FontWeight.w500,

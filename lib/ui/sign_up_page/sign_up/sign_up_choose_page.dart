@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/src/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
+import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/mobx/sign_up_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/modal_bottom_sheet.dart';
@@ -94,6 +94,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   isFirst: false,
                 ),
                 Expanded(child: Container()),
+                const SizedBox(height: 20,),
                 Container(
                   padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).padding.bottom + 10.0),
@@ -108,7 +109,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                       Navigator.of(context, rootNavigator: true).pop();
                       await AlertDialogUtils.showSuccessDialog(context);
                       PageRouter.pushNewReplacementRoute(
-                          context, const MainPage());
+                          context, const PinCodePage());
                     },
                     child: DefaultButton(
                       title: 'Open wallet',

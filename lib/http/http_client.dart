@@ -32,21 +32,21 @@ class HttpClient {
             if (accessToken != null) {
               options.headers['authorization'] = "Bearer $accessToken";
             }
-            // print("url: ${options.path}");
-            // print("queryParameters: ${options.queryParameters}");
-            // print("headers: ${options.headers}");
-            // print('method: ${options.method}');
-            // print("Adding accessToken $accessToken");
+            print("url: ${options.path}");
+            print("queryParameters: ${options.queryParameters}");
+            print("headers: ${options.headers}");
+            print('method: ${options.method}');
+            print("Adding accessToken $accessToken");
             if (options.data != null) print("url ${options.data}");
             print('-------------------------------------------');
             return handler.next(options);
           },
           onResponse: (Response response, handler) {
             print('\n---------------- Response ----------------');
-            // print("response: ${response.data}");
-            // print("path: ${response.requestOptions.path}");
-            // print("method: ${response.requestOptions.method}");
-            // print("headers: ${response.requestOptions.headers}");
+            print("response: ${response.data}");
+            print("path: ${response.requestOptions.path}");
+            print("method: ${response.requestOptions.method}");
+            print("headers: ${response.requestOptions.headers}");
             try {
               if (response.statusCode == 200) {
                 print('response.status - Success');
@@ -59,10 +59,10 @@ class HttpClient {
           },
           onError: (DioError e, handler) {
             print('\n---------------- DioError ----------------');
-            // print("method ${e.requestOptions.method} ${e.toString()}");
-            // print("url ${e.requestOptions.path} ${e.toString()}");
-            // print("message ${e.type} ${e.message}");
-            // print("response ${e.type} ${e.response}");
+            print("method ${e.requestOptions.method} ${e.toString()}");
+            print("url ${e.requestOptions.path} ${e.toString()}");
+            print("message ${e.type} ${e.message}");
+            print("response ${e.type} ${e.response}");
             print('-------------------------------------------');
             try {
               if (e.response?.data["code"] == 401001) {

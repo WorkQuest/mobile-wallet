@@ -10,17 +10,12 @@ class Storage {
   static const accessKey = "accessToken";
   static const activeAddress = "address";
   static const wallets = "wallets";
+  static const pinCodeKey = "pinCode";
 
 
-  static Future<void> writeToSecureStorage({
-    required String value,
-    required String key,
-  }) async {
-    await _secureStorage.write(key: key.toString(), value: value);
-  }
 
   static Future<void> write(String key, String value) async {
-    _secureStorage.write(key: key, value: value);
+    await _secureStorage.write(key: key, value: value);
   }
 
   static Future<String?> read(String key) async {

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,12 +10,7 @@ import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dar
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
 import '../../constants.dart';
 
-
-final _keys = [
-  GlobalKey<NavigatorState>(),
-  GlobalKey<NavigatorState>(),
-  GlobalKey<NavigatorState>(),
-];
+const _paddingBottom = EdgeInsets.only(bottom: 6);
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -24,70 +20,125 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  PageController? pageController;
+  int currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    GetIt.I.get<TransactionsStore>().getTransactions();
+    pageController = PageController();
+    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     GetIt.I.get<WalletStore>().getCoins();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController!.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: CupertinoTabScaffold(
-        backgroundColor: Colors.white,
-        tabBuilder: (BuildContext context, int index) {
-          switch (index) {
-            case 0:
-              return CupertinoTabView(
-                  navigatorKey: _keys[0],
-                  builder: (context) {
-                    return const WalletPage();
-                  });
-            case 1:
-              return CupertinoTabView(
-                  navigatorKey: _keys[1],
-                  builder: (context) {
-                    return const TransferPage();
-                  });
-            case 2:
-              return CupertinoTabView(
-                  navigatorKey: _keys[2],
-                  builder: (context) {
-                    return const SettingsPage();
-                  });
-          }
-          return Container();
-        },
-        tabBar: CupertinoTabBar(
-          backgroundColor: Colors.white,
-          activeColor: AppColor.enabledButton,
-          border: Border(
-            top: BorderSide(
-              color: Colors.grey.shade100
-            )
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: pageController,
+        children: [
+          WalletPage(),
+          TransferPage(),
+          SettingsPage(
+            update: _update,
           ),
+        ],
+      ),
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          currentIndex: currentPageIndex,
+          unselectedLabelStyle: const TextStyle(fontSize: 10),
+          selectedLabelStyle: const TextStyle(fontSize: 10),
           items: [
             BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.walletIconBar, color: AppColor.unselectedBottomIcon,),
-              activeIcon: SvgPicture.asset(Images.walletIconBar, color: AppColor.enabledButton,),
-              label: 'Wallet',
+              icon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.walletIconBar,
+                  color: AppColor.unselectedBottomIcon,
+                  width: 20,
+                  height: 16,
+                ),
+              ),
+              activeIcon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.walletIconBar,
+                  color: AppColor.enabledButton,
+                  width: 20,
+                  height: 16,
+                ),
+              ),
+              label: 'wallet.wallet'.tr(),
             ),
             BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.transferIconBar),
-              activeIcon: SvgPicture.asset(Images.transferIconBar, color: AppColor.enabledButton,),
-              label: 'Transfer',
+              icon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.transferIconBar,
+                  width: 20,
+                  height: 16,
+                ),
+              ),
+              activeIcon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.transferIconBar,
+                  color: AppColor.enabledButton,
+                  width: 20,
+                  height: 16,
+                ),
+              ),
+              label: 'wallet.transfer'.tr(),
             ),
             BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.settingsIconBar),
-              activeIcon: SvgPicture.asset(Images.settingsIconBar, color: AppColor.enabledButton,),
-              label: 'Settings',
+              icon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.settingsIconBar,
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+              activeIcon: Padding(
+                padding: _paddingBottom,
+                child: SvgPicture.asset(
+                  Images.settingsIconBar,
+                  color: AppColor.enabledButton,
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+              label: 'settings.settings'.tr(),
             ),
           ],
+          onTap: (index) async {
+            FocusScope.of(context).unfocus();
+            setState(() {
+              currentPageIndex = index;
+              pageController!.jumpToPage(index);
+            });
+          },
         ),
       ),
     );
+  }
+
+  void _update() {
+    setState(() {});
   }
 }

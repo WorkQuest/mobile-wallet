@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
-import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
+import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
@@ -80,12 +81,12 @@ class _ContentScreenState extends State<_ContentScreen> {
           height: 50,
         ),
         const Text(
-          'Mnemonic phrase',
+          'wallet',
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
-        ),
+        ).tr(gender: 'mnemonic_phrase'),
         const SizedBox(
           height: 5,
         ),
@@ -93,7 +94,7 @@ class _ContentScreenState extends State<_ContentScreen> {
           key: _formKey,
           child: DefaultTextField(
             controller: mnemonicController,
-            hint: 'Enter mnemonic phrase',
+            hint: 'wallet.enterMnemonicPhrase'.tr(),
             suffixIcon: null,
             inputFormatters: null,
             validator: (value) {
@@ -123,7 +124,7 @@ class _ContentScreenState extends State<_ContentScreen> {
               onSuccess: () async {
                 Navigator.of(context, rootNavigator: true).pop();
                 await AlertDialogUtils.showSuccessDialog(context);
-                PageRouter.pushNewReplacementRoute(context, const MainPage());
+                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
               },
               child: SizedBox(
                 width: double.infinity,
@@ -138,7 +139,7 @@ class _ContentScreenState extends State<_ContentScreen> {
                               }
                             }
                           : null,
-                      title: 'Login',
+                      title: 'signIn'.tr(gender: 'login'),
                     );
                   },
                 ),
@@ -147,9 +148,9 @@ class _ContentScreenState extends State<_ContentScreen> {
             const SizedBox(
               height: 20,
             ),
-            const Text(
-              'Or',
-              style: TextStyle(
+            Text(
+              'signIn'.tr(gender: 'or'),
+              style: const TextStyle(
                 fontSize: 16,
                 color: AppColor.disabledText,
               ),
@@ -163,8 +164,11 @@ class _ContentScreenState extends State<_ContentScreen> {
                 onPressed: () {
                   PageRouter.pushNewRoute(context, const SignUpCreateProfile());
                 },
-                title: 'Create profile',
+                title: 'signIn'.tr(gender: 'createProfile'),
               ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
           ],
         )
@@ -200,27 +204,27 @@ class _HeaderScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
-            'Welcome to\nWorkQuest Wallet',
-            style: TextStyle(
+            '${'startPage.welcome'.tr()} WorkQuest Wallet',
+            style: const TextStyle(
               fontSize: 34,
               color: Colors.white,
               fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Text(
-            'Please sign in',
-            style: TextStyle(
+            'signIn.pleaseSignIn'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.white,
               fontStyle: FontStyle.normal,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
         ],

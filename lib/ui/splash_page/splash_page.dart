@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
-import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
+import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/splash_page/mobx/splash_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
@@ -34,14 +34,14 @@ class _SplashPageState extends State<SplashPage> {
           if (store.isLoginPage!) {
             PageRouter.pushNewReplacementRoute(context, const LoginPage());
           } else {
-            PageRouter.pushNewReplacementRoute(context, const MainPage());
+            PageRouter.pushNewReplacementRoute(context, const PinCodePage());
           }
         },
         onFailure: () {
           AlertDialogUtils.showAlertDialog(
             context,
             title: const Text("Warning"),
-            content: const Text('Login error'),
+            content: Text(store.errorMessage!),
             needCancel: true,
             titleCancel: "Login Page",
             titleOk: "Retry",

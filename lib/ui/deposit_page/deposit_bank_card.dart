@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/states_bank_page/deposit_add_bank_card.dart';
@@ -6,7 +7,6 @@ import 'package:workquest_wallet_app/widgets/default_button.dart';
 
 import '../../constants.dart';
 
-
 class DepositBankCard extends StatefulWidget {
   const DepositBankCard({Key? key}) : super(key: key);
 
@@ -14,8 +14,7 @@ class DepositBankCard extends StatefulWidget {
   State<DepositBankCard> createState() => _DepositBankCardState();
 }
 
-class _DepositBankCardState extends State<DepositBankCard>
-    with TickerProviderStateMixin {
+class _DepositBankCardState extends State<DepositBankCard> with TickerProviderStateMixin {
   bool _addingBankCard = true;
   bool _firstShow = true;
 
@@ -53,9 +52,8 @@ class _DepositBankCardState extends State<DepositBankCard>
           });
         },
       ),
-      crossFadeState: _addingBankCard
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
+      crossFadeState:
+          _addingBankCard ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     );
   }
 }
@@ -70,47 +68,52 @@ class _NotBankCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(child: Container()),
-          SizedBox(
-            width: 125,
-            height: 100,
-            child: SvgPicture.asset(
-              Images.notCardsIcon,
-              color: AppColor.disabledButton,
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          const Text(
-            'You have to add your card to continue',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColor.disabledText,
-            ),
-          ),
-          const SizedBox(height: 20,),
-          Expanded(child: Container()),
-          SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: DefaultButton(
-                onPressed: onTab,
-                title: 'Add card',
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(child: Container()),
+            SizedBox(
+              width: 125,
+              height: 100,
+              child: SvgPicture.asset(
+                Images.notCardsIcon,
+                color: AppColor.disabledButton,
               ),
             ),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              'wallet.addCartToContinue'.tr(),
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColor.disabledText,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Expanded(child: Container())
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+            right: 16.0, left: 16.0, bottom: MediaQuery.of(context).padding.bottom + 10),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: DefaultButton(
+              onPressed: onTab,
+              title: 'wallet.addCard'.tr(),
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
-
-
