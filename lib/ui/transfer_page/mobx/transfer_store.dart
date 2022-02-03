@@ -67,6 +67,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } catch (e) {
       onError(e.toString());
     }
+
   }
 
   @action

@@ -48,6 +48,15 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
         .run(() => super.getTransactions(isForce: isForce));
   }
 
+  final _$getTransactionsMoreAsyncAction =
+      AsyncAction('TransactionsStoreBase.getTransactionsMore');
+
+  @override
+  Future getTransactionsMore() {
+    return _$getTransactionsMoreAsyncAction
+        .run(() => super.getTransactionsMore());
+  }
+
   @override
   String toString() {
     return '''

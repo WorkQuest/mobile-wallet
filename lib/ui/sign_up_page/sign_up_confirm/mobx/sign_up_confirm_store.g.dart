@@ -42,8 +42,8 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
   final _$confirmAsyncAction = AsyncAction('SignUpConfirmStoreBase.confirm');
 
   @override
-  Future confirm() {
-    return _$confirmAsyncAction.run(() => super.confirm());
+  Future confirm(String role) {
+    return _$confirmAsyncAction.run(() => super.confirm(role));
   }
 
   @override

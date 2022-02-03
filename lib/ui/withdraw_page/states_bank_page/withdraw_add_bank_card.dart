@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/widgets/custom_checkbox.dart';
@@ -111,7 +112,7 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                         ],
                         validator: (value) {
                           if (_amountController.text.isEmpty) {
-                            return 'Field is empty';
+                            return "errors.fieldEmpty".tr();
                           }
                           return null;
                         },
@@ -232,7 +233,7 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                             ],
                             validator: (value) {
                               if (_dateController.text.length < 5){
-                                return "Incorrect format";
+                                return 'errors.incorrectFormat'.tr();
                               }
                               return null;
                             },
@@ -270,7 +271,7 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                             ],
                             validator: (value) {
                               if (_cvvController.text.length < 3) {
-                                return "Incorrect format";
+                                return 'errors.incorrectFormat'.tr();
                               }
                               return null;
                             },

@@ -33,3 +33,21 @@ class PageRouter {
     );
   }
 }
+
+class CustomMaterialPageRoute extends MaterialPageRoute {
+  @override
+  bool get hasScopedWillPopCallback {
+    return false;
+  }
+  CustomMaterialPageRoute({
+    required WidgetBuilder builder,
+    RouteSettings? settings,
+    bool maintainState = true,
+    bool fullscreenDialog = false,
+  }) : super(
+    builder: builder,
+    settings: settings,
+    maintainState: maintainState,
+    fullscreenDialog: fullscreenDialog,
+  );
+}

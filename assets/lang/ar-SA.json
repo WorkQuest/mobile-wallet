@@ -1,39 +1,39 @@
 {
   "startPage": {
-    "welcome": "Welcome to",
+    "welcome": "مرحبًا بك في",
     "workQuest": "WorkQuest",
-    "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum est suspendisse orci nunc fringilla a morbi. Fusce pellentesque eu, amet a.",
-    "skip": "Skip",
-    "next": "Next"
+    "title": "Lorem ipsum dolor sit amet ، consectetur adipiscing elit. Dictum est Suspendisse orci nunc fringilla a morbi. Fusce pellentesque eu، amet a.",
+    "skip": "تخطي",
+    "next": "التالي"
   },
   "labels": {
-    "firstName": "First name",
-    "lastName": "Last name",
-    "email": "Email",
-    "password": "Enter password"
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "password": "أدخل كلمة المرور"
   },
   "about": {
-    "about": "About",
-    "contact": "Contact us",
+    "about": "حول",
+    "contact": "اتصل بنا",
     "contented": {
-      "title": "About us",
-      "text": "WorkQuest is a social project based on blockchain technology aimed at facilitating job search and solving all the tasks of employers in quest mode. Are you looking for a job ? WorkQuest will help you find a quest next to your home or in your city. Do you need workers to achieve certain goals ? Just create a quest on the WorkQuest site. The service assumes warranty obligations for the execution of quests. Employer funds are kept with us. If the employee provides confirmation of the performance of the work, the funds are returned to his account. The system of ratings, ratings and the list of completed quests will help to easily find honest people and reliable specialists.Our goal is to simplify the communication between employers and employees, help millions of people find jobs, improve their financial situation, solve the constant problem of finding reliable professionals in all sectors to create a progressive digital economy based on the principles of trust, mutual respect and well-being of all its participants."
+      "title": "من نحن",
+      "text": "WorkQuest هو مشروع اجتماعي يعتمد على تقنية blockchain يهدف إلى تسهيل البحث عن وظيفة وحل جميع مهام أصحاب العمل في وضع البحث. هل تبحث عن وظيفة ؟ سيساعدك WorkQuest في العثور على مهمة بجوار منزلك أو في مدينتك. هل تحتاج عمال لتحقيق أهداف معينة؟ ما عليك سوى إنشاء مهمة على موقع WorkQuest. تفترض الخدمة التزامات الضمان لتنفيذ المهام. يتم الاحتفاظ بأموال صاحب العمل معنا. إذا قدم الموظف تأكيدًا على أداء العمل ، يتم إرجاع الأموال إلى حسابه. سيساعد نظام التصنيفات والتصنيفات وقائمة المهام المكتملة في العثور بسهولة على أشخاص صادقين ومتخصصين موثوق بهم ، وهدفنا هو تبسيط التواصل بين أصحاب العمل والموظفين ، ومساعدة ملايين الأشخاص في العثور على وظائف ، وتحسين وضعهم المالي ، وحل المشكلة الثابتة. مشكلة العثور على محترفين موثوق بهم في جميع القطاعات لإنشاء اقتصاد رقمي تقدمي قائم على مبادئ الثقة والاحترام المتبادل والرفاهية لجميع المشاركين فيه."
     }
   },
   "registration": {
-    "edit": "Edit",
-    "registration": "Registration",
-    "confirmYourEmail": "Confirm your email",
-    "emailConfirm": "Code has been sent on your email",
-    "emailConfirmTitle": "Check your email."
+    "edit": "تحرير",
+    "registration": "تسجيل",
+    "confirmYourEmail": "تأكيد بريدك الإلكتروني",
+    "emailConfirm": "تم إرسال الرمز على بريدك الإلكتروني",
+    "emailConfirmTitle": "تحقق من بريدك الإلكتروني."
   },
   "login": {
-    "signIn": "Login",
-    "account": "Don't have an account ?",
-    "remember": "Remember me",
-    "forgot": "Forgot password ?",
-    "loginWith": "Log in with your social network account",
-    "create": "Create an account"
+    "signIn": "تسجيل الدخول",
+    "account": "ليس لديك حساب؟",
+    "remember": "تذكرني",
+    "forgot": "هل نسيت كلمة المرور؟",
+    "loginWith": "تسجيل الدخول باستخدام حساب الشبكة الاجتماعية الخاص بك",
+    "create": "إنشاء حساب"
   },
   "meta": {
     "back": "Back",
@@ -65,7 +65,11 @@
     "finish": "Finish",
     "log_out": "Log out",
     "share": "Share",
-    "copy": "Copy"
+    "copy": "Copy",
+    "warning": "Warning",
+    "return": "Return",
+    "copied": "Copied",
+    "error": "Error"
   },
   "signIn": {
     "title": "Sign in",
@@ -99,8 +103,17 @@
     "confirmPassword": "Repeat password",
     "create": "Create account",
     "back": "back",
-    "generateAddress": "Generate address"
-
+    "generateAddress": "Generate address",
+    "leave_page": "If you leave the page, you will not link the wallet to your profile.\nAre you sure?",
+    "save_phrase": "Save this phrase to be able to login in next time",
+    "imSavedPhrase": "I’ve saved mnemonic phrase",
+    "yourPhrase": "Your phrase",
+    "copyPhrase": "Copy phrase",
+    "chooseWords": "Choose the 3th and 7th words of your mnemonic",
+    "3thWord": "3th word",
+    "7thWord": "7th word",
+    "openWallet": "Open wallet",
+    "chosenWrongWords": "You’ve chosen wrong words. Try again"
   },
   "forgot": {
     "title": "Forgot password?",
@@ -124,7 +137,9 @@
     "comeUp": "Come up with a PIN-code",
     "repeat": "Repeat PIN-code",
     "writePinCode": "Please, write your PIN-code",
-    "attempts_left": "Attempts left"
+    "attempts_left": "Attempts left",
+    "not_get_code": "Didn\\'t get code?",
+    "change_email": "Change email"
   },
   "wallet": {
     "WUSD": "WUSD Wallet",
@@ -154,6 +169,7 @@
     "scanQr": "Scan QR Code or copy address to receive payment",
     "time": "Processing Time",
     "max": "Max",
+    "noTransactions": "No transactions",
     "table": {
       "trx": "Transactions",
       "TxHash": "Transaction hash",
@@ -294,5 +310,12 @@
     "payback": "Amortization",
     "generate": "Generate",
     "history": "History"
+  },
+  "errors": {
+    "fieldEmpty": "Field is empty",
+    "incorrectFormat": "Incorrect format",
+    "passwordsNotMatch": "Passwords don\\'t match",
+    "smallNumberWords": "A small number of words",
+    "incorrectMnemonicFormat": "Incorrect mnemonic format"
   }
 }

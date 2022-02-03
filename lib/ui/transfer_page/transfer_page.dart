@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,13 +57,6 @@ class _TransferPageState extends State<TransferPage> {
     _addressController.addListener(() {
       store.setAddressTo(_addressController.text);
     });
-  }
-
-  @override
-  void dispose() {
-    // _addressController.dispose();
-    // _amountController.dispose();
-    super.dispose();
   }
 
   @override
@@ -162,13 +156,13 @@ class _TransferPageState extends State<TransferPage> {
                   inputFormatters: [
                     MaskTextInputFormatter(
                       mask: '0x########################################',
-                      filter: {"#": RegExp(r'[0-9a-fA-F]')},
+                      filter: {"#": RegExpFields.addressRegExp},
                       initialText: _addressController.text,
                     )
                   ],
                   validator: (value) {
                     if (_addressController.text.length != 42) {
-                      return "Invalid format address";
+                      return "errors.incorrectFormat".tr();
                     }
                     return null;
                   },
@@ -190,7 +184,10 @@ class _TransferPageState extends State<TransferPage> {
                 // keyboardType: TextInputType.number,
                 suffixIcon: ObserverListener(
                   store: store,
-                  onFailure: () => false,
+                  onFailure: () {
+                    print('onFailure');
+                    return false;
+                  },
                   onSuccess: () {
                     _amountController.text = store.amount;
                   },
@@ -205,7 +202,38 @@ class _TransferPageState extends State<TransferPage> {
                       ),
                     ),
                     onPressed: () async {
+                      if (store.titleSelectedCoin.isNotEmpty) {
+
                       store.getMaxAmount();
+                      } else {
+                        showCupertinoDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (_) {
+                            return Platform.isIOS
+                                ? CupertinoAlertDialog(
+                              title: const Text('Error'),
+                              content: const Text('Choose a coin'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  child: const Text("OK"),
+                                  onPressed: Navigator.of(context, rootNavigator: true).pop,
+                                )
+                              ],
+                            )
+                                : AlertDialog(
+                              title: const Text('Error'),
+                              content: const Text('Choose a coin'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  child: const Text("OK"),
+                                  onPressed: Navigator.of(context, rootNavigator: true).pop,
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
                 ),

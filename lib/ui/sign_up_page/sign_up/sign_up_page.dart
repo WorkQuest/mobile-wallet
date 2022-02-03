@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,12 +40,11 @@ class _SignUpPageState extends State<SignUpPage> {
           onPressed: () {
             AlertDialogUtils.showAlertDialog(
               context,
-              title: const Text('Warning!'),
-              content: const Text(
-                  'If you leave the page, you will not link the wallet to your profile.\nAre you sure?'),
+              title: Text('meta.warning'.tr()),
+              content: Text('signUp.leave_page'.tr()),
               needCancel: true,
-              titleCancel: "Cancel",
-              titleOk: "Return",
+              titleCancel: "meta.cancel".tr(),
+              titleOk: "meta.return".tr(),
               onTabCancel: null,
               onTabOk: () => Navigator.pop(context),
               colorCancel: AppColor.enabledButton,
@@ -61,9 +61,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Text(
-                  'Save this phrase to be able to login in next time',
-                  style: TextStyle(
+                Text(
+                  'signUp.save_phrase'.tr(),
+                  style: const TextStyle(
                     fontSize: 24,
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -78,14 +78,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Row(
                   children: [
-                    const Text(
-                      'I’ve saved mnemonic phrase',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        'signUp.imSavedPhrase'.tr(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.clip,
                       ),
                     ),
-                    const Spacer(),
+                    Expanded(flex: 1, child: Container()),
                     CustomSwitch(
                       value: store.isSaved,
                       onChanged: (value) => store.setIsSaved(value),
@@ -102,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: DefaultButton(
-                      title: 'Next',
+                      title: 'startPage.next'.tr(),
                       onPressed: store.isSaved ? _pushSignUpChoosePage : null,
                     ),
                   ),
@@ -140,9 +144,9 @@ class _YourPhrase extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Your phrase',
-          style: TextStyle(
+        Text(
+          'signUp.yourPhrase'.tr(),
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
@@ -176,11 +180,11 @@ class _YourPhrase extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: phrase));
               SnackBarUtils.success(
                 context,
-                title: 'Copied!',
+                title: 'meta.copied'.tr(),
                 duration: const Duration(milliseconds: 250),
               );
             },
-            title: 'Copy phrase',
+            title: 'signUp.copyPhrase'.tr(),
           ),
         ),
       ],

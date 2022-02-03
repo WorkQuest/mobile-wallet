@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
@@ -59,28 +58,36 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   splitPhraseIntoWords() {
     setOfWords = ObservableList.of([]);
 
-    final _random = Random();
+    // final _random = Random();
 
     final list = mnemonic!.split(' ').toList();
 
-    for (var i = list.length - 1; i > 4; i--) {
-      var n = _random.nextInt(i + 1);
-      if (setOfWords!.length == 7) {
-        break;
-      }
-      while (setOfWords!.contains(list[n])) {
-        n = _random.nextInt(i + 1);
-      }
-      setOfWords!.add(list[n]);
-    }
-    if (!setOfWords!.contains(firstWord)) {
-      setOfWords!.removeLast();
-      setOfWords!.add(firstWord!);
-    }
-    if (!setOfWords!.contains(secondWord)) {
-      setOfWords!.removeLast();
-      setOfWords!.add(secondWord!);
-    }
+    setOfWords!.add(list[0]);
+    setOfWords!.add(list[10]);
+    setOfWords!.add(list[2]);
+    setOfWords!.add(list[8]);
+    setOfWords!.add(list[6]);
+    setOfWords!.add(list[4]);
+    setOfWords!.add(list[11]);
+
+    // for (var i = list.length - 1; i > 4; i--) {
+    //   var n = _random.nextInt(i + 1);
+    //   if (setOfWords!.length == 7) {
+    //     break;
+    //   }
+    //   while (setOfWords!.contains(list[n])) {
+    //     n = _random.nextInt(i + 1);
+    //   }
+    //   setOfWords!.add(list[n]);
+    // }
+    // if (!setOfWords!.contains(firstWord)) {
+    //   setOfWords!.removeLast();
+    //   setOfWords!.insert(0, firstWord!);
+    // }
+    // if (!setOfWords!.contains(secondWord)) {
+    //   setOfWords!.removeLast();
+    //   setOfWords!.insert(0, secondWord!);
+    // }
     setOfWords!.shuffle();
   }
 
@@ -94,8 +101,8 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
         onError("Server error");
         return;
       }
-      await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
-      await Storage.write(Storage.activeAddress, wallet.address!);
+      await Storage.write(StorageKeys.wallets.toString(), jsonEncode([wallet.toJson()]));
+      await Storage.write(StorageKeys.address.toString(), wallet.address!);
       AccountRepository().userAddress = wallet.address;
       AccountRepository().addWallet(wallet);
       onSuccess(true);

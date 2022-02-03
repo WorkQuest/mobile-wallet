@@ -93,9 +93,14 @@ class Api {
     return response.data['result']['refresh'];
   }
 
-  Future<bool> confirmEmail(String code) async {
-    final response = await _dio.post(_confirmEmail,
-        data: {"confirmCode": code, "role": "worker"}).catchError((e) {
+  Future<bool> confirmEmail({
+    required String code,
+    required String role,
+  }) async {
+    final response = await _dio.post(_confirmEmail, data: {
+      "confirmCode": code,
+      "role": role,
+    }).catchError((e) {
       if (e is DioError) {
         return e.response;
       } else {
@@ -139,7 +144,9 @@ class Api {
     final response = await _dio
         .get(
       '${_transactions(address)}?limit=$limit&offset=$offset',
-    ).catchError((e) {
+    )
+        .catchError(
+      (e) {
         if (e is DioError) {
           return e.response;
         } else {

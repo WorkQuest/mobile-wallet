@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
@@ -207,7 +208,7 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                             ],
                             validator: (value) {
                               if (_cvvCardController.text.length < 3) {
-                                return "Incorrect format";
+                                return 'errors.incorrectFormat'.tr();
                               }
                               return null;
                             },

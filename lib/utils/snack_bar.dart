@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
 
 class SnackBarUtils {
-  static void success(BuildContext context,
-      {String? title, Duration? duration}) {
+  static void show(
+    BuildContext context, {
+    required String title,
+    Duration duration = const Duration(seconds: 1),
+    Color backgroundColor = Colors.white,
+    Color textColor = Colors.black,
+  }) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: duration,
+          backgroundColor: backgroundColor,
+          content: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 14, color: textColor),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
+  static void success(BuildContext context, {String? title, Duration? duration}) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -28,8 +55,7 @@ class SnackBarUtils {
       );
   }
 
-  static void loading(BuildContext context,
-      {String? title, Duration? duration}) {
+  static void loading(BuildContext context, {String? title, Duration? duration}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: duration ?? const Duration(minutes: 3),

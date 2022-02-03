@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
@@ -48,11 +49,11 @@ class _PinCodePageState extends State<PinCodePage>
 
   String getTitle() {
     if (store.statePin == StatePinCode.check) {
-      return 'pinCode'.tr(gender: 'writePinCode');
+      return 'pinCode.writePinCode'.tr();
     } else if (store.statePin == StatePinCode.create) {
-      return 'pinCode'.tr(gender: 'comeUp');
+      return 'pinCode.comeUp'.tr();
     } else {
-      return 'pinCode'.tr(gender: 'repeat');
+      return 'pinCode.repeat'.tr();
     }
   }
 
@@ -60,19 +61,18 @@ class _PinCodePageState extends State<PinCodePage>
   Widget build(BuildContext context) {
     return ObserverListener(
       onFailure: () {
-        print('onFailure');
-        Navigator.of(context, rootNavigator: true).pop();
         HapticFeedback.lightImpact();
         animationController!.forward();
         return true;
       },
       onSuccess: () async {
-        Navigator.of(context, rootNavigator: true).pop();
         if (store.statePin == StatePinCode.toLogin) {
           await Storage.deleteAllFromSecureStorage();
           AccountRepository().clearData();
           PageRouter.pushNewRemoveRoute(context, const LoginPage());
         } else if (store.statePin == StatePinCode.success) {
+          AccountRepository().connectClient();
+          WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
           PageRouter.pushNewReplacementRoute(context, const MainPage());
         }
@@ -141,7 +141,7 @@ class _PinCodePageState extends State<PinCodePage>
                   SizedBox(
                     width: double.infinity,
                     child: Text(
-                      '${'pinCode'.tr(gender: 'attempts_left')}: ${3 - store.attempts}',
+                      '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 16,
@@ -172,7 +172,6 @@ class _PinCodePageState extends State<PinCodePage>
                             HapticFeedback.lightImpact();
                             await store.inputPin(i);
                             if (store.pinCode.length == 4) {
-                              AlertDialogUtils.showLoadingDialog(context);
                               store.signIn();
                             }
                           },
@@ -182,15 +181,15 @@ class _PinCodePageState extends State<PinCodePage>
                           Images.biometricIcon,
                           color: store.canBiometrics
                               ? AppColor.enabledButton
-                              : const Color(0xffF7F8FA),
+                              : Colors.transparent,
                         ),
                         onTab: () async {
                           if (store.canBiometrics) {
                             HapticFeedback.lightImpact();
-                            AlertDialogUtils.showLoadingDialog(context);
                             await store.biometricScan();
                           }
                         },
+                        hide: !store.canBiometrics,
                       ),
                       KeyboardButton(
                         child: const Text(
@@ -204,7 +203,6 @@ class _PinCodePageState extends State<PinCodePage>
                           HapticFeedback.lightImpact();
                           await store.inputPin(0);
                           if (store.pinCode.length == 4) {
-                            AlertDialogUtils.showLoadingDialog(context);
                             store.signIn();
                           }
                         },
@@ -231,11 +229,14 @@ class _PinCodePageState extends State<PinCodePage>
 class KeyboardButton extends StatelessWidget {
   final Widget child;
   final Function()? onTab;
+  final bool hide;
 
   const KeyboardButton({
     Key? key,
     required this.child,
     required this.onTab,
+    this.hide = false,
+
   }) : super(key: key);
 
   @override
@@ -248,7 +249,7 @@ class KeyboardButton extends StatelessWidget {
         width: 65,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6.0),
-          color: const Color(0xffF7F8FA),
+          color: hide ? Colors.white : const Color(0xffF7F8FA),
         ),
         alignment: Alignment.center,
         child: child,

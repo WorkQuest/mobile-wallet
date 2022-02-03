@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
@@ -69,10 +70,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () async {
-                    await Storage.deleteAllFromSecureStorage();
-                    AccountRepository().clearData();
-                    PageRouter.pushNewRemoveRoute(
+                    await PageRouter.pushNewRemoveRoute(
                         context, const LoginPage());
+                    await Storage.deleteAllFromSecureStorage();
+                    WebSocket().closeWebSocket();
+                    AccountRepository().clearData();
                   },
                   child: Container(
                     height: 43,

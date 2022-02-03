@@ -91,6 +91,14 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  final _$biometricScanAsyncAction =
+      AsyncAction('PinCodeStoreBase.biometricScan');
+
+  @override
+  Future<dynamic> biometricScan() {
+    return _$biometricScanAsyncAction.run(() => super.biometricScan());
+  }
+
   final _$signInAsyncAction = AsyncAction('PinCodeStoreBase.signIn');
 
   @override

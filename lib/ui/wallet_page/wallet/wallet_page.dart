@@ -20,6 +20,7 @@ import 'package:workquest_wallet_app/ui/withdraw_page/withdraw_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
+import 'package:workquest_wallet_app/widgets/shimmer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -36,180 +37,172 @@ class _WalletPageState extends State<WalletPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MainAppBar(
-        title: 'wallet'.tr(gender: 'wallet'),
+        title: 'wallet.wallet'.tr(),
       ),
-      body: Builder(
-        builder: (context) {
-          print('Builder wallet_page');
-          return Padding(
-            padding: _padding,
-            child: Platform.isIOS ? _mainLayout() : _mainLayout(),
-          );
-        },
+      body: Padding(
+        padding: _padding,
+        child: Platform.isIOS ? _mainLayout() : _mainLayout(),
       ),
     );
   }
 
   Widget _mainLayout() {
-    final store = GetIt.I.get<WalletStore>();
-    return Observer(
-      builder: (_) {
-        if (store.isLoading) {
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              if (Platform.isIOS)
-                CupertinoSliverRefreshControl(
-                  onRefresh: _onRefresh,
-                ),
-              const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator.adaptive()),
-              )
-            ],
-          );
+    return LazyLoadScrollView(
+      onEndOfPage: () async {
+        if (!GetIt.I
+            .get<TransactionsStore>()
+            .isMoreLoading) {
+          await GetIt.I.get<TransactionsStore>().getTransactionsMore();
         }
-        return LazyLoadScrollView(
-          onEndOfPage: () {
-            if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
-              GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
-            }
-          },
-          child: Platform.isAndroid
-              ? RefreshIndicator(onRefresh: _onRefresh, child: layout())
-              : layout(),
-        );
+        setState(() {});
       },
+      child: Platform.isAndroid
+          ? RefreshIndicator(
+          displacement: 30,
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          onRefresh: _onRefresh,
+          child: layout())
+          : layout(),
     );
   }
 
   Widget layout() {
-    return CustomScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      slivers: [
-        if (Platform.isIOS)
-          CupertinoSliverRefreshControl(
-            onRefresh: _onRefresh,
-          ),
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${AccountRepository().userAddress!.substring(0, 9)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.subtitleText,
-                    ),
-                  ),
-                  const Spacer(),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    pressedOpacity: 0.2,
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: AccountRepository().userAddress));
-                      SnackBarUtils.success(
-                        context,
-                        title: 'wallet'.tr(gender: 'copy'),
-                        duration: const Duration(milliseconds: 500),
-                      );
-                    },
-                    child: Container(
-                      height: 34,
-                      width: 34,
-                      padding: const EdgeInsets.all(7.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6.0),
-                          color: AppColor.disabledButton),
-                      child: SvgPicture.asset(
-                        Images.walletCopyIcon,
-                        color: AppColor.enabledButton,
+    final address = AccountRepository().userAddress ?? '1234567890';
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (OverscrollIndicatorNotification overscroll) {
+        overscroll.disallowGlow();
+        return true;
+      },
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          if (Platform.isIOS)
+            CupertinoSliverRefreshControl(
+              onRefresh: _onRefresh,
+            ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${address.substring(0, 9)}...${address.substring(
+                          address.length - 3, address.length)}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.subtitleText,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const SizedBox(
-                width: double.infinity,
-                child: _InfoCardBalance(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: CupertinoButton(
+                    const Spacer(),
+                    CupertinoButton(
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.2,
                       onPressed: () {
-                        PageRouter.pushNewRoute(
-                            context, const WithdrawPage());
+                        Clipboard.setData(
+                            ClipboardData(text: AccountRepository().userAddress));
+                        SnackBarUtils.success(
+                          context,
+                          title: 'wallet.copy'.tr(),
+                          duration: const Duration(milliseconds: 500),
+                        );
                       },
                       child: Container(
-                        height: 43,
-                        alignment: Alignment.center,
+                        height: 34,
+                        width: 34,
+                        padding: const EdgeInsets.all(7.0),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6.0),
-                          border: Border.all(
-                            color: Colors.blue.withOpacity(0.1),
-                          ),
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: AppColor.disabledButton),
+                        child: SvgPicture.asset(
+                          Images.walletCopyIcon,
+                          color: AppColor.enabledButton,
                         ),
-                        child: Text(
-                          'wallet'.tr(gender: 'withdraw'),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColor.enabledButton,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(
+                  width: double.infinity,
+                  child: _InfoCardBalance(),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.2,
+                        onPressed: () {
+                          PageRouter.pushNewRoute(context, const WithdrawPage());
+                        },
+                        child: Container(
+                          height: 43,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.1),
+                            ),
+                          ),
+                          child: Text(
+                            'wallet'.tr(gender: 'withdraw'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: AppColor.enabledButton,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: DefaultButton(
-                      title: 'wallet'.tr(gender: 'deposit'),
-                      onPressed: () {
-                        PageRouter.pushNewRoute(context, const DepositPage());
-                      },
+                    const SizedBox(
+                      width: 10,
                     ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-        SliverAppBar(
-          floating: true,
-          pinned: true,
-          snap: true,
-          expandedHeight: 50.0,
-          flexibleSpace: FlexibleSpaceBar(
-            centerTitle: false,
-            titlePadding: const EdgeInsets.only(bottom: 12.0),
-            title: Text(
-              'wallet.table.trx'.tr(),
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    Expanded(
+                      flex: 1,
+                      child: DefaultButton(
+                        title: 'wallet'.tr(gender: 'deposit'),
+                        onPressed: () {
+                          PageRouter.pushNewRoute(context, const DepositPage());
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
           ),
-          centerTitle: false,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          shadowColor: Colors.transparent,
-        ),
-        const ListTransactions(),
-      ],
+          SliverAppBar(
+            floating: true,
+            pinned: true,
+            snap: true,
+            expandedHeight: 50.0,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              titlePadding: const EdgeInsets.only(bottom: 12.0),
+              title: Text(
+                'wallet.table.trx'.tr(),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+              ),
+            ),
+            centerTitle: false,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            shadowColor: Colors.transparent,
+          ),
+          ListTransactions(
+            key: UniqueKey(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -245,6 +238,61 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
       ),
       child: Observer(
         builder: (_) {
+          if (store.isLoading) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'wallet.balance'.tr(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 30,
+                    child: Shimmer.fromColors(
+                      baseColor: const Color(0xfff1f0f0),
+                      highlightColor: Colors.white,
+                      child: Container(
+                        width: 100,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SizedBox(
+                    width: 140,
+                    height: 15,
+                    child: Shimmer.fromColors(
+                      baseColor: const Color(0xfff1f0f0),
+                      highlightColor: Colors.white,
+                      child: Container(
+                        width: 100,
+                        height: 15,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
           if (store.isSuccess) {
             if (store.coins.isEmpty) {
               return const Center(
@@ -275,7 +323,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           ),
                           Text(
                             // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                            '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                            '${num.parse(balance.amount).toDouble().toStringAsFixed(
+                                8)} ${balance.title}',
                             style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w700,
@@ -287,8 +336,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           ),
                           Text(
                             balance.title == "WQT"
-                                ? '\$ ${(num.parse(balance.amount).toDouble() * 0.03431).toStringAsFixed(4)}'
-                                : '\$ ${num.parse(balance.amount).toDouble().toStringAsFixed(4)}',
+                                ? '\$ ${(num.parse(balance.amount).toDouble() * 0.03431)
+                                .toStringAsFixed(4)}'
+                                : '\$ ${num.parse(balance.amount)
+                                .toDouble()
+                                .toStringAsFixed(4)}',
                             style: const TextStyle(
                               fontSize: 14,
                               color: AppColor.unselectedBottomIcon,
@@ -324,7 +376,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                                  color: AppColor.enabledButton.withOpacity(0.1)),
+                              color: AppColor.enabledButton.withOpacity(0.1)),
                           color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),

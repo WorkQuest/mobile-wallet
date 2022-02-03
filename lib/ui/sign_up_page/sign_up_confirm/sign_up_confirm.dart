@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -18,8 +19,15 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class SignUpConfirm extends StatefulWidget {
   final String email;
+  final String role;
+  final Widget nextPage;
 
-  const SignUpConfirm({Key? key, required this.email}) : super(key: key);
+  const SignUpConfirm({
+    Key? key,
+    required this.email,
+    required this.role,
+    required this.nextPage,
+  }) : super(key: key);
 
   @override
   _SignUpConfirmState createState() => _SignUpConfirmState();
@@ -30,115 +38,132 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: DefaultAppBar(
-        title: 'meta.back'.tr(),
-        titleCenter: false,
-      ),
-      body: Observer(
-        builder: (_) => LayoutWithScroll(
-          child: Padding(
-            padding: _padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 30,
-                ),
-                Text(
-                  'registration.confirmYourEmail'.tr(),
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, true);
+        return Future<bool>.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: DefaultAppBar(
+          title: 'meta.back'.tr(),
+          titleCenter: false,
+          onPressed: () async {
+            AccountRepository().clearData();
+            await Storage.deleteAllFromSecureStorage();
+            print(AccountRepository().userAddresses == null);
+            print('testetestestesr');
+            Navigator.pop(context, true);
+          },
+        ),
+        body: Observer(
+          builder: (_) => LayoutWithScroll(
+            child: Padding(
+              padding: _padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 30,
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'registration.emailConfirm'.tr(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  widget.email,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'registration.emailConfirmTitle'.tr(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                DefaultTextField(
-                  controller: store.code,
-                  hint: "Code",
-                  suffixIcon: null,
-                  keyboardType: TextInputType.text,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(6),
-                  ],
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ObserverListener(
-                    onFailure: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      return false;
-                    },
-                    onSuccess: () async {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      await AlertDialogUtils.showSuccessDialog(context);
-                      PageRouter.pushNewReplacementRoute(context, const SignUpPage());
-                    },
-                    store: store,
-                    child: DefaultButton(
-                      onPressed: store.canConfirm ? () {
-                        AlertDialogUtils.showLoadingDialog(context);
-                        store.confirm();
-                      } : null,
-                      title: 'meta.submit'.tr(),
+                  Text(
+                    'registration.confirmYourEmail'.tr(),
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Expanded(child: Container()),
-                RichText(
-                  textDirection: TextDirection.ltr,
-                  text: const TextSpan(children: [
-                    TextSpan(
-                      text: 'Didn\'t get code?',
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'registration.emailConfirm'.tr(),
+                    style: const TextStyle(
+                      fontSize: 16,
                     ),
-                    TextSpan(
-                      text: ' Change email',
-                      style: TextStyle(fontSize: 16.0, color: Colors.blue),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.email,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.blue,
                     ),
-                  ]),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-              ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'registration.emailConfirmTitle'.tr(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  DefaultTextField(
+                    controller: store.code,
+                    hint: "Code",
+                    suffixIcon: null,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(6),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ObserverListener(
+                      onFailure: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        return false;
+                      },
+                      onSuccess: () async {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        await AlertDialogUtils.showSuccessDialog(context);
+                        PageRouter.pushNewReplacementRoute(context, widget.nextPage);
+                      },
+                      store: store,
+                      child: DefaultButton(
+                        onPressed: store.canConfirm
+                            ? () {
+                                AlertDialogUtils.showLoadingDialog(context);
+                                store.confirm(widget.role);
+                              }
+                            : null,
+                        title: 'meta.submit'.tr(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Expanded(child: Container()),
+                  RichText(
+                    textDirection: TextDirection.ltr,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'pinCode.not_get_code'.tr(),
+                          style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: ' ${'pinCode.change_email'.tr()}',
+                          style: const TextStyle(fontSize: 16.0, color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -15,10 +15,11 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   GetIt.I.registerSingleton<TransactionsStore>(TransactionsStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
-  final addressActive = await Storage.read(Storage.activeAddress);
+  final addressActive = await Storage.read(StorageKeys.address.toString());
 
   if (addressActive != null) {
     final wallets = await Storage.readWallets();
+    print(wallets);
     if (wallets.isNotEmpty) {
       AccountRepository().userAddresses = wallets;
     }
@@ -27,7 +28,7 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.black,
+      systemNavigationBarColor: Colors.transparent,
       statusBarColor: Colors.transparent,
     ),
   );
@@ -63,7 +64,13 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       builder: (context, child) {
-        return child!;
+        /// Set app text scale between 90% and 110%
+        final mq = MediaQuery.of(context);
+        double fontScale = mq.textScaleFactor.clamp(0.8,1.0);
+        return MediaQuery(
+          data: mq.copyWith(textScaleFactor: fontScale),
+          child: child!,
+        );
       },
       home: const SplashPage(),
     );

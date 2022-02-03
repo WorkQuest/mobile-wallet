@@ -30,7 +30,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
     attempts = 0;
     canBiometrics = false;
     statePin = StatePinCode.check;
-    final value = await Storage.read(Storage.pinCodeKey);
+    final value = await Storage.read(StorageKeys.pinCode.toString());
     if (value != null && value.isNotEmpty) {
       statePin = StatePinCode.check;
       final auth = LocalAuthentication();
@@ -40,6 +40,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
     }
   }
 
+  @action
   Future biometricScan() async {
     final auth = LocalAuthentication();
     try {
@@ -85,7 +86,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
         return;
       } else if (statePin == StatePinCode.repeat) {
         if (newPinCode == pinCode) {
-          await Storage.write(Storage.pinCodeKey, pinCode);
+          await Storage.write(StorageKeys.pinCode.toString(), pinCode);
           statePin = StatePinCode.success;
           onSuccess(StatePinCode.success);
         } else {
@@ -99,7 +100,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
           }
         }
       } else {
-        final value = await Storage.read(Storage.pinCodeKey);
+        final value = await Storage.read(StorageKeys.pinCode.toString());
         if (value == pinCode) {
           statePin = StatePinCode.success;
           onSuccess(StatePinCode.success);

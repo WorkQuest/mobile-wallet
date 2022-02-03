@@ -168,7 +168,7 @@ class _WalletAddress extends StatelessWidget {
   }
 
   void _sharePressed() {
-    Share.share('${AccountRepository().userAddress}');
+    Share.share('${AccountRepository().userAddress}',);
   }
 
   void _copyPressed(BuildContext context) {

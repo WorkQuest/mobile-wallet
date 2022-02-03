@@ -1,8 +1,9 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/src/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
+import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/mobx/sign_up_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/modal_bottom_sheet.dart';
@@ -47,9 +48,9 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Text(
-                  'Choose the 3th and 7th words of your mnemonic',
-                  style: TextStyle(
+                Text(
+                  'signUp.chooseWords'.tr(),
+                  style: const TextStyle(
                     fontSize: 24,
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -58,9 +59,9 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
-                  '3th word',
-                  style: TextStyle(
+                Text(
+                  'signUp.3thWord'.tr(),
+                  style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -77,9 +78,9 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
-                  '7th word',
-                  style: TextStyle(
+                Text(
+                  'signUp.7thWord'.tr(),
+                  style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -108,11 +109,11 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                     onSuccess: () async {
                       Navigator.of(context, rootNavigator: true).pop();
                       await AlertDialogUtils.showSuccessDialog(context);
-                      PageRouter.pushNewReplacementRoute(
-                          context, const PinCodePage());
+                      PageRouter.pushNewRemoveRoute(
+                          context, const LoginPage());
                     },
                     child: DefaultButton(
-                      title: 'Open wallet',
+                      title: 'signUp.openWallet'.tr(),
                       onPressed: store.statusGenerateButton ? () {
                         AlertDialogUtils.showLoadingDialog(context);
                         store.openWallet();
@@ -158,21 +159,21 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'Error',
-                style: TextStyle(
+                'meta.error'.tr(),
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 11,
               ),
               Text(
-                'You’ve chosen wrong words. Try again ',
-                style: TextStyle(
+                'signUp.chosenWrongWords'.tr(),
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
@@ -197,6 +198,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
           )
         ],
       ),
+      height: 225
     );
   }
 }

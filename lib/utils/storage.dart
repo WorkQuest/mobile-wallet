@@ -6,14 +6,6 @@ import 'package:workquest_wallet_app/utils/wallet.dart';
 class Storage {
   static FlutterSecureStorage get _secureStorage => const FlutterSecureStorage();
 
-  static const refreshKey = "refreshToken";
-  static const accessKey = "accessToken";
-  static const activeAddress = "address";
-  static const wallets = "wallets";
-  static const pinCodeKey = "pinCode";
-
-
-
   static Future<void> write(String key, String value) async {
     await _secureStorage.write(key: key, value: value);
   }
@@ -31,7 +23,7 @@ class Storage {
   }
 
   static Future<List<Wallet>> readWallets() async {
-    String? wallets = await _secureStorage.read(key: Storage.wallets);
+    String? wallets = await _secureStorage.read(key: StorageKeys.wallets.toString());
     if (wallets == null || wallets.isEmpty) {
       return [];
     }
@@ -40,5 +32,13 @@ class Storage {
       return Wallet.fromJson(json);
     }).toList();
   }
+}
 
+enum StorageKeys {
+  refreshToken,
+  accessToken,
+  address,
+  wallets,
+  pinCode,
+  email,
 }

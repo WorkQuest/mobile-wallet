@@ -65,7 +65,11 @@
     "finish": "Finish",
     "log_out": "Log out",
     "share": "Share",
-    "copy": "Copy"
+    "copy": "Copy",
+    "warning": "Warning",
+    "return": "Return",
+    "copied": "Copied",
+    "error": "Error"
   },
   "signIn": {
     "title": "Sign in",
@@ -98,7 +102,17 @@
     "confirmPassword": "Repeat password",
     "create": "Create account",
     "back": "back",
-    "generateAddress": "Generate address"
+    "generateAddress": "Generate address",
+    "leave_page": "If you leave the page, you will not link the wallet to your profile.\nAre you sure?",
+    "save_phrase": "Save this phrase to be able to login in next time",
+    "imSavedPhrase": "I’ve saved mnemonic phrase",
+    "yourPhrase": "Your phrase",
+    "copyPhrase": "Copy phrase",
+    "chooseWords": "Choose the 3th and 7th words of your mnemonic",
+    "3thWord": "3th word",
+    "7thWord": "7th word",
+    "openWallet": "Open wallet",
+    "chosenWrongWords": "You’ve chosen wrong words. Try again"
   },
   "forgot": {
     "title": "Forgot password?",
@@ -122,7 +136,9 @@
     "comeUp": "Come up with a PIN-code",
     "repeat": "Repeat PIN-code",
     "writePinCode": "Please, write your PIN-code",
-    "attempts_left": "Attempts left"
+    "attempts_left": "Attempts left",
+    "not_get_code": "Didn't get code?",
+    "change_email": "Change email"
   },
   "wallet": {
     "WUSD": "WUSD Wallet",
@@ -144,14 +160,15 @@
     "copy": "Wallet address copied to clipboard",
     "recipientsAddress": "Recipient's address",
     "enterAddress": "Enter address",
-    "chooseCoin" : "Choose coin",
-    "chooseCard" : "Choose card",
+    "chooseCoin": "Choose coin",
+    "chooseCard": "Choose card",
     "enterCoin": "Enter coin",
     "enterMnemonicPhrase": "Enter mnemonic phrase",
     "enterAmount": "Enter amount",
     "scanQr": "Scan QR Code or copy address to receive payment",
     "time": "Processing Time",
     "max": "Max",
+    "noTransactions": "No transactions",
     "table": {
       "trx": "Transactions",
       "TxHash": "Transaction hash",
@@ -292,5 +309,12 @@
     "payback": "Amortization",
     "generate": "Generate",
     "history": "History"
+  },
+  "errors": {
+    "fieldEmpty": "Field is empty",
+    "incorrectFormat": "Incorrect format",
+    "passwordsNotMatch": "Passwords don\\'t match",
+    "smallNumberWords": "A small number of words",
+    "incorrectMnemonicFormat": "Incorrect mnemonic format"
   }
 }

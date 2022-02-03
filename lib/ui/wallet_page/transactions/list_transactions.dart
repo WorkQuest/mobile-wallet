@@ -30,11 +30,10 @@ class ListTransactions extends StatelessWidget {
         }
         if (store.isSuccess) {
           if (store.transactions.isEmpty) {
-            return const SliverFillRemaining(
+            return SliverFillRemaining(
               child: Center(
                 child: Text(
-                  'No transactions',
-                  // style: TextStyle(fontSize: 16, color: Colors.black),
+                  'wallet.noTransactions'.tr(),
                 ),
               ),
             );
@@ -121,12 +120,16 @@ class ListTransactions extends StatelessWidget {
           ),
           const SizedBox(width: 20,),
           const Spacer(),
-          Text(
-            '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: color,
+          Flexible(
+            child: Text(
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: color,
+              ),
+              overflow: TextOverflow.clip,
+              textAlign: TextAlign.end,
             ),
           )
         ],

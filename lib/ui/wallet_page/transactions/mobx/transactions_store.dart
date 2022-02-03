@@ -20,9 +20,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   getTransactions({bool isForce = false}) async {
     if (isForce) {
       onLoading();
-    } else {
-      isMoreLoading = true;
     }
+
     try {
       if (isForce) {
         if (transactions.isNotEmpty) {
@@ -30,20 +29,54 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         }
         isMoreLoading = false;
       }
+      var result = await Api().getTransactions(
+        AccountRepository().userAddress!,
+        limit: 10,
+        offset: isForce ? transactions.length : 0,
+      );
+
+      result.map((tran) {
+        if (tran.contractAddress != null) {
+          tran.coin = TYPE_COINS.wqt;
+          final res =
+              BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
+          tran.value = res.toString();
+        } else {
+          tran.coin = TYPE_COINS.wusd;
+        }
+      }).toList();
+
+      if (isForce) {
+        transactions.addAll(result);
+      } else {
+        result = result.reversed.toList();
+        result.map((tran) {
+          if (!transactions.contains(tran)) {
+            transactions.insert(0, tran);
+          }
+        }).toList();
+      }
+      onSuccess(true);
+    } catch (e, trace) {
+      print('$e\n$trace');
+      onError(e.toString());
+    }
+  }
+
+  @action
+  getTransactionsMore() async {
+    isMoreLoading = true;
+    try {
       final result = await Api().getTransactions(
         AccountRepository().userAddress!,
         limit: 10,
         offset: transactions.length,
       );
-      // await Future.delayed(const Duration(seconds: 2));
-      // final result = List.generate(5, (index) {
-      //   return Tx(value: '${index % 2}100000000000000', createdAt: DateTime.now());
-      // });
-
       result.map((tran) {
         if (tran.contractAddress != null) {
           tran.coin = TYPE_COINS.wqt;
-          final res = BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
+          final res =
+              BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
           tran.value = res.toString();
         } else {
           tran.coin = TYPE_COINS.wusd;
@@ -51,7 +84,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }).toList();
 
       transactions.addAll(result);
-      await Future.delayed(const Duration( milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;
       onSuccess(true);
     } catch (e, trace) {

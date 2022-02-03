@@ -10,6 +10,7 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 const _languages = [
   Locale('en', 'US'),
   Locale('ru', 'RU'),
+  Locale('ar', 'SA'),
 ];
 
 class LanguagePage extends StatefulWidget {
@@ -40,11 +41,7 @@ class _LanguagePageState extends State<LanguagePage> {
                   GestureDetector(
                     onTap: () async {
                       _currentLanguage = language;
-                      if (_currentLanguage == const Locale('en', 'US')) {
-                        await context.setLocale(const Locale('en', 'US'));
-                      } else {
-                        await context.setLocale(const Locale('ru', 'RU'));
-                      }
+                      await context.setLocale(language);
                     },
                     child: ColoredBox(
                       color: Colors.transparent,

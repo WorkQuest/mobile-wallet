@@ -32,6 +32,7 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
         ),
       ),
       leading: CupertinoButton(
+        padding: EdgeInsets.zero,
         onPressed: () {
           if (onPressed != null) {
             onPressed!.call();

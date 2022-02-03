@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -149,7 +150,7 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
                         ],
                         validator: (value) {
                           if (_amountController.text.isEmpty) {
-                            return 'Field is empty';
+                            return "errors.fieldEmpty".tr();
                           }
                           return null;
                         },

@@ -6,6 +6,7 @@ import 'package:hex/hex.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
@@ -23,11 +24,15 @@ abstract class ClientServiceI {
 
   Future<EtherAmount> getBalance(String privateKey);
 
+
   Future<String> getSignature(String privateKey);
+
+  Erc20 getContract(String address);
 
   Future<EtherAmount> getGas();
 
   Future<String> getNetwork();
+
 
   Future sendTransaction({
     required String privateKey,
@@ -39,17 +44,62 @@ abstract class ClientServiceI {
 
 class ClientService implements ClientServiceI {
   final apiUrl = "https://dev-node-nyc3.workquest.co";
-  final wsUrl = "wss://dev-node-nyc3.workquest.co";
+  final wsUrl = "wss://wss-dev-node-nyc3.workquest.co";
 
   Web3Client? ethClient;
 
   ClientService() {
-    ethClient = Web3Client(apiUrl, Client());
+    try {
+      ethClient = Web3Client(apiUrl, Client(), socketConnector: () {
+        return IOWebSocketChannel.connect(wsUrl).cast<String>();
+      });
+    } catch (e, trace) {
+      print('e -> $e\ntrace -> $trace');
+    }
   }
 
   @override
   Future<EthPrivateKey> getCredentials(String privateKey) async {
     return await ethClient!.credentialsFromPrivateKey(privateKey);
+  }
+
+  listenEvent(String address) async {
+    print('address - $address');
+    try {
+      final options = FilterOptions(
+          address: EthereumAddress.fromHex(address),
+          fromBlock: const BlockNum.exact(175177),
+          topics: [
+            ['0xd78a0cb8bb633d06981248b816e7bd33c2a35a6089241d099fa519e361cab902']
+          ]);
+      ethClient!.events(options).listen((event) {
+        print('listen');
+        try {
+          print('event - $event');
+        } catch (e) {
+          print('error listen - $e');
+        }
+      }, onDone: () async {
+        print("event onDone");
+      }, onError: (error) {
+        print("event onError: $error");
+      });
+
+      // final blockNumber = await ethClient!.getBlockNumber();
+      // print('number -> $blockNumber');
+
+      print(options.fromBlock);
+      print(options.toBlock);
+      final result = await ethClient!.getLogs(options);
+      print('len - > ${result.length}');
+      result.map((res) {
+        print(res.address!.hex);
+        print(res.data);
+        print(res.transactionHash);
+      }).toList();
+    } catch (e, trace) {
+      print('e -> $e\ntrace -> $trace');
+    }
   }
 
   @override
@@ -60,7 +110,6 @@ class ClientService implements ClientServiceI {
     required TYPE_COINS coin,
   }) async {
     print('client sendTransaction');
-    print('TYPE_COINS $TYPE_COINS');
     address = address.toLowerCase();
     String? hash;
     final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
@@ -194,5 +243,11 @@ class ClientService implements ClientServiceI {
     } catch (e) {
       return "Network could not be identified";
     }
+  }
+
+  @override
+  Erc20 getContract(String address) {
+    address = address.toLowerCase();
+    return Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
   }
 }

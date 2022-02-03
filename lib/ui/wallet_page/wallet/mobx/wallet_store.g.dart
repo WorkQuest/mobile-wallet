@@ -27,8 +27,8 @@ mixin _$WalletStore on WalletStoreBase, Store {
   final _$getCoinsAsyncAction = AsyncAction('WalletStoreBase.getCoins');
 
   @override
-  Future getCoins() {
-    return _$getCoinsAsyncAction.run(() => super.getCoins());
+  Future getCoins({bool isForce = true}) {
+    return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
   @override

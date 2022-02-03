@@ -26,10 +26,10 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
   bool canConfirm = false;
 
   @action
-  confirm() async {
+  confirm(String role) async {
     try {
       onLoading();
-      await Api().confirmEmail(code.text);
+      await Api().confirmEmail(code: code.text, role: role);
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

@@ -14,7 +14,11 @@ class AccountRepository {
   String? userAddress;
   List<wal.Wallet>? userAddresses;
 
-  String get privateKey => userAddresses!.first.privateKey!;
+  String get privateKey => userAddresses!.last.privateKey!;
+
+  connectClient() {
+    client = ClientService();
+  }
 
   addWallet(wal.Wallet wallet) {
     if (userAddresses == null || userAddresses!.isEmpty) {
@@ -23,13 +27,16 @@ class AccountRepository {
     userAddresses!.add(wallet);
   }
 
-  getAllBalances() async {
-    await client!.getAllBalance(userAddresses!.first.privateKey!);
-  }
-
   clearData() {
     userAddress = null;
-    userAddresses!.clear();
+    if (userAddresses != null ) {
+      userAddresses!.clear();
+      userAddresses = null;
+    }
+    if (client!.ethClient != null) {
+      client!.ethClient!.dispose();
+      client!.ethClient = null;
+    }
   }
 }
 

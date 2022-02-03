@@ -85,13 +85,13 @@ class HttpClient {
 
   void handleChangeToken(DioError e) async {
     accessToken = null;
-    Storage.delete(Storage.refreshKey);
+    Storage.delete(StorageKeys.refreshToken.toString());
     return;
   }
 
   void handleRefreshToken(DioError e) async {
     accessToken = null;
-    final refreshToken = await Storage.read(Storage.refreshKey);
+    final refreshToken = await Storage.read(StorageKeys.refreshToken.toString());
     //TODO refresh Token
     // var response = await Api().authRequest.refreshTokens(refreshToken);
     // if (response != null) {

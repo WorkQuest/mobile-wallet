@@ -98,7 +98,7 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
                           ],
                           validator: (value) {
                             if (_amountController.text.isEmpty) {
-                              return 'Field is empty';
+                              return "errors.fieldEmpty".tr();
                             }
                             return null;
                           },

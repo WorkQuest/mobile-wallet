@@ -4,10 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_choose_role/sign_up_choose_role.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -46,6 +49,12 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
+        bottomNavigationBar: Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              bottom: MediaQuery.of(context).padding.bottom + 10,
+            ),
+            child: const Text('Version 1.0.4')),
       ),
     );
   }
@@ -99,10 +108,10 @@ class _ContentScreenState extends State<_ContentScreen> {
             inputFormatters: null,
             validator: (value) {
               if (mnemonicController.text.length <= 24) {
-                return "A small number of words";
+                return "errors.smallNumberWords".tr();
               }
               if (mnemonicController.text.split(' ').toList().length < 12) {
-                return "Incorrect mnemonic format";
+                return "errors.incorrectMnemonicFormat".tr();
               }
               return null;
             },
@@ -124,7 +133,19 @@ class _ContentScreenState extends State<_ContentScreen> {
               onSuccess: () async {
                 Navigator.of(context, rootNavigator: true).pop();
                 await AlertDialogUtils.showSuccessDialog(context);
-                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                if (store.successData!) {
+                  PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                } else {
+                  final result =
+                      await PageRouter.pushNewRoute(context, const SignUpChooseRole());
+                  print('result -> $result');
+                  if (result != null && result) {
+                    AccountRepository().clearData();
+                    await Storage.deleteAllFromSecureStorage();
+                    print(AccountRepository().userAddresses == null);
+                    print('qweasd');
+                  }
+                }
               },
               child: SizedBox(
                 width: double.infinity,
@@ -164,14 +185,14 @@ class _ContentScreenState extends State<_ContentScreen> {
                 onPressed: () {
                   PageRouter.pushNewRoute(context, const SignUpCreateProfile());
                 },
-                title: 'signIn'.tr(gender: 'createProfile'),
+                title: 'signIn.createProfile'.tr(),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -194,8 +215,7 @@ class _HeaderScreen extends StatelessWidget {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),

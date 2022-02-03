@@ -38,6 +38,30 @@ class _SplashPageState extends State<SplashPage> {
           }
         },
         onFailure: () {
+          if (store.errorMessage == 'Unconfirmed user') {
+            AlertDialogUtils.showAlertDialog(
+              context,
+              title: const Text("Warning"),
+              content: Text(store.errorMessage!),
+              needCancel: false,
+              titleCancel: "Confirm",
+              titleOk: "Login Page",
+              onTabCancel: () async {
+                // await PageRouter.pushNewReplacementRoute(context, const LoginPage());
+                // final email = await Storage.read(StorageKeys.email.toString());
+                // PageRouter.pushNewRoute(
+                //     context,
+                //     SignUpConfirm(
+                //       email: email ?? '',
+                //       nextPage: const PinCodePage(),
+                //     ));
+              },
+              onTabOk: () => PageRouter.pushNewReplacementRoute(context, const LoginPage()),
+              colorCancel: AppColor.enabledButton,
+              colorOk: AppColor.enabledButton,
+            );
+            return true;
+          }
           AlertDialogUtils.showAlertDialog(
             context,
             title: const Text("Warning"),
@@ -45,9 +69,8 @@ class _SplashPageState extends State<SplashPage> {
             needCancel: true,
             titleCancel: "Login Page",
             titleOk: "Retry",
-            onTabCancel: () {
-              PageRouter.pushNewReplacementRoute(context, const LoginPage());
-            },
+            onTabCancel: () =>
+                PageRouter.pushNewReplacementRoute(context, const LoginPage()),
             onTabOk: () => store.sign(),
             colorCancel: AppColor.enabledButton,
             colorOk: AppColor.enabledButton,

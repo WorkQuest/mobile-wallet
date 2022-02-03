@@ -8,6 +8,8 @@ class Images {
   static const loginImage = "$_imagePath/background_login_page.png";
   static const languageSettingsImage = "$_imagePath/language_settings_image.png";
   static const networkSettingsImage = "$_imagePath/network_settings_image.png";
+  static const workerImage = "$_imagePath/worker_image.jpg";
+  static const employerImage = "$_imagePath/employer_image.jpg";
   static const scanQRExample = "$_imagePath/scan_qr_example.png";
 
   static const wqLogo = "$_svgPath/wq_logo.svg";
@@ -43,4 +45,13 @@ class AppColor {
   static const unselectedBottomIcon = Color(0xffAAB0B9);
   static const selectedBottomIcon = enabledButton;
 
+}
+
+class RegExpFields {
+  static final emailRegExp = RegExp(
+    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+  );
+  static final firstNameRegExp = RegExp(r'^[a-zA-Z]+$');
+  static final passwordRegExp = RegExp(r'^[а-яА-Я]');
+  static final addressRegExp = RegExp(r'[0-9a-fA-F]');
 }

@@ -1,0 +1,289 @@
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "result": {
+    "query": "tm.event='Tx'",
+    "data": {
+      "type": "tendermint/event/Tx",
+      "value": {
+        "TxResult": {
+          "height": "224076",
+          "tx": "CpADCtwCCh8vZXRoZXJtaW50LmV2bS52MS5Nc2dFdGhlcmV1bVR4ErgCCugBChovZXRoZXJtaW50LmV2bS52MS5MZWdhY3lUeBLJAQg5EgIyNxjt2QIiKjB4OTE3ZGMxYTlFODU4ZGVCMEE1YkRDYjQ0Qzc2MDFGNjU1RjcyOERmRSoBMDJEqQWcuwAAAAAAAAAAAAAAAHUOM7NOv5oIKknV20MdsI1prFP0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN/HghDrLIAAA6BAJpEcRCIO5+WNyzC94njWHX6YUEkPwhe2cunRU07e0BavXOKePxSiAReaz2yObBcKG2MkEOtwGKuT5r8/P7dFExpCJMlfEIFxEAAAAAAEBlQBpCMHg2NTlkNjNiN2IyNmQwYzZiNmY3YWI1Nzg5NTVlOGY4NjczZGJlNTk0ZDYwOGYyMDUzZWQyZTk1NDg3MzgwMWFi+j8uCiwvZXRoZXJtaW50LmV2bS52MS5FeHRlbnNpb25PcHRpb25zRXRoZXJldW1UeBIaEhgKEgoHYXBob3RvbhIHMTE5NTI2MxDt2QI=",
+          "result": {
+            "data": "CrcECh8vZXRoZXJtaW50LmV2bS52MS5Nc2dFdGhlcmV1bVR4EpMECkIweDY1OWQ2M2I3YjI2ZDBjNmI2ZjdhYjU3ODk1NWU4Zjg2NzNkYmU1OTRkNjA4ZjIwNTNlZDJlOTU0ODczODAxYWISpgMKKjB4OTE3ZGMxYTlFODU4ZGVCMEE1YkRDYjQ0Qzc2MDFGNjU1RjcyOERmRRJCMHhkZGYyNTJhZDFiZTJjODliNjljMmIwNjhmYzM3OGRhYTk1MmJhN2YxNjNjNGExMTYyOGY1NWE0ZGY1MjNiM2VmEkIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMGM0OWNmZjZmMjMzNWVmNDk4ZTc1YjViZDA5ZWMyYjJmYzVlOTFkMWESQjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwNzUwZTMzYjM0ZWJmOWEwODJhNDlkNWRiNDMxZGIwOGQ2OWFjNTNmNBogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN/HghDrLIAAAgzNYNKkIweDY1OWQ2M2I3YjI2ZDBjNmI2ZjdhYjU3ODk1NWU4Zjg2NzNkYmU1OTRkNjA4ZjIwNTNlZDJlOTU0ODczODAxYWI6QjB4YzQzMWU1ODQ4NTc3Zjg2MzJjOWUyYzcxOGE1MTlkZGQyNmEwNWQxYTEyYjgxOTcwMzYzYzg5ZjlmMjUyNTkxYxogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEogdgC",
+            "log": "[{\"events\":[{\"type\":\"coin_received\",\"attributes\":[{\"key\":\"receiver\",\"value\":\"ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs\"},{\"key\":\"amount\",\"value\":\"6372aphoton\"}]},{\"type\":\"coin_spent\",\"attributes\":[{\"key\":\"spender\",\"value\":\"ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl\"},{\"key\":\"amount\",\"value\":\"6372aphoton\"}]},{\"type\":\"ethereum_tx\",\"attributes\":[{\"key\":\"amount\",\"value\":\"0\"},{\"key\":\"ethereumTxHash\",\"value\":\"0x659d63b7b26d0c6b6f7ab578955e8f8673dbe594d608f2053ed2e954873801ab\"},{\"key\":\"txHash\",\"value\":\"010192C27143D6FBF889D87992B3987A74CC71E07274B617B68B584FB186A103\"},{\"key\":\"recipient\",\"value\":\"0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE\"}]},{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"/ethermint.evm.v1.MsgEthereumTx\"},{\"key\":\"sender\",\"value\":\"ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl\"},{\"key\":\"module\",\"value\":\"evm\"},{\"key\":\"sender\",\"value\":\"0xC49CFf6f2335Ef498E75B5Bd09EC2B2Fc5e91d1a\"},{\"key\":\"txType\",\"value\":\"0\"}]},{\"type\":\"transfer\",\"attributes\":[{\"key\":\"recipient\",\"value\":\"ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs\"},{\"key\":\"sender\",\"value\":\"ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl\"},{\"key\":\"amount\",\"value\":\"6372aphoton\"}]},{\"type\":\"tx_log\",\"attributes\":[{\"key\":\"txLog\",\"value\":\"{\\\"address\\\":\\\"0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE\\\",\\\"topics\\\":[\\\"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\\\",\\\"0x000000000000000000000000c49cff6f2335ef498e75b5bd09ec2b2fc5e91d1a\\\",\\\"0x000000000000000000000000750e33b34ebf9a082a49d5db431db08d69ac53f4\\\"],\\\"data\\\":\\\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN/HghDrLIAAA=\\\",\\\"blockNumber\\\":224076,\\\"transactionHash\\\":\\\"0x659d63b7b26d0c6b6f7ab578955e8f8673dbe594d608f2053ed2e954873801ab\\\",\\\"transactionIndex\\\":0,\\\"blockHash\\\":\\\"0xc431e5848577f8632c9e2c718a519ddd26a05d1a12b81970363c89f9f252591c\\\",\\\"logIndex\\\":0}\"}]}]}]",
+            "gas_used": "44033",
+            "events": [
+              {
+                "type": "coin_spent",
+                "attributes": [
+                  {
+                    "key": "c3BlbmRlcg==",
+                    "value": "ZXRobTFjancwN21lcnhoaDVucm40a2s3c25tcHQ5bHo3ajhnNnpnNHVmcw==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "MTE5NTI2M2FwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "coin_received",
+                "attributes": [
+                  {
+                    "key": "cmVjZWl2ZXI=",
+                    "value": "ZXRobTE3eHBmdmFrbTJhbWc5NjJ5bHM2Zjg0ejNrZWxsOGM1bHRoZHpnbA==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "MTE5NTI2M2FwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "transfer",
+                "attributes": [
+                  {
+                    "key": "cmVjaXBpZW50",
+                    "value": "ZXRobTE3eHBmdmFrbTJhbWc5NjJ5bHM2Zjg0ejNrZWxsOGM1bHRoZHpnbA==",
+                    "index": true
+                  },
+                  {
+                    "key": "c2VuZGVy",
+                    "value": "ZXRobTFjancwN21lcnhoaDVucm40a2s3c25tcHQ5bHo3ajhnNnpnNHVmcw==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "MTE5NTI2M2FwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "message",
+                "attributes": [
+                  {
+                    "key": "c2VuZGVy",
+                    "value": "ZXRobTFjancwN21lcnhoaDVucm40a2s3c25tcHQ5bHo3ajhnNnpnNHVmcw==",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "tx",
+                "attributes": [
+                  {
+                    "key": "ZmVl",
+                    "value": "MTE5NTI2M2FwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "message",
+                "attributes": [
+                  {
+                    "key": "YWN0aW9u",
+                    "value": "L2V0aGVybWludC5ldm0udjEuTXNnRXRoZXJldW1UeA==",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "coin_spent",
+                "attributes": [
+                  {
+                    "key": "c3BlbmRlcg==",
+                    "value": "ZXRobTE3eHBmdmFrbTJhbWc5NjJ5bHM2Zjg0ejNrZWxsOGM1bHRoZHpnbA==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "NjM3MmFwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "coin_received",
+                "attributes": [
+                  {
+                    "key": "cmVjZWl2ZXI=",
+                    "value": "ZXRobTFjancwN21lcnhoaDVucm40a2s3c25tcHQ5bHo3ajhnNnpnNHVmcw==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "NjM3MmFwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "transfer",
+                "attributes": [
+                  {
+                    "key": "cmVjaXBpZW50",
+                    "value": "ZXRobTFjancwN21lcnhoaDVucm40a2s3c25tcHQ5bHo3ajhnNnpnNHVmcw==",
+                    "index": true
+                  },
+                  {
+                    "key": "c2VuZGVy",
+                    "value": "ZXRobTE3eHBmdmFrbTJhbWc5NjJ5bHM2Zjg0ejNrZWxsOGM1bHRoZHpnbA==",
+                    "index": true
+                  },
+                  {
+                    "key": "YW1vdW50",
+                    "value": "NjM3MmFwaG90b24=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "message",
+                "attributes": [
+                  {
+                    "key": "c2VuZGVy",
+                    "value": "ZXRobTE3eHBmdmFrbTJhbWc5NjJ5bHM2Zjg0ejNrZWxsOGM1bHRoZHpnbA==",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "ethereum_tx",
+                "attributes": [
+                  {
+                    "key": "YW1vdW50",
+                    "value": "MA==",
+                    "index": true
+                  },
+                  {
+                    "key": "ZXRoZXJldW1UeEhhc2g=",
+                    "value": "MHg2NTlkNjNiN2IyNmQwYzZiNmY3YWI1Nzg5NTVlOGY4NjczZGJlNTk0ZDYwOGYyMDUzZWQyZTk1NDg3MzgwMWFi",
+                    "index": true
+                  },
+                  {
+                    "key": "dHhIYXNo",
+                    "value": "MDEwMTkyQzI3MTQzRDZGQkY4ODlEODc5OTJCMzk4N0E3NENDNzFFMDcyNzRCNjE3QjY4QjU4NEZCMTg2QTEwMw==",
+                    "index": true
+                  },
+                  {
+                    "key": "cmVjaXBpZW50",
+                    "value": "MHg5MTdkYzFhOUU4NThkZUIwQTViRENiNDRDNzYwMUY2NTVGNzI4RGZF",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "tx_log",
+                "attributes": [
+                  {
+                    "key": "dHhMb2c=",
+                    "value": "eyJhZGRyZXNzIjoiMHg5MTdkYzFhOUU4NThkZUIwQTViRENiNDRDNzYwMUY2NTVGNzI4RGZFIiwidG9waWNzIjpbIjB4ZGRmMjUyYWQxYmUyYzg5YjY5YzJiMDY4ZmMzNzhkYWE5NTJiYTdmMTYzYzRhMTE2MjhmNTVhNGRmNTIzYjNlZiIsIjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwYzQ5Y2ZmNmYyMzM1ZWY0OThlNzViNWJkMDllYzJiMmZjNWU5MWQxYSIsIjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwNzUwZTMzYjM0ZWJmOWEwODJhNDlkNWRiNDMxZGIwOGQ2OWFjNTNmNCJdLCJkYXRhIjoiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU4vSGdoRHJMSUFBQT0iLCJibG9ja051bWJlciI6MjI0MDc2LCJ0cmFuc2FjdGlvbkhhc2giOiIweDY1OWQ2M2I3YjI2ZDBjNmI2ZjdhYjU3ODk1NWU4Zjg2NzNkYmU1OTRkNjA4ZjIwNTNlZDJlOTU0ODczODAxYWIiLCJ0cmFuc2FjdGlvbkluZGV4IjowLCJibG9ja0hhc2giOiIweGM0MzFlNTg0ODU3N2Y4NjMyYzllMmM3MThhNTE5ZGRkMjZhMDVkMWExMmI4MTk3MDM2M2M4OWY5ZjI1MjU5MWMiLCJsb2dJbmRleCI6MH0=",
+                    "index": true
+                  }
+                ]
+              },
+              {
+                "type": "message",
+                "attributes": [
+                  {
+                    "key": "bW9kdWxl",
+                    "value": "ZXZt",
+                    "index": true
+                  },
+                  {
+                    "key": "c2VuZGVy",
+                    "value": "MHhDNDlDRmY2ZjIzMzVFZjQ5OEU3NUI1QmQwOUVDMkIyRmM1ZTkxZDFh",
+                    "index": true
+                  },
+                  {
+                    "key": "dHhUeXBl",
+                    "value": "MA==",
+                    "index": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "events": {
+      "tx.fee": [
+        "1195263aphoton"
+      ],
+      "ethereum_tx.txHash": [
+        "010192C27143D6FBF889D87992B3987A74CC71E07274B617B68B584FB186A103"
+      ],
+      "message.txType": [
+        "0"
+      ],
+      "tx.hash": [
+        "010192C27143D6FBF889D87992B3987A74CC71E07274B617B68B584FB186A103"
+      ],
+      "coin_received.amount": [
+        "1195263aphoton",
+        "6372aphoton"
+      ],
+      "transfer.recipient": [
+        "ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl",
+        "ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs"
+      ],
+      "message.action": [
+        "/ethermint.evm.v1.MsgEthereumTx"
+      ],
+      "tm.event": [
+        "Tx"
+      ],
+      "tx.height": [
+        "224076"
+      ],
+      "transfer.amount": [
+        "1195263aphoton",
+        "6372aphoton"
+      ],
+      "message.sender": [
+        "ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs",
+        "ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl",
+        "0xC49CFf6f2335Ef498E75B5Bd09EC2B2Fc5e91d1a"
+      ],
+      "ethereum_tx.recipient": [
+        "0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE"
+      ],
+      "coin_received.receiver": [
+        "ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl",
+        "ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs"
+      ],
+      "transfer.sender": [
+        "ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs",
+        "ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl"
+      ],
+      "ethereum_tx.amount": [
+        "0"
+      ],
+      "ethereum_tx.ethereumTxHash": [
+        "0x659d63b7b26d0c6b6f7ab578955e8f8673dbe594d608f2053ed2e954873801ab"
+      ],
+      "tx_log.txLog": [
+        "{\"address\":\"0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE\",\"topics\":[\"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\",\"0x000000000000000000000000c49cff6f2335ef498e75b5bd09ec2b2fc5e91d1a\",\"0x000000000000000000000000750e33b34ebf9a082a49d5db431db08d69ac53f4\"],\"data\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN/HghDrLIAAA=\",\"blockNumber\":224076,\"transactionHash\":\"0x659d63b7b26d0c6b6f7ab578955e8f8673dbe594d608f2053ed2e954873801ab\",\"transactionIndex\":0,\"blockHash\":\"0xc431e5848577f8632c9e2c718a519ddd26a05d1a12b81970363c89f9f252591c\",\"logIndex\":0}"
+      ],
+      "message.module": [
+        "evm"
+      ],
+      "coin_spent.spender": [
+        "ethm1cjw07merxhh5nrn4kk7snmpt9lz7j8g6zg4ufs",
+        "ethm17xpfvakm2amg962yls6f84z3kell8c5lthdzgl"
+      ],
+      "coin_spent.amount": [
+        "1195263aphoton",
+        "6372aphoton"
+      ]
+    }
+  }
+}
