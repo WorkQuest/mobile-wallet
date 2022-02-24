@@ -13,6 +13,7 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_page.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/list_transactions.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -49,19 +50,17 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return LazyLoadScrollView(
       onEndOfPage: () async {
-        if (!GetIt.I
-            .get<TransactionsStore>()
-            .isMoreLoading) {
+        if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
           await GetIt.I.get<TransactionsStore>().getTransactionsMore();
         }
         setState(() {});
       },
       child: Platform.isAndroid
           ? RefreshIndicator(
-          displacement: 30,
-          triggerMode: RefreshIndicatorTriggerMode.anywhere,
-          onRefresh: _onRefresh,
-          child: layout())
+              displacement: 30,
+              triggerMode: RefreshIndicatorTriggerMode.anywhere,
+              onRefresh: _onRefresh,
+              child: layout())
           : layout(),
     );
   }
@@ -87,8 +86,7 @@ class _WalletPageState extends State<WalletPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      '${address.substring(0, 9)}...${address.substring(
-                          address.length - 3, address.length)}',
+                      '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -323,8 +321,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           ),
                           Text(
                             // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                            '${num.parse(balance.amount).toDouble().toStringAsFixed(
-                                8)} ${balance.title}',
+                            '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
                             style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w700,
@@ -335,12 +332,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             height: 5,
                           ),
                           Text(
-                            balance.title == "WQT"
-                                ? '\$ ${(num.parse(balance.amount).toDouble() * 0.03431)
-                                .toStringAsFixed(4)}'
-                                : '\$ ${num.parse(balance.amount)
-                                .toDouble()
-                                .toStringAsFixed(4)}',
+                            _getCourseDollar(balance.title, balance.amount),
                             style: const TextStyle(
                               fontSize: 14,
                               color: AppColor.unselectedBottomIcon,
@@ -352,10 +344,24 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                   }).toList(),
                   options: CarouselOptions(
                       height: 120.0,
-                      autoPlay: true,
                       viewportFraction: 1.0,
                       disableCenter: true,
                       onPageChanged: (int index, _) {
+                        switch(index) {
+                          case 0:
+                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
+                            break;
+                          case 1:
+                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
+                            break;
+                          case 2:
+                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBnb);
+                            break;
+                          case 3:
+                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wEth);
+                            break;
+                        }
+                        GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
                         setState(() {
                           _currencyIndex = index;
                         });
@@ -376,7 +382,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color: AppColor.enabledButton.withOpacity(0.1)),
+                                  color: AppColor.enabledButton.withOpacity(0.1)),
                           color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
@@ -407,5 +413,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
         },
       ),
     );
+  }
+
+  String _getCourseDollar(String title, String amount) {
+    switch (title) {
+      case 'WQT':
+        return '\$ ${(num.parse(amount).toDouble() * 0.03431).toStringAsFixed(4)}';
+      case 'wBNB':
+        return '\$ ${(num.parse(amount).toDouble() * 0.1375).toStringAsFixed(4)}';
+      default:
+        return '\$ ${num.parse(amount).toDouble().toStringAsFixed(4)}';
+    }
   }
 }

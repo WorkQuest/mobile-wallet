@@ -97,7 +97,7 @@ class AddressService implements AddressServiceI {
     print(address.hexNo0x);
 
     final hex = HEX.decode(address.hexNo0x);
-    final bech32 = Bech32Encoder.encode('eth', Uint8List.fromList(hex));
+    final bech32 = Bech32Encoder.encode('wq', Uint8List.fromList(hex));
     print(bech32);
     return bech32;
   }

@@ -150,8 +150,8 @@
     "copy": "Адрес кошелька скопирован в буфер обмена",
     "recipientsAddress": "Адрес получателя",
     "enterAddress": "Введите адрес",
-    "chooseCoin" : "Выберите монету",
-    "chooseCard" : "Выберите карту",
+    "chooseCoin": "Выберите монету",
+    "chooseCard": "Выберите карту",
     "enterCoin": "Введите монету",
     "enterMnemonicPhrase": "Введите мнемоническую фразу",
     "enterAmount": "Введите сумму",
@@ -187,6 +187,7 @@
   "crediting": {
     "deposit": "Депозит",
     "percent": "Процент",
+    "chooseCoin": "Выберите монету",
     "dollarsCount": "{count}$",
     "percentsCount": "{count} %",
     "information": "Информация",
@@ -229,6 +230,9 @@
     "incorrectFormat": "Неверный формат",
     "passwordsNotMatch": "Пароли не совпадают",
     "smallNumberWords": "Малое количество слов",
-    "incorrectMnemonicFormat": "Неправильный формат мнемоника"
-  }
+    "incorrectMnemonicFormat": "Неправильный формат мнемоника",
+    "notInternet": "Нет доступа в Интернет"
+  },
+  "404000": "Кошелек не найден",
+  "400000": "Почта используется"
 }

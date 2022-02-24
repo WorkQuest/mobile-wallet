@@ -23,7 +23,7 @@ abstract class SplashStoreBase extends IStore<bool> with Store {
         return;
       }
       final refresh = await Api().refreshToken(refreshToken);
-      await Storage.write(StorageKeys.refreshToken.toString(), refresh);
+      await Storage.write(StorageKeys.refreshToken.toString(), refresh!);
       isLoginPage = false;
       onSuccess(true);
     } on FormatException catch (e) {

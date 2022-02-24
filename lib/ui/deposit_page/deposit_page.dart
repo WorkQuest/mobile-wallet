@@ -173,7 +173,10 @@ class _WalletAddress extends StatelessWidget {
 
   void _copyPressed(BuildContext context) {
     Clipboard.setData(ClipboardData(text: AccountRepository().userAddress));
-    SnackBarUtils.success(context,
-        title: 'Copied!', duration: const Duration(milliseconds: 500));
+    SnackBarUtils.success(
+      context,
+      title: 'wallet.copy'.tr(),
+      duration: const Duration(milliseconds: 500),
+    );
   }
 }

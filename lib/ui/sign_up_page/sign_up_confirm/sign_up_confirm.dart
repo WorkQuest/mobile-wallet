@@ -144,21 +144,21 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                     height: 40,
                   ),
                   Expanded(child: Container()),
-                  RichText(
-                    textDirection: TextDirection.ltr,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'pinCode.not_get_code'.tr(),
-                          style: const TextStyle(fontSize: 16.0, color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: ' ${'pinCode.change_email'.tr()}',
-                          style: const TextStyle(fontSize: 16.0, color: Colors.blue),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // RichText(
+                  //   textDirection: TextDirection.ltr,
+                  //   text: TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text: 'pinCode.not_get_code'.tr(),
+                  //         style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                  //       ),
+                  //       TextSpan(
+                  //         text: ' ${'pinCode.change_email'.tr()}',
+                  //         style: const TextStyle(fontSize: 16.0, color: Colors.blue),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   const SizedBox(
                     height: 40,
                   ),

@@ -1,9 +1,12 @@
+
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+
+import '../../../../constants.dart';
 
 part 'transactions_store.g.dart';
 
@@ -15,6 +18,12 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   @observable
   bool isMoreLoading = false;
+
+  @observable
+  TYPE_COINS type = TYPE_COINS.wusd;
+
+  @action
+  setType(TYPE_COINS value) => type = value;
 
   @action
   getTransactions({bool isForce = false}) async {
@@ -29,20 +38,72 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         }
         isMoreLoading = false;
       }
-      var result = await Api().getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: isForce ? transactions.length : 0,
-      );
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.wusd:
+          result = await Api().getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wqt:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wBnb:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wEth:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+      }
 
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          final res =
-              BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
-          tran.value = res.toString();
+      result!.map((tran) {
+        if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
+          switch (tran.fromAddressHash!.hex!) {
+            case AddressCoins.wqt:
+              tran.coin = TYPE_COINS.wqt;
+              break;
+            case AddressCoins.wEth:
+              tran.coin = TYPE_COINS.wEth;
+              break;
+            case AddressCoins.wBnb:
+              tran.coin = TYPE_COINS.wBnb;
+              break;
+            default:
+              tran.coin = TYPE_COINS.wusd;
+              break;
+          }
         } else {
-          tran.coin = TYPE_COINS.wusd;
+          switch (tran.toAddressHash!.hex!) {
+            case AddressCoins.wqt:
+              tran.coin = TYPE_COINS.wqt;
+              break;
+            case AddressCoins.wEth:
+              tran.coin = TYPE_COINS.wEth;
+              break;
+            case AddressCoins.wBnb:
+              tran.coin = TYPE_COINS.wBnb;
+              break;
+            default:
+              tran.coin = TYPE_COINS.wusd;
+              break;
+          }
         }
       }).toList();
 
@@ -57,8 +118,11 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         }).toList();
       }
       onSuccess(true);
-    } catch (e, trace) {
+    } on FormatException catch (e, trace) {
       print('$e\n$trace');
+      onError(e.message);
+    } catch (e) {
+      print('$e');
       onError(e.toString());
     }
   }
@@ -67,20 +131,42 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   getTransactionsMore() async {
     isMoreLoading = true;
     try {
-      final result = await Api().getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: transactions.length,
-      );
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          final res =
-              BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
-          tran.value = res.toString();
-        } else {
-          tran.coin = TYPE_COINS.wusd;
-        }
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.wusd:
+          result = await Api().getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wqt:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wBnb:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wEth:
+          result = await Api().getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+      }
+      result!.map((tran) {
+
       }).toList();
 
       transactions.addAll(result);

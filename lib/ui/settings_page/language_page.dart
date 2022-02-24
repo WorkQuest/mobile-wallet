@@ -10,7 +10,7 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 const _languages = [
   Locale('en', 'US'),
   Locale('ru', 'RU'),
-  Locale('ar', 'SA'),
+  // Locale('ar', 'SA'),
 ];
 
 class LanguagePage extends StatefulWidget {

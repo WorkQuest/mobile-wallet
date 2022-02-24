@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               left: 16.0,
               bottom: MediaQuery.of(context).padding.bottom + 10,
             ),
-            child: const Text('Version 1.0.4')),
+            child: const Text('Version 1.0.7')),
       ),
     );
   }

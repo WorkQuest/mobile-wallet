@@ -21,10 +21,10 @@ class WebSocket {
   int closeCode = 4001;
 
   init() async {
-    print('web socket init');
+    // print('web socket init');
     shouldReconnectFlag = true;
     channel =
-        IOWebSocketChannel.connect("wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc");
+        IOWebSocketChannel.connect("wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket");
     final address = channel!.sink.add("""
 {
     "jsonrpc": "2.0",
@@ -37,7 +37,7 @@ class WebSocket {
 """);
 
     channel!.stream.listen((message) {
-      print("WebSocket message: $message");
+      // print("WebSocket message: $message");
       var jsonResponse = jsonDecode(message);
       handleSubscription(jsonResponse);
     }, onDone: () async {

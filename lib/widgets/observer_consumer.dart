@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -55,9 +56,10 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
             context: context,
             barrierDismissible: true,
             builder: (_) {
+              final title = 'meta.error'.tr();
               return Platform.isIOS
                   ? CupertinoAlertDialog(
-                      title: const Text('Error'),
+                      title: Text(title),
                       content: Text(errorMessage),
                       actions: [
                         CupertinoDialogAction(
@@ -67,7 +69,7 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                       ],
                     )
                   : AlertDialog(
-                      title: const Text('Error'),
+                      title: Text(title),
                       content: Text(errorMessage),
                       actions: [
                         CupertinoDialogAction(

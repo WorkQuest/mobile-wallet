@@ -74,7 +74,7 @@ class _PinCodePageState extends State<PinCodePage>
           AccountRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
-          PageRouter.pushNewReplacementRoute(context, const MainPage());
+          PageRouter.pushNewRemoveRoute(context, const MainPage());
         }
       },
       store: store,

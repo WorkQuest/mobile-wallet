@@ -39,6 +39,21 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
+  final _$typeAtom = Atom(name: 'TransactionsStoreBase.type');
+
+  @override
+  TYPE_COINS get type {
+    _$typeAtom.reportRead();
+    return super.type;
+  }
+
+  @override
+  set type(TYPE_COINS value) {
+    _$typeAtom.reportWrite(value, super.type, () {
+      super.type = value;
+    });
+  }
+
   final _$getTransactionsAsyncAction =
       AsyncAction('TransactionsStoreBase.getTransactions');
 
@@ -57,11 +72,26 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
         .run(() => super.getTransactionsMore());
   }
 
+  final _$TransactionsStoreBaseActionController =
+      ActionController(name: 'TransactionsStoreBase');
+
+  @override
+  dynamic setType(TYPE_COINS value) {
+    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
+        name: 'TransactionsStoreBase.setType');
+    try {
+      return super.setType(value);
+    } finally {
+      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 transactions: ${transactions},
-isMoreLoading: ${isMoreLoading}
+isMoreLoading: ${isMoreLoading},
+type: ${type}
     ''';
   }
 }

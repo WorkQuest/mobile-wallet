@@ -55,3 +55,9 @@ class RegExpFields {
   static final passwordRegExp = RegExp(r'^[а-яА-Я]');
   static final addressRegExp = RegExp(r'[0-9a-fA-F]');
 }
+
+class AddressCoins {
+  static const wqt = '0x917dc1a9e858deb0a5bdcb44c7601f655f728dfe';
+  static const wEth = '0x75fc17d0c358f19528d5c24f29b37fa2aa725b1e';
+  static const wBnb = '0x9c9fe9a77a3b0ed1d3584afadd5873843baf0e12';
+}

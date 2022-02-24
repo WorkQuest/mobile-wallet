@@ -97,7 +97,7 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
     try {
       Wallet wallet = await Wallet.derive(mnemonic!);
       final result = await Api().registerWallet(wallet.publicKey!, wallet.address!);
-      if (!result) {
+      if (!result!) {
         onError("Server error");
         return;
       }

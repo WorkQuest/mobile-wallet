@@ -10,6 +10,8 @@ import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../constants.dart';
 
@@ -41,14 +43,19 @@ class ListTransactions extends StatelessWidget {
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                if (store.isMoreLoading &&
-                    index == store.transactions.length) {
+                if (store.isMoreLoading && index == store.transactions.length) {
                   return Column(
                     children: const [
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       CircularProgressIndicator.adaptive(),
                     ],
                   );
+                }
+                if (store.type == TYPE_COINS.wusd &&
+                    store.transactions[index].value == "0") {
+                  return Container();
                 }
                 return _infoElement(store.transactions[index]);
               },
@@ -58,9 +65,9 @@ class ListTransactions extends StatelessWidget {
             ),
           );
         }
-        return const SliverFillRemaining(
+        return SliverFillRemaining(
           child: Center(
-            child: Text("Error"),
+            child: Text(store.errorMessage!),
           ),
         );
       },
@@ -68,9 +75,14 @@ class ListTransactions extends StatelessWidget {
   }
 
   Widget _infoElement(Tx transaction) {
-    bool increase = transaction.fromAddress != AccountRepository().userAddress;
+    bool increase = transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
-    final score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
+    double score;
+    if (transaction.value != null) {
+      score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
+    } else {
+      score = BigInt.parse(transaction.amount!).toDouble() * pow(10, -18);
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -109,7 +121,7 @@ class ListTransactions extends StatelessWidget {
               ),
               Text(
                 DateFormat('dd.MM.yy HH:mm')
-                    .format(transaction.createdAt!.toLocal())
+                    .format(transaction.insertedAt!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -118,11 +130,13 @@ class ListTransactions extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 20,),
+          const SizedBox(
+            width: 20,
+          ),
           const Spacer(),
           Flexible(
             child: Text(
-              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin()}',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -137,12 +151,16 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  String _getTitleCoin(TYPE_COINS coin) {
-    switch (coin) {
+  String _getTitleCoin() {
+    switch (GetIt.I.get<TransactionsStore>().type) {
       case TYPE_COINS.wqt:
         return "WQT";
       case TYPE_COINS.wusd:
         return "WUSD";
+      case TYPE_COINS.wBnb:
+        return "wBNB";
+      case TYPE_COINS.wEth:
+        return "wETH";
       default:
         return "WUSD";
     }

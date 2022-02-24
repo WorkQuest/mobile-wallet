@@ -7,6 +7,7 @@ import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
@@ -24,7 +25,6 @@ abstract class ClientServiceI {
 
   Future<EtherAmount> getBalance(String privateKey);
 
-
   Future<String> getSignature(String privateKey);
 
   Erc20 getContract(String address);
@@ -33,10 +33,9 @@ abstract class ClientServiceI {
 
   Future<String> getNetwork();
 
-
   Future sendTransaction({
     required String privateKey,
-    required String address,
+    required String addressTo,
     required String amount,
     required TYPE_COINS coin,
   });
@@ -105,12 +104,12 @@ class ClientService implements ClientServiceI {
   @override
   Future sendTransaction({
     required String privateKey,
-    required String address,
+    required String addressTo,
     required String amount,
     required TYPE_COINS coin,
   }) async {
     print('client sendTransaction');
-    address = address.toLowerCase();
+    addressTo = addressTo.toLowerCase();
     String? hash;
     final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
     final credentials = await getCredentials(privateKey);
@@ -120,7 +119,7 @@ class ClientService implements ClientServiceI {
       hash = await ethClient!.sendTransaction(
         credentials,
         Transaction(
-          to: EthereumAddress.fromHex(address),
+          to: EthereumAddress.fromHex(addressTo),
           from: myAddress,
           value: EtherAmount.fromUnitAndValue(
             EtherUnit.wei,
@@ -129,23 +128,58 @@ class ClientService implements ClientServiceI {
         ),
         chainId: 20220112,
       );
-    } else if (coin == TYPE_COINS.wqt) {
-      print('send wqt');
-      final contract = Erc20(
-          address: EthereumAddress.fromHex('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE'),
-          client: ethClient!);
+    } else {
+      String addressToken = '';
+      switch (coin) {
+        case TYPE_COINS.wusd:
+          break;
+        case TYPE_COINS.wqt:
+          addressToken = AddressCoins.wqt;
+          break;
+        case TYPE_COINS.wBnb:
+          addressToken = AddressCoins.wBnb;
+          break;
+        case TYPE_COINS.wEth:
+          addressToken = AddressCoins.wEth;
+          break;
+      }
+      print('send ${coin.toString()}');
+      final contract =
+          Erc20(address: EthereumAddress.fromHex(addressToken), client: ethClient!);
+      // final tran = Transaction.callContract(
+      //   contract: contract.self,
+      //   function: contract.self.function('transferFrom'),
+      //   parameters: [
+      //     myAddress,
+      //     EthereumAddress.fromHex(addressTo),
+      //     BigInt.from(double.parse(amount) * pow(10, 18)),
+      //   ],
+      // );
+      // hash = await contract.approve(
+      //   myAddress,
+      //   BigInt.from(double.parse(amount) * pow(10, 18)),
+      //   credentials: credentials,
+      //   transaction: tran,
+      // );
+      // print('approve - $approve');
       hash = await contract.transfer(
-        EthereumAddress.fromHex(address),
+        // myAddress,
+        EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, 18)),
         credentials: credentials,
       );
-      print('wqt hash - $hash');
+      // hash = await ethClient!.sendTransaction(
+      //   credentials,
+      //   tran,
+      //   chainId: 20220112,
+      // );
+      print('${coin.toString()} hash - $hash');
     }
 
     int attempts = 0;
     TransactionReceipt? result;
     while (result == null) {
-      result = await ethClient!.getTransactionReceipt(hash!);
+      result = await ethClient!.getTransactionReceipt(hash);
       if (result != null) {
         print('result - ${result.blockNumber}');
       }

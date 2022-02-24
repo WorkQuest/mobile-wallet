@@ -272,6 +272,7 @@
     "marketSize": "Market size",
     "deposit": "Deposit",
     "percent": "Percent",
+    "chooseCoin": "Choose a coin",
     "dollarsCount": "{count}$",
     "percentsCount": "{count} %",
     "wantToTakeALoan": "Do you want to borrow?",
@@ -316,6 +317,9 @@
     "incorrectFormat": "Incorrect format",
     "passwordsNotMatch": "Passwords don\\'t match",
     "smallNumberWords": "A small number of words",
-    "incorrectMnemonicFormat": "Incorrect mnemonic format"
-  }
+    "incorrectMnemonicFormat": "Incorrect mnemonic format",
+    "notInternet": "No internet access"
+  },
+  "404000": "Wallet not found",
+  "400000": "Email used"
 }

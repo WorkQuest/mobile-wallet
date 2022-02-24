@@ -9,6 +9,8 @@ import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactio
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
 
+BuildContext? globalContext;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -51,6 +53,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    globalContext = context;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,

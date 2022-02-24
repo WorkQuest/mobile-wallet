@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 
 part 'wallet_store.g.dart';
@@ -18,25 +19,42 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     try {
       print('getCoins');
 
-      final list = await AccountRepository()
+      final list =
+          await AccountRepository().client!.getAllBalance(AccountRepository().privateKey);
+
+      final ether = list.firstWhere((element) => element.title == 'ether');
+      final wqt = await AccountRepository()
           .client!
-          .getAllBalance(AccountRepository().privateKey);
-      if (coins.isNotEmpty) {
-        coins.clear();
-      }
-      final ether = list. firstWhere((element) => element.title == 'ether');
-      coins.add(BalanceItem(
-        "WUSD",
-        ether.amount,
-      ));
-      final wqt = await AccountRepository().client!.getBalanceFromContract('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
-      coins.add(BalanceItem(
-        "WQT",
-        wqt.toString(),
-      ));
+          .getBalanceFromContract(AddressCoins.wqt);
+      final wEth = await AccountRepository()
+          .client!
+          .getBalanceFromContract(AddressCoins.wEth);
+      final wBnb = await AccountRepository()
+          .client!
+          .getBalanceFromContract(AddressCoins.wBnb);
+
+
+      coins.replaceRange(0, coins.length, [
+        BalanceItem(
+          "WUSD",
+          ether.amount,
+        ),
+        BalanceItem(
+          "WQT",
+          wqt.toString(),
+        ),
+        BalanceItem(
+          "wBNB",
+          wBnb.toString(),
+        ),
+        BalanceItem(
+          "wETH",
+          wEth.toString(),
+        ),
+      ]);
 
       if (isForce) {
-       onSuccess(true);
+        onSuccess(true);
       }
     } catch (e) {
       onError(e.toString());

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,10 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hex/hex.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -22,10 +28,10 @@ import '../../page_router.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 List<_CoinItem> _coins = [
-  _CoinItem(Images.wusdCoinIcon, 'WUSD', true),
-  _CoinItem(Images.wqtCoinIcon, 'WQT', true),
-  _CoinItem(Images.wbnbCoinIcon, 'wBNB', false),
-  _CoinItem(Images.wethCoinIcon, 'wETH', false),
+  _CoinItem(Images.wusdCoinIcon, 'WUSD', TYPE_COINS.wusd, true),
+  _CoinItem(Images.wqtCoinIcon, 'WQT', TYPE_COINS.wqt, true),
+  _CoinItem(Images.wbnbCoinIcon, 'wBNB', TYPE_COINS.wBnb, true),
+  _CoinItem(Images.wethCoinIcon, 'wETH', TYPE_COINS.wEth, true),
 ];
 
 class TransferPage extends StatefulWidget {
@@ -202,37 +208,13 @@ class _TransferPageState extends State<TransferPage> {
                       ),
                     ),
                     onPressed: () async {
-                      if (store.titleSelectedCoin.isNotEmpty) {
-
-                      store.getMaxAmount();
+                      if (store.typeCoin != null) {
+                        store.getMaxAmount();
                       } else {
-                        showCupertinoDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (_) {
-                            return Platform.isIOS
-                                ? CupertinoAlertDialog(
-                              title: const Text('Error'),
-                              content: const Text('Choose a coin'),
-                              actions: [
-                                CupertinoDialogAction(
-                                  child: const Text("OK"),
-                                  onPressed: Navigator.of(context, rootNavigator: true).pop,
-                                )
-                              ],
-                            )
-                                : AlertDialog(
-                              title: const Text('Error'),
-                              content: const Text('Choose a coin'),
-                              actions: [
-                                CupertinoDialogAction(
-                                  child: const Text("OK"),
-                                  onPressed: Navigator.of(context, rootNavigator: true).pop,
-                                )
-                              ],
-                            );
-                          },
-                        );
+                        final title = 'meta.error'.tr();
+                        final content = 'crediting.chooseCoin'.tr();
+                        AlertDialogUtils.showInfoAlertDialog(context,
+                            title: title, content: content);
                       }
                     },
                   ),
@@ -248,6 +230,32 @@ class _TransferPageState extends State<TransferPage> {
               Expanded(
                 child: Container(),
               ),
+              //0xa9059cbb00000000000000000000000075fc17d0c358f19528d5c24f29b37fa2aa725b1e0000000000000000000000000000000000000000000000004563918244f40000
+              // DefaultButton(
+              //   title: 'Test',
+              //   onPressed: () async {
+              //     _currentCoin = _coins[2];
+              //     _addressController.text = '0x750e33b34ebf9a082a49d5db431db08d69ac53f4';
+              //     _amountController.text = '1';
+              //     setState(() {
+              //
+              //     });
+              //     store.setAmount('1');
+              //     store.setAddressTo('0x750e33b34ebf9a082a49d5db431db08d69ac53f4');
+              //     store.setTitleSelectedCoin(TYPE_COINS.wBnb);
+              //
+              //
+              //
+              //     // final contract = AccountRepository().client!.getContract('0x917dc1a9e858deb0a5bdcb44c7601f655f728dfe');
+              //     // contract.self.functions.map((fun) {
+              //     //   print('name - ${fun.name}');
+              //     //   fun.parameters.map((par) {
+              //     //     print('------- ${par.name}');
+              //     //     print('---------- ${par.type.name}');
+              //     //   }).toList();
+              //     // }).toList();
+              //   },
+              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -280,18 +288,24 @@ class _TransferPageState extends State<TransferPage> {
       if (store.fee.isEmpty) {
         await store.getFee();
       }
+      if (store.addressTo.toLowerCase() ==
+          AccountRepository().userAddress!.toLowerCase()) {
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'You have provided your address.');
+        return;
+      }
       final result = await PageRouter.pushNewRoute(
         context,
         ConfirmTransferPage(
           fee: store.fee,
-          titleCoin: store.titleSelectedCoin,
+          typeCoin: store.typeCoin!,
           addressTo: store.addressTo,
           amount: store.amount,
         ),
       );
       if (result != null && result) {
         setState(() {
-          store.setTitleSelectedCoin('');
+          store.setTitleSelectedCoin(null);
           store.setAddressTo('');
           store.setAmount('');
           _amountController.clear();
@@ -429,14 +443,15 @@ class _TransferPageState extends State<TransferPage> {
     setState(() {
       _currentCoin = coin;
     });
-    store.setTitleSelectedCoin(coin.title);
+    store.setTitleSelectedCoin(coin.typeCoin);
   }
 }
 
 class _CoinItem {
   String iconPath;
   String title;
+  TYPE_COINS typeCoin;
   bool isEnable;
 
-  _CoinItem(this.iconPath, this.title, this.isEnable);
+  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }
