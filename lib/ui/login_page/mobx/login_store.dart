@@ -44,7 +44,7 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e) {
       onError(e.message);
     } catch (e, trace) {
-      print('cry$e$trace');
+      // print('cry$e$trace');
       onError(e.toString());
     }
   }

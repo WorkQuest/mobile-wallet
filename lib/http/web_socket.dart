@@ -23,8 +23,8 @@ class WebSocket {
   init() async {
     // print('web socket init');
     shouldReconnectFlag = true;
-    channel =
-        IOWebSocketChannel.connect("wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket");
+    channel = IOWebSocketChannel.connect(
+        "wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket");
     final address = channel!.sink.add("""
 {
     "jsonrpc": "2.0",
@@ -37,7 +37,7 @@ class WebSocket {
 """);
 
     channel!.stream.listen((message) {
-      // print("WebSocket message: $message");
+      print("WebSocket message: $message");
       var jsonResponse = jsonDecode(message);
       handleSubscription(jsonResponse);
     }, onDone: () async {
@@ -61,28 +61,29 @@ class WebSocket {
   void handleSubscription(dynamic jsonResponse) async {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
-
-      final isWQT =
-          transaction.result!.events!['ethereum_tx.recipient']!.first.toString().toLowerCase() ==
-              '0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE'.toLowerCase();
-
-      if (isWQT) {
-        final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-        if ((decode['topics'] as List<String>).last.substring(26) ==
-            myAddress.substring(2)) {
-          await Future.delayed(const Duration(seconds: 2));
-          GetIt.I.get<WalletStore>().getCoins(isForce: false);
-          GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
-        }
+      print('tran - ${transaction.result!.events!['ethereum_tx.recipient']!.first
+          .toString()
+          .toLowerCase()}');
+      print('my tran - ${myAddress.toLowerCase()}');
+      if (transaction.result!.events!['ethereum_tx.recipient']!.first
+              .toString()
+              .toLowerCase() ==
+          myAddress.toLowerCase()) {
+        await Future.delayed(const Duration(seconds: 4));
+        GetIt.I.get<WalletStore>().getCoins(isForce: false);
+        GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
       } else {
-        if (transaction.result!.events!['ethereum_tx.recipient']!.first.toString().toLowerCase() == myAddress.toLowerCase()) {
-          await Future.delayed(const Duration(seconds: 2));
+        final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+        print('decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
+        if ((decode['topics'] as List<dynamic>).last.substring(26) ==
+            myAddress.substring(2)) {
+          await Future.delayed(const Duration(seconds: 4));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
         }
       }
     } catch (e, trace) {
-      // print('web socket e - $e\ntrace - $trace');
+      print('web socket e - $e\ntrace - $trace');
     }
   }
 }

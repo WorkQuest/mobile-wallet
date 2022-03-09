@@ -15,7 +15,7 @@ class HttpClient {
 
   String? accessToken;
 
-  set setAccessToken(String accessToken) => this.accessToken = accessToken;
+  set setAccessToken(String? accessToken) => this.accessToken = accessToken;
 
   void _setUpDio() {
     dio = Dio();

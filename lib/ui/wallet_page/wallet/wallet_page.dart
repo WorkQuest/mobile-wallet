@@ -236,6 +236,162 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
       ),
       child: Observer(
         builder: (_) {
+          if (store.errorMessage != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Failed to get balance',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'Swipe to update',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (store.coins.isNotEmpty) {
+            return Column(
+              children: [
+                CarouselSlider(
+                  carouselController: _controller,
+                  items: store.coins.map((balance) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'wallet'.tr(gender: 'balance'),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          if (store.isLoading)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 30,
+                              child: Shimmer.fromColors(
+                                baseColor: const Color(0xfff1f0f0),
+                                highlightColor: Colors.white,
+                                child: Container(
+                                  width: 100,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6.0),
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            Text(
+                              // '${num.parse(balance.amount).toInt()} ${balance.title}',
+                              '${num.parse(balance.amount).toDouble().toStringAsFixed(
+                                  8)} ${balance.title}',
+                              style: const TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w700,
+                                color: AppColor.enabledButton,
+                              ),
+                            ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          if (store.isLoading)
+                            SizedBox(
+                              width: 140,
+                              height: 15,
+                              child: Shimmer.fromColors(
+                                baseColor: const Color(0xfff1f0f0),
+                                highlightColor: Colors.white,
+                                child: Container(
+                                  width: 100,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            Text(
+                              _getCourseDollar(balance.title, balance.amount),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppColor.unselectedBottomIcon,
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    height: 120.0,
+                    viewportFraction: 1.0,
+                    disableCenter: true,
+                    onPageChanged: (int index, _) {
+                      switch (index) {
+                        case 0:
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
+                          GetIt.I.get<WalletStore>().setIndex(0);
+                          break;
+                        case 1:
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
+                          GetIt.I.get<WalletStore>().setIndex(1);
+                          break;
+                        case 2:
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBnb);
+                          GetIt.I.get<WalletStore>().setIndex(2);
+                          break;
+                        case 3:
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wEth);
+                          GetIt.I.get<WalletStore>().setIndex(3);
+                          break;
+                      }
+                      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+                      setState(() {
+                        _currencyIndex = index;
+                      });
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: store.coins.map((balance) {
+                    bool isCurrency = balance == store.coins[_currencyIndex];
+                    return GestureDetector(
+                      onTap: () => _controller.nextPage(),
+                      child: Container(
+                        width: 12.0,
+                        height: 12.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: isCurrency
+                              ? null
+                              : Border.all(
+                              color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            );
+          }
           if (store.isLoading) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -291,123 +447,9 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
               ),
             );
           }
-          if (store.isSuccess) {
-            if (store.coins.isEmpty) {
-              return const Center(
-                child: Text(
-                  'You don\'t have any coins',
-                ),
-              );
-            }
-            return Column(
-              children: [
-                CarouselSlider(
-                  carouselController: _controller,
-                  items: store.coins.map((balance) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'wallet'.tr(gender: 'balance'),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                            '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
-                            style: const TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w700,
-                              color: AppColor.enabledButton,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            _getCourseDollar(balance.title, balance.amount),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppColor.unselectedBottomIcon,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                      height: 120.0,
-                      viewportFraction: 1.0,
-                      disableCenter: true,
-                      onPageChanged: (int index, _) {
-                        switch(index) {
-                          case 0:
-                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
-                            break;
-                          case 1:
-                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
-                            break;
-                          case 2:
-                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBnb);
-                            break;
-                          case 3:
-                            GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wEth);
-                            break;
-                        }
-                        GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-                        setState(() {
-                          _currencyIndex = index;
-                        });
-                      }),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: store.coins.map((balance) {
-                    bool isCurrency = balance == store.coins[_currencyIndex];
-                    return GestureDetector(
-                      onTap: () => _controller.nextPage(),
-                      child: Container(
-                        width: 12.0,
-                        height: 12.0,
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            );
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  'Failed to get balance',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Swipe to update',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
+          return const Center(
+            child: Text(
+              'You don\'t have any coins',
             ),
           );
         },

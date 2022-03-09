@@ -25,8 +25,9 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
             coin: typeCoin,
           );
       GetIt.I.get<WalletStore>().getCoins();
-      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
       onSuccess(true);
+      await Future.delayed(const Duration(seconds: 2));
+      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on RPCError catch (e) {

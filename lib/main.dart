@@ -17,15 +17,19 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   GetIt.I.registerSingleton<TransactionsStore>(TransactionsStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
-  final addressActive = await Storage.read(StorageKeys.address.toString());
+  try {
+    final addressActive = await Storage.read(StorageKeys.address.toString());
 
-  if (addressActive != null) {
-    final wallets = await Storage.readWallets();
-    print(wallets);
-    if (wallets.isNotEmpty) {
-      AccountRepository().userAddresses = wallets;
+    if (addressActive != null) {
+      final wallets = await Storage.readWallets();
+      print(wallets);
+      if (wallets.isNotEmpty) {
+        AccountRepository().userAddresses = wallets;
+      }
+      AccountRepository().userAddress = addressActive;
     }
-    AccountRepository().userAddress = addressActive;
+  } catch (e, trace) {
+    print('read storage: $e\n$trace');
   }
 
   SystemChrome.setSystemUIOverlayStyle(

@@ -10,8 +10,6 @@ import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
-import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../constants.dart';
 
@@ -78,10 +76,16 @@ class ListTransactions extends StatelessWidget {
     bool increase = transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score;
-    if (transaction.value != null) {
+    if (transaction.tokenTransfers != null && transaction.tokenTransfers!.isEmpty) {
       score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
     } else {
-      score = BigInt.parse(transaction.amount!).toDouble() * pow(10, -18);
+      if (transaction.amount != null) {
+        score = BigInt.parse(transaction.amount!).toDouble() *
+            pow(10, -18);
+      } else {
+        score = BigInt.parse(transaction.tokenTransfers!.first.amount!).toDouble() *
+            pow(10, -18);
+      }
     }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
@@ -121,7 +125,7 @@ class ListTransactions extends StatelessWidget {
               ),
               Text(
                 DateFormat('dd.MM.yy HH:mm')
-                    .format(transaction.insertedAt!.toLocal())
+                    .format(transaction.amount != null ? transaction.insertedAt!.toLocal() : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,

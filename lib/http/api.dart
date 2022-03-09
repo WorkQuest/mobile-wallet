@@ -24,13 +24,13 @@ class Api {
   static const _login = "$baseUrl/auth/login/wallet";
 
   String _transactions(String address) =>
-      "https://dev-explorer.workquest.co/api/v1/account/$address/txs";
+      "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
 
   String _transactionsByToken({
     required String address,
     required String addressToken,
   }) =>
-      "https://dev-explorer.workquest.co/api/token/$addressToken/account/$address/transfers";
+      "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
 
   final _dio = HttpClient().dio;
 
@@ -56,7 +56,7 @@ class Api {
       return response;
     } on DioError catch (e) {
       print('cry');
-      handleError(e);
+      await handleError(e);
     }
   }
 
@@ -129,16 +129,13 @@ class Api {
       );
 
       if (response.statusCode != 200) {
-        final message = await getTranslateMessage(
-          code: response.data['code'],
-          message: response.data['msg'],
-        );
-        throw FormatException(message);
+        throw FormatException(response.data['msg']);
       }
 
       return response.data['ok'];
     } on DioError catch (e) {
-      await handleError(e);
+      print('catch DioError');
+      await handleError(e, translate: false);
     }
   }
 
@@ -167,21 +164,35 @@ class Api {
   Future<List<Tx>?> getTransactions(String address,
       {int limit = 10, int offset = 0}) async {
     try {
-      final response =
-      await _dio.get('${_transactions(address)}?limit=$limit&offset=$offset');
+      bool status = true;
+      List<Tx>? result = [];
+      while (status) {
+        final response =
+        await _dio.get('${_transactions(address)}?limit=$limit&offset=$offset');
 
-      if (response.statusCode != 200) {
-        final message = await getTranslateMessage(
-          code: response.data['code'],
-          message: response.data['msg'],
-        );
-        throw FormatException(message);
+        if (response.statusCode != 200) {
+          final message = await getTranslateMessage(
+            code: response.data['code'],
+            message: response.data['msg'],
+          );
+          throw FormatException(message);
+        }
+
+        final res = TransactionsResponse.fromJson(response.data!);
+        res.result!.txs!.map((tran) {
+          if (tran.tokenTransfers != null && tran.tokenTransfers!.isEmpty) {
+            result.add(tran);
+          }
+        }).toList();
+        if (result.length >= 10 || res.result!.txs!.isEmpty) {
+          status = false;
+        } else {
+          offset += 10;
+        }
+        print('offset = $offset');
+        print('len result = ${result.length}');
       }
-
-      return TransactionsResponse
-          .fromJson(response.data!)
-          .result!
-          .txs!;
+      return result;
     } on DioError catch (e) {
       await handleError(e);
     }
@@ -207,25 +218,27 @@ class Api {
         throw FormatException(message);
       }
 
-      return TransactionsResponse
-          .fromJson(response.data!)
-          .result!
-          .txs!;
+      return List<Tx>.from(response.data['result']['txs'].map((x) => Tx.fromJson(x)));
     } on DioError catch (e) {
       await handleError(e);
     }
   }
 
-  handleError(DioError e) async {
+  handleError(DioError e, {bool translate = true}) async {
     if (e.response == null) {
       final message = await getTranslateMessage();
       throw FormatException(message);
     } else {
-      final message = await getTranslateMessage(
-        code: e.response!.data['code'],
-        message: e.response!.data['msg'],
-      );
-      throw FormatException(message);
+      if (translate) {
+        final message = await getTranslateMessage(
+          code: e.response!.data['code'],
+          message: e.response!.data['msg'],
+        );
+        throw FormatException(message);
+      } else {
+        print('FormatException(e.response!.data['"msg"'])');
+        throw FormatException(e.response!.data['msg']);
+      }
     }
   }
 

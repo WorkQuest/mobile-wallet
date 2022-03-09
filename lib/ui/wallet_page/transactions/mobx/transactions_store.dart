@@ -1,4 +1,3 @@
-
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/http/api.dart';
@@ -166,10 +165,11 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           break;
       }
       result!.map((tran) {
-
+        final index = transactions.indexWhere((element) => element.hash == tran.hash);
+        if (index == -1) {
+          transactions.add(tran);
+        }
       }).toList();
-
-      transactions.addAll(result);
       await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;
       onSuccess(true);

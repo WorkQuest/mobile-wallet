@@ -152,7 +152,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                     if (store.password.text.isEmpty) {
                       return "errors.fieldEmpty".tr();
                     }
-                    if (store.password.text.length < 4) {
+                    if (store.password.text.length < 8) {
                       return "errors.incorrectFormat".tr();
                     }
                     if (RegExpFields.passwordRegExp.hasMatch(store.password.text)) {

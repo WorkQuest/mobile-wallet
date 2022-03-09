@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/page_router.dart';
@@ -20,8 +21,8 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(
-        title: 'Back',
+      appBar: DefaultAppBar(
+        title: 'meta.back'.tr(),
         titleCenter: false,
       ),
       body: LayoutWithScroll(
@@ -33,9 +34,9 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                'Choose you role',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+              Text(
+                'role.choose'.tr(),
+                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
               ),
               const SizedBox(
                 height: 40,
@@ -43,24 +44,23 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  // PageRouter.pushNewRoute(context, SignUpConfirm(nextPage: const PinCodePage(), email: '', role: isWorker ? 'worker' : 'employer',));
                   store.setRole(UserRole.employer);
                   PageRouter.pushNewRoute(
                     context,
                     SignUpApproveRole(
                       isWorker: false,
                       store: store,
-                      child: const _CardRole(
-                        title: 'Employer',
-                        description: 'I want to make a tasks and looking for a workers',
+                      child: _CardRole(
+                        title: 'role.employer'.tr(),
+                        description: 'role.employerWant'.tr(),
                         imagePath: Images.employerImage,
                       ),
                     ),
                   );
                 },
-                child: const _CardRole(
-                  title: 'Employer',
-                  description: 'I want to make a tasks and looking for a workers',
+                child: _CardRole(
+                  title: 'role.employer'.tr(),
+                  description: 'role.employerWant'.tr(),
                   imagePath: Images.employerImage,
                 ),
               ),
@@ -76,18 +76,18 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
                     SignUpApproveRole(
                       isWorker: true,
                       store: store,
-                      child: const _CardRole(
-                          title: 'Worker',
+                      child: _CardRole(
+                          title: 'role.worker'.tr(),
                           description:
-                              'I want to search a tasks and working on freelance',
+                              'role.workerWant'.tr(),
                           imagePath: Images.workerImage,
                           isWorker: true),
                     ),
                   );
                 },
-                child: const _CardRole(
-                  title: 'Worker',
-                  description: 'I want to search a tasks and working on freelance',
+                child: _CardRole(
+                  title: 'role.worker'.tr(),
+                  description: 'role.workerWant'.tr(),
                   imagePath: Images.workerImage,
                   isWorker: true,
                 ),

@@ -1,18 +1,15 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hex/hex.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
@@ -230,32 +227,6 @@ class _TransferPageState extends State<TransferPage> {
               Expanded(
                 child: Container(),
               ),
-              //0xa9059cbb00000000000000000000000075fc17d0c358f19528d5c24f29b37fa2aa725b1e0000000000000000000000000000000000000000000000004563918244f40000
-              // DefaultButton(
-              //   title: 'Test',
-              //   onPressed: () async {
-              //     _currentCoin = _coins[2];
-              //     _addressController.text = '0x750e33b34ebf9a082a49d5db431db08d69ac53f4';
-              //     _amountController.text = '1';
-              //     setState(() {
-              //
-              //     });
-              //     store.setAmount('1');
-              //     store.setAddressTo('0x750e33b34ebf9a082a49d5db431db08d69ac53f4');
-              //     store.setTitleSelectedCoin(TYPE_COINS.wBnb);
-              //
-              //
-              //
-              //     // final contract = AccountRepository().client!.getContract('0x917dc1a9e858deb0a5bdcb44c7601f655f728dfe');
-              //     // contract.self.functions.map((fun) {
-              //     //   print('name - ${fun.name}');
-              //     //   fun.parameters.map((par) {
-              //     //     print('------- ${par.name}');
-              //     //     print('---------- ${par.type.name}');
-              //     //   }).toList();
-              //     // }).toList();
-              //   },
-              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -291,7 +262,12 @@ class _TransferPageState extends State<TransferPage> {
       if (store.addressTo.toLowerCase() ==
           AccountRepository().userAddress!.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.error'.tr(), content: 'You have provided your address.');
+            title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+        return;
+      }
+      if (double.parse(store.amount) == 0.0) {
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await PageRouter.pushNewRoute(
@@ -440,6 +416,10 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   void _selectCoin(_CoinItem coin) {
+    if (_currentCoin != null) {
+      store.setAmount('');
+      _amountController.clear();
+    }
     setState(() {
       _currentCoin = coin;
     });

@@ -1,5 +1,7 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
@@ -29,8 +31,8 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(
-        title: 'Back',
+      appBar: DefaultAppBar(
+        title: 'meta.back'.tr(),
         titleCenter: false,
       ),
       body: Observer(
@@ -43,7 +45,7 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
                 height: 30,
               ),
               Text(
-                'You role is ${widget.store.role == UserRole.worker ? 'worker' : 'employer'} right?',
+                '${'role.yourRole'.tr()} ${widget.store.role == UserRole.worker ? 'role.worker'.tr() : 'role.employer'.tr()} ${'role.right'.tr()}',
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w700,
@@ -62,21 +64,21 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
                 value: widget.store.privacyPolicy,
                 onChanged: (value) => widget.store.setPrivacyPolicy(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'Privacy policy'),
+                title: textWithLink(textLink: 'privacy.title'.tr(), link: 'https://app.workquest.co/docs/privacy.pdf'),
               ),
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 value: widget.store.termsConditions,
                 onChanged: (value) => widget.store.setTermsConditions(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'Terms & Conditions'),
+                title: textWithLink(textLink: 'privacy.termsLink'.tr(), link: 'https://app.workquest.co/docs/terms.pdf'),
               ),
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 value: widget.store.amlCtfPolicy,
                 onChanged: (value) => widget.store.setAmlCtfPolicy(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'AML & CTF Policy'),
+                title: textWithLink(textLink: 'privacy.amlLink'.tr(), link: 'https://app.workquest.co/docs/aml.pdf'),
               ),
             ],
           ),
@@ -92,7 +94,7 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
           child: SizedBox(
             width: double.infinity,
             child: DefaultButton(
-              title: 'I agree',
+              title: 'meta.iAgree'.tr(),
               onPressed: widget.store.canAgreeRole
                   ? _onPressedAgree
                   : null,
@@ -109,7 +111,7 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
       SignUpConfirm(
         nextPage: const PinCodePage(),
         email: '',
-        role: widget.store.role == UserRole.worker ? 'worker' : 'employer',
+        role: widget.store.role == UserRole.worker ? 'role.worker'.tr() : 'role.employer'.tr(),
       ),
     );
   }
@@ -119,15 +121,19 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text(
-          'I agree with ',
-          style: TextStyle(
+        Text(
+          '${'privacy.agree'.tr()} ',
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () async {
+            if (await canLaunch(link!)) {
+              await launch(link);
+            }
+          },
           child: Text(
             textLink,
             style: const TextStyle(

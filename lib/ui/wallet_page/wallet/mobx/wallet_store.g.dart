@@ -24,6 +24,21 @@ mixin _$WalletStore on WalletStoreBase, Store {
     });
   }
 
+  final _$indexAtom = Atom(name: 'WalletStoreBase.index');
+
+  @override
+  int get index {
+    _$indexAtom.reportRead();
+    return super.index;
+  }
+
+  @override
+  set index(int value) {
+    _$indexAtom.reportWrite(value, super.index, () {
+      super.index = value;
+    });
+  }
+
   final _$getCoinsAsyncAction = AsyncAction('WalletStoreBase.getCoins');
 
   @override
@@ -31,10 +46,25 @@ mixin _$WalletStore on WalletStoreBase, Store {
     return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
+  final _$WalletStoreBaseActionController =
+      ActionController(name: 'WalletStoreBase');
+
+  @override
+  dynamic setIndex(int value) {
+    final _$actionInfo = _$WalletStoreBaseActionController.startAction(
+        name: 'WalletStoreBase.setIndex');
+    try {
+      return super.setIndex(value);
+    } finally {
+      _$WalletStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-coins: ${coins}
+coins: ${coins},
+index: ${index}
     ''';
   }
 }

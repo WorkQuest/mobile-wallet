@@ -36,7 +36,7 @@ dependencies:
   flutter_mobx: ^2.0.2
   build_runner: ^2.1.7
   mobx_codegen: ^2.0.4
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^5.0.1
   dio: ^4.0.4
   bip39: ^1.0.6
   ed25519_hd_key: ^2.2.0
