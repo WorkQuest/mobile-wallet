@@ -14,6 +14,7 @@ import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
+import 'package:workquest_wallet_app/widgets/login_button.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               left: 16.0,
               bottom: MediaQuery.of(context).padding.bottom + 10,
             ),
-            child: const Text('Version 1.1.1')),
+            child: const Text('Version 1.1.3')),
       ),
     );
   }
@@ -127,11 +128,9 @@ class _ContentScreenState extends State<_ContentScreen> {
             ObserverListener(
               store: store,
               onFailure: () {
-                Navigator.of(context, rootNavigator: true).pop();
                 return false;
               },
               onSuccess: () async {
-                Navigator.of(context, rootNavigator: true).pop();
                 await AlertDialogUtils.showSuccessDialog(context);
                 if (store.successData!) {
                   PageRouter.pushNewReplacementRoute(context, const PinCodePage());
@@ -147,23 +146,23 @@ class _ContentScreenState extends State<_ContentScreen> {
                   }
                 }
               },
-              child: SizedBox(
-                width: double.infinity,
-                child: Observer(
-                  builder: (_) {
-                    return DefaultButton(
-                      onPressed: store.statusButton
+              child: Observer(
+                builder: (_) {
+                  final function = store.statusButton
+                      ? !store.isLoading
                           ? () {
                               if (_formKey.currentState!.validate()) {
-                                AlertDialogUtils.showLoadingDialog(context);
                                 store.login(mnemonicController.text);
                               }
                             }
-                          : null,
-                      title: 'signIn'.tr(gender: 'login'),
-                    );
-                  },
-                ),
+                          : () {}
+                      : null;
+                  return LoginButton(
+                    enabled: store.isLoading,
+                    onTap: function,
+                    title: 'signIn'.tr(gender: 'login'),
+                  );
+                },
               ),
             ),
             const SizedBox(
@@ -181,11 +180,15 @@ class _ContentScreenState extends State<_ContentScreen> {
             ),
             SizedBox(
               width: double.infinity,
-              child: DefaultButton(
-                onPressed: () {
-                  PageRouter.pushNewRoute(context, const SignUpCreateProfile());
-                },
-                title: 'signIn.createProfile'.tr(),
+              child: Observer(
+                builder: (_) => DefaultButton(
+                  onPressed: store.isLoading
+                      ? null
+                      : () {
+                          PageRouter.pushNewRoute(context, const SignUpCreateProfile());
+                        },
+                  title: 'signIn.createProfile'.tr(),
+                ),
               ),
             ),
             const SizedBox(

@@ -69,7 +69,7 @@ class WebSocket {
               .toString()
               .toLowerCase() ==
           myAddress.toLowerCase()) {
-        await Future.delayed(const Duration(seconds: 4));
+        await Future.delayed(const Duration(seconds: 8));
         GetIt.I.get<WalletStore>().getCoins(isForce: false);
         GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
       } else {
@@ -77,7 +77,7 @@ class WebSocket {
         print('decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
         if ((decode['topics'] as List<dynamic>).last.substring(26) ==
             myAddress.substring(2)) {
-          await Future.delayed(const Duration(seconds: 4));
+          await Future.delayed(const Duration(seconds: 8));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
         }

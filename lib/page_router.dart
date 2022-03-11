@@ -5,7 +5,7 @@ class PageRouter {
   static Future<dynamic> pushNewRoute(
       BuildContext context, Widget widget) async {
     return await Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(builder: (_) => widget),
+      CustomMaterialPageRoute(builder: (_) => widget),
     );
   }
 

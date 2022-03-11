@@ -50,6 +50,8 @@ class _TransferPageState extends State<TransferPage> {
 
   bool get _selectedCoin => _currentCoin != null;
 
+  bool check = false;
+
   @override
   void initState() {
     super.initState();

@@ -34,6 +34,12 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: MainAppBar(
         title: 'settings.settings'.tr(),
       ),
+      // child: SlideAnimation(
+      //   verticalOffset: 50.0,
+      //   child: FadeInAnimation(
+      //     child: YourListChild(),
+      //   ),
+      // )
       body: LayoutWithScroll(
         child: Padding(
           padding: _padding,

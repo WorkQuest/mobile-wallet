@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_animated/auto_animated.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,11 +11,17 @@ import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
+import 'package:workquest_wallet_app/widgets/shimmer.dart';
 
 import '../../../constants.dart';
 
 class ListTransactions extends StatelessWidget {
-  const ListTransactions({Key? key}) : super(key: key);
+  final ScrollController scrollController;
+
+  const ListTransactions({
+    Key? key,
+    required this.scrollController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +29,12 @@ class ListTransactions extends StatelessWidget {
     return Observer(
       builder: (_) {
         if (store.isLoading) {
-          return const SliverFillRemaining(
-            child: Center(
-              child: CircularProgressIndicator.adaptive(),
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return _shimmer();
+              },
+              childCount: 8,
             ),
           );
         }
@@ -38,30 +48,86 @@ class ListTransactions extends StatelessWidget {
               ),
             );
           }
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                if (store.isMoreLoading && index == store.transactions.length) {
-                  return Column(
-                    children: const [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CircularProgressIndicator.adaptive(),
-                    ],
-                  );
-                }
-                if (store.type == TYPE_COINS.wusd &&
-                    store.transactions[index].value == "0") {
-                  return Container();
-                }
-                return _infoElement(store.transactions[index]);
-              },
-              childCount: store.isMoreLoading
-                  ? store.transactions.length + 1
-                  : store.transactions.length,
+          return LiveSliverList.options(
+            options: const LiveOptions(
+              delay: Duration.zero,
+              reAnimateOnVisibility: false,
+              showItemDuration: Duration(milliseconds: 375),
+              showItemInterval: Duration(milliseconds: 50),
             ),
+            controller: scrollController,
+            itemBuilder:
+                (BuildContext context, int index, Animation<double> animation) {
+                  if (store.isMoreLoading && index == store.transactions.length) {
+                    return Column(
+                      children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircularProgressIndicator.adaptive(),
+                      ],
+                    );
+                  }
+                  if (store.type == TYPE_COINS.wusd &&
+                      store.transactions[index].value == "0") {
+                    return Container();
+                  }
+                  if (!store.transactions[index].show) {
+                    store.transactions[index].show = true;
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.2),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: _infoElement(store.transactions[index]),
+                      ),
+                    );
+                  }
+                  return _infoElement(store.transactions[index]);
+                },
+            itemCount: store.isMoreLoading
+                ? store.transactions.length + 1
+                : store.transactions.length,
           );
+          // return SliverList(
+          //   delegate: SliverChildBuilderDelegate(
+          //     (BuildContext context, int index) {
+          //       if (store.isMoreLoading && index == store.transactions.length) {
+          //         return Column(
+          //           children: const [
+          //             SizedBox(
+          //               height: 10,
+          //             ),
+          //             CircularProgressIndicator.adaptive(),
+          //           ],
+          //         );
+          //       }
+          //       if (store.type == TYPE_COINS.wusd &&
+          //           store.transactions[index].value == "0") {
+          //         return Container();
+          //       }
+          //       if (!store.transactions[index].show) {
+          //         store.transactions[index].show = true;
+          //         return AnimationConfiguration.staggeredList(
+          //           position: index,
+          //           duration: const Duration(milliseconds: 375),
+          //           child: SlideAnimation(
+          //             verticalOffset: 30.0,
+          //             child: FadeInAnimation(
+          //               child: _infoElement(store.transactions[index]),
+          //             ),
+          //           ),
+          //         );
+          //       }
+          //       return _infoElement(store.transactions[index]);
+          //     },
+          //     childCount: store.isMoreLoading
+          //         ? store.transactions.length + 1
+          //         : store.transactions.length,
+          //   ),
+          // );
         }
         return SliverFillRemaining(
           child: Center(
@@ -72,7 +138,9 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  Widget _infoElement(Tx transaction) {
+  Widget _infoElement(
+    Tx transaction,
+  ) {
     bool increase = transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score;
@@ -80,8 +148,7 @@ class ListTransactions extends StatelessWidget {
       score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
     } else {
       if (transaction.amount != null) {
-        score = BigInt.parse(transaction.amount!).toDouble() *
-            pow(10, -18);
+        score = BigInt.parse(transaction.amount!).toDouble() * pow(10, -18);
       } else {
         score = BigInt.parse(transaction.tokenTransfers!.first.amount!).toDouble() *
             pow(10, -18);
@@ -125,7 +192,9 @@ class ListTransactions extends StatelessWidget {
               ),
               Text(
                 DateFormat('dd.MM.yy HH:mm')
-                    .format(transaction.amount != null ? transaction.insertedAt!.toLocal() : transaction.block!.timestamp!.toLocal())
+                    .format(transaction.amount != null
+                        ? transaction.insertedAt!.toLocal()
+                        : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -148,6 +217,67 @@ class ListTransactions extends StatelessWidget {
               ),
               overflow: TextOverflow.clip,
               textAlign: TextAlign.end,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _shimmer() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Shimmer.stand(
+            child: Container(
+              height: 34,
+              width: 34,
+              padding: const EdgeInsets.all(10.0),
+              decoration:
+                  const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+            ),
+          ),
+          const SizedBox(
+            width: 16,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.stand(
+                child: Container(
+                  height: 20,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              Shimmer.stand(
+                child: Container(
+                  height: 14,
+                  width: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          const Spacer(),
+          Flexible(
+            child: Shimmer.stand(
+              child: Container(
+                height: 20,
+                width: 100,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+              ),
             ),
           )
         ],

@@ -105,7 +105,6 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           }
         }
       }).toList();
-
       if (isForce) {
         transactions.addAll(result);
       } else {

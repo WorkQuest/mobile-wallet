@@ -82,6 +82,7 @@ class Tx {
   Block? block;
   List<TokenTransfer>? tokenTransfers;
   TYPE_COINS? coin;
+  bool show = false;
 
   factory Tx.fromJson(Map<String, dynamic> json) => Tx(
     hash: json["hash"],

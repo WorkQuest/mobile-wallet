@@ -14,6 +14,7 @@ import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/mobx/pin_code_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/widgets/animation_switch.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../page_router.dart';
@@ -25,8 +26,7 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage>
-    with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -90,53 +90,23 @@ class _PinCodePageState extends State<PinCodePage>
                   width: double.infinity,
                   height: 110,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    getTitle(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xff353C47),
+                if (store.statePin == StatePinCode.check)
+                  _elementField(
+                    title: 'pinCode.comeUp'.tr(),
+                    pinCode: store.pinCode,
+                  )
+                else
+                  AnimationSwitchWidget(
+                    first: _elementField(
+                      title: 'pinCode.comeUp'.tr(),
+                      pinCode: store.pinCode,
                     ),
+                    second: _elementField(
+                      title: 'pinCode.repeat'.tr(),
+                      pinCode: store.pinCode,
+                    ),
+                    enabled: store.statePin == StatePinCode.repeat,
                   ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                AnimatedBuilder(
-                  animation: animationController!,
-                  builder: (context, child) {
-                    final sineValue =
-                        sin(4 * 2 * pi * animationController!.value);
-                    return Observer(
-                      builder: (_) => Transform.translate(
-                        offset: Offset(sineValue * 10, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (int i = 1; i < 5; i++)
-                              Container(
-                                height: 10,
-                                width: 10,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 7.5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: store.pinCode.length >= i
-                                      ? AppColor.enabledButton
-                                      : const Color(0xffE9EDF2),
-                                ),
-                              )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
                 if (store.attempts != 0)
                   SizedBox(
                     width: double.infinity,
@@ -224,6 +194,92 @@ class _PinCodePageState extends State<PinCodePage>
       ),
     );
   }
+
+  Widget _elementField({
+    required String title,
+    required String pinCode,
+  }) {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xff353C47),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 40,
+        ),
+        PasswordField(
+          animationController: animationController,
+          pinCode: pinCode,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  final AnimationController? animationController;
+  final String pinCode;
+
+  const PasswordField({
+    Key? key,
+    required this.animationController,
+    required this.pinCode,
+  }) : super(key: key);
+
+  @override
+  _PasswordFieldState createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  @override
+  Widget build(BuildContext context) {
+    final add = widget.pinCode.length != 4;
+    if (add) {
+      widget.animationController!
+          .forward()
+          .then((value) => widget.animationController!.reverse());
+    }
+    return AnimatedBuilder(
+      animation: widget.animationController!,
+      builder: (context, child) {
+        final sineValue = sin(4 * 2 * pi * widget.animationController!.value);
+        return Transform.translate(
+          offset: add
+              ? Offset(0, -2.5 * widget.animationController!.value)
+              : Offset(sineValue * 10, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 1; i < 5; i++)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  height: 10,
+                  width: 10,
+                  margin: const EdgeInsets.symmetric(horizontal: 7.5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.pinCode.length >= i
+                        ? AppColor.enabledButton
+                        : const Color(0xffE9EDF2),
+                  ),
+                )
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class KeyboardButton extends StatelessWidget {
@@ -236,7 +292,6 @@ class KeyboardButton extends StatelessWidget {
     required this.child,
     required this.onTab,
     this.hide = false,
-
   }) : super(key: key);
 
   @override

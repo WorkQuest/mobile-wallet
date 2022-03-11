@@ -9,6 +9,7 @@ class DefaultButton extends StatelessWidget {
   final String title;
   final Color? colorEnabled;
   final Color? colorDisabled;
+  final Widget? child;
 
   const DefaultButton({
     Key? key,
@@ -16,6 +17,7 @@ class DefaultButton extends StatelessWidget {
     required this.title,
     this.colorEnabled,
     this.colorDisabled,
+    this.child,
   }) : super(key: key);
 
   @override
@@ -25,7 +27,7 @@ class DefaultButton extends StatelessWidget {
       disabledColor: colorDisabled ?? AppColor.disabledButton,
       pressedOpacity: 0.2,
       padding: EdgeInsets.zero,
-      child: Text(
+      child: child ?? Text(
         title,
         style: TextStyle(
           fontSize: 16,

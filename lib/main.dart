@@ -29,7 +29,8 @@ void main() async {
       AccountRepository().userAddress = addressActive;
     }
   } catch (e, trace) {
-    print('read storage: $e\n$trace');
+    Storage.deleteAllFromSecureStorage();
+    // print('read storage: $e\n$trace');
   }
 
   SystemChrome.setSystemUIOverlayStyle(

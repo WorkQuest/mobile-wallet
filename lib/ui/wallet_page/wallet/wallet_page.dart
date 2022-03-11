@@ -33,6 +33,8 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
+  final _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +59,7 @@ class _WalletPageState extends State<WalletPage> {
       },
       child: Platform.isAndroid
           ? RefreshIndicator(
-              displacement: 30,
+              displacement: 20,
               triggerMode: RefreshIndicatorTriggerMode.anywhere,
               onRefresh: _onRefresh,
               child: layout())
@@ -73,6 +75,7 @@ class _WalletPageState extends State<WalletPage> {
         return true;
       },
       child: CustomScrollView(
+        controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           if (Platform.isIOS)
@@ -198,6 +201,7 @@ class _WalletPageState extends State<WalletPage> {
           ),
           ListTransactions(
             key: UniqueKey(),
+            scrollController: _scrollController,
           ),
         ],
       ),
@@ -278,27 +282,20 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             height: 15,
                           ),
                           if (store.isLoading)
-                            SizedBox(
-                              width: double.infinity,
-                              height: 30,
-                              child: Shimmer.fromColors(
-                                baseColor: const Color(0xfff1f0f0),
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  width: 100,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(6.0),
-                                  ),
+                            Shimmer.stand(
+                              child: Container(
+                                width: double.infinity,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(6.0),
                                 ),
                               ),
                             )
                           else
                             Text(
                               // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount).toDouble().toStringAsFixed(
-                                  8)} ${balance.title}',
+                              '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
@@ -382,7 +379,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color: AppColor.enabledButton.withOpacity(0.1)),
+                                  color: AppColor.enabledButton.withOpacity(0.1)),
                           color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
