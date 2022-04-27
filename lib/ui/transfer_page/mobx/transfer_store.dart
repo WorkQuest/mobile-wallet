@@ -48,20 +48,24 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final gas = await AccountRepository().client!.getGas();
       switch (typeCoin) {
         case TYPE_COINS.wusd:
-          final count = balance.getValueInUnitBI(EtherUnit.ether);
-          amount = (count - gas.getInEther).toString();
+          final count = (balance.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 250);
+          amount = (count.toDouble() - _gas).toString();
           break;
         case TYPE_COINS.wqt:
           final count = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wqt);
-          amount = (count - gas.getInEther.toDouble() * 0.3).toString();
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
+          amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wEth:
           final count = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wEth);
-          amount = (count - gas.getInEther.toDouble() * 0.3).toString();
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
+          amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wBnb:
           final count = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wBnb);
-          amount = (count - gas.getInEther.toDouble() * 0.3).toString();
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
+          amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         default:
           break;
