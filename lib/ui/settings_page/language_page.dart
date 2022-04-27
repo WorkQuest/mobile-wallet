@@ -48,10 +48,7 @@ class _LanguagePageState extends State<LanguagePage> {
                 return Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {
-                        _currentLanguage = language;
-                        await context.setLocale(language);
-                      },
+                      onTap: () => _changeLanguage(language),
                       child: ColoredBox(
                         color: Colors.transparent,
                         child: SizedBox(
@@ -86,6 +83,12 @@ class _LanguagePageState extends State<LanguagePage> {
         ),
       ),
     );
+  }
+  
+  Future _changeLanguage(Locale language) async {
+    _currentLanguage = language;
+    await context.setLocale(language);
+    Navigator.pop(context, true);
   }
 
   String _getTitleLanguage(Locale locale) {

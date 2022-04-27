@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SnackBarUtils {
-  static void show(
-    BuildContext context, {
+  static void show(BuildContext context, {
     required String title,
     Duration duration = const Duration(seconds: 1),
     Color backgroundColor = Colors.white,
@@ -14,6 +13,7 @@ class SnackBarUtils {
         SnackBar(
           duration: duration,
           backgroundColor: backgroundColor,
+          behavior: SnackBarBehavior.floating,
           content: Row(
             children: [
               Flexible(
@@ -36,6 +36,7 @@ class SnackBarUtils {
         SnackBar(
           duration: duration ?? const Duration(seconds: 1),
           backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
           content: Row(
             children: [
               Flexible(
@@ -60,6 +61,7 @@ class SnackBarUtils {
       SnackBar(
         duration: duration ?? const Duration(minutes: 3),
         backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
         content: Row(
           children: [
             Text(
@@ -86,6 +88,7 @@ class SnackBarUtils {
         SnackBar(
           duration: duration ?? const Duration(seconds: 1),
           backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
           content: Row(
             children: [
               Text(
@@ -103,3 +106,5 @@ class SnackBarUtils {
       );
   }
 }
+
+

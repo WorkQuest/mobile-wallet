@@ -14,12 +14,14 @@ import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../utils/snack_bar.dart';
 import 'language_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class SettingsPage extends StatefulWidget {
   final Function? update;
+
   const SettingsPage({Key? key, required this.update}) : super(key: key);
 
   @override
@@ -34,12 +36,6 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: MainAppBar(
         title: 'settings.settings'.tr(),
       ),
-      // child: SlideAnimation(
-      //   verticalOffset: 50.0,
-      //   child: FadeInAnimation(
-      //     child: YourListChild(),
-      //   ),
-      // )
       body: LayoutWithScroll(
         child: Padding(
           padding: _padding,
@@ -54,8 +50,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: _getTitleLanguage(context.locale),
                 imagePath: Images.settingsLanguageIcon,
                 onTab: () async {
-                  await PageRouter.pushNewRoute(context, const LanguagePage());
-                  widget.update!.call();
+                  final result =
+                      await PageRouter.pushNewRoute(context, const LanguagePage());
+                  if (result != null && result) {
+                    await Future.delayed(const Duration(milliseconds: 200));
+                    SnackBarUtils.success(context, title: 'meta.languageChanged'.tr());
+                    widget.update!.call();
+                  }
                 },
               ),
               const SizedBox(
@@ -67,7 +68,8 @@ class _SettingsPageState extends State<SettingsPage> {
               //   subtitle: 'Mainnet',
               //   imagePath: Images.settingsNetworkIcon,
               //   onTab: () {
-              //     PageRouter.pushNewRoute(context, const NetworkPage());
+              //     // PageRouter.pushNewRoute(context, const NetworkPage());
+              //     SnackBarUtils.example(context);
               //   },
               // ),
               Expanded(child: Container()),
@@ -76,8 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () async {
-                    await PageRouter.pushNewRemoveRoute(
-                        context, const LoginPage());
+                    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
                     await Storage.deleteAllFromSecureStorage();
                     WebSocket().closeWebSocket();
                     AccountRepository().clearData();
