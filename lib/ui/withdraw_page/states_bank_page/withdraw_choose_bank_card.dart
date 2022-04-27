@@ -8,6 +8,7 @@ import 'package:workquest_wallet_app/widgets/dismiss_keyboard.dart';
 import 'package:workquest_wallet_app/widgets/info_element.dart';
 
 import '../../../constants.dart';
+import '../../../utils/alert_dialog.dart';
 
 final List<_CardBank> _cardsBanks = [
   _CardBank('Visa', '*0000'),
@@ -209,6 +210,7 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
               title: 'wallet.withdraw'.tr(),
               onPressed: () {
                 if (_formAmount.currentState!.validate()) {
+                  AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
                   widget.onTab!.call();
                 }
               },

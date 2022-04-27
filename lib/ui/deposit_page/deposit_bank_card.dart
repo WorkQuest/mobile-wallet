@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/states_bank_page/deposit_add_bank_card.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/states_bank_page/deposit_choose_bank_card.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 
 import '../../constants.dart';
@@ -28,6 +29,7 @@ class _DepositBankCardState extends State<DepositBankCard> with TickerProviderSt
   Widget build(BuildContext context) {
     return _NotBankCards(
       onTab: () {
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
         setState(() {
           _addingBankCard = !_addingBankCard;
         });
