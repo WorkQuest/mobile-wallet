@@ -9,6 +9,8 @@ import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
+import '../../repository/account_repository.dart';
+
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
 
@@ -56,11 +58,14 @@ class _SplashPageState extends State<SplashPage> {
                 //       nextPage: const PinCodePage(),
                 //     ));
               },
-              onTabOk: () => PageRouter.pushNewReplacementRoute(context, const LoginPage()),
+              onTabOk: () {
+                AccountRepository().clearData();
+                PageRouter.pushNewReplacementRoute(context, const LoginPage());
+              },
               colorCancel: AppColor.enabledButton,
               colorOk: AppColor.enabledButton,
             );
-            return true;
+            return false;
           }
           AlertDialogUtils.showAlertDialog(
             context,
