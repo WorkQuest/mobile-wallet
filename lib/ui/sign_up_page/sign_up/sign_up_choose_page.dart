@@ -7,6 +7,7 @@ import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/mobx/sign_up_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/modal_bottom_sheet.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -49,7 +50,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 15,
                 ),
                 Text(
-                  'signUp.chooseWords'.tr(),
+                  'Choose the ${store.indexFirstWord}th and ${store.indexSecondWord}th words of your mnemonic',
                   style: const TextStyle(
                     fontSize: 24,
                     color: Colors.black,
@@ -60,7 +61,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 30,
                 ),
                 Text(
-                  'signUp.3thWord'.tr(),
+                  '${store.indexFirstWord}th word',
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -79,7 +80,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 30,
                 ),
                 Text(
-                  'signUp.7thWord'.tr(),
+                  '${store.indexSecondWord}th word',
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -95,30 +96,39 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   isFirst: false,
                 ),
                 Expanded(child: Container()),
-                const SizedBox(height: 20,),
-                Container(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
-                  width: double.infinity,
-                  child: ObserverListener(
-                    store: store,
-                    onFailure: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      return false;
-                    },
-                    onSuccess: () async {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      await AlertDialogUtils.showSuccessDialog(context);
-                      PageRouter.pushNewRemoveRoute(
-                          context, const LoginPage());
-                    },
-                    child: DefaultButton(
-                      title: 'signUp.openWallet'.tr(),
-                      onPressed: store.statusGenerateButton ? () {
-                        AlertDialogUtils.showLoadingDialog(context);
-                        store.openWallet();
-                      } : null,
-                    ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: double.infinity,
+                      ),
+                      ObserverListener(
+                        store: store,
+                        onFailure: () {
+                          return false;
+                        },
+                        onSuccess: () async {
+                          await AlertDialogUtils.showSuccessDialog(context);
+                          PageRouter.pushNewRemoveRoute(context, const LoginPage());
+                        },
+                        child: Observer(
+                          builder: (_) => LoginButton(
+                            title: 'signUp.openWallet'.tr(),
+                            onTap: store.statusGenerateButton
+                                ? () {
+                                    store.openWallet();
+                                  }
+                                : null,
+                            enabled: store.isLoading,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],
@@ -154,52 +164,50 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
 
   Future<void> _openModalBottomSheet() async {
     await ModalBottomSheet.openModalBottomSheet(
-      context,
-      Column(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'meta.error'.tr(),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+        context,
+        Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'meta.error'.tr(),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 11,
-              ),
-              Text(
-                'signUp.chosenWrongWords'.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+                const SizedBox(
+                  height: 11,
                 ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-            child: SizedBox(
-              width: double.infinity,
-              child: DefaultButton(
-                title: 'Ok',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
+                Text(
+                  'signUp.chosenWrongWords'.tr(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-      height: 225
-    );
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              child: SizedBox(
+                width: double.infinity,
+                child: DefaultButton(
+                  title: 'Ok',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
+        height: 225);
   }
 }
 

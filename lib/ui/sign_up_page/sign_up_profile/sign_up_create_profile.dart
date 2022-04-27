@@ -1,12 +1,13 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/mobx/sign_up_profile_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
-import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
@@ -15,7 +16,6 @@ import '../../../constants.dart';
 import '../../../page_router.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
-
 
 class SignUpCreateProfile extends StatefulWidget {
   const SignUpCreateProfile({Key? key}) : super(key: key);
@@ -61,6 +61,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 DefaultTextField(
                   controller: store.firstName,
                   hint: 'labels.firstName'.tr(),
+                  keyboardType: TextInputType.name,
                   validator: (value) {
                     if (store.firstName.text.isEmpty) {
                       return "errors.fieldEmpty".tr();
@@ -88,6 +89,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 DefaultTextField(
                   controller: store.lastName,
                   hint: 'labels.lastName'.tr(),
+                  keyboardType: TextInputType.name,
                   validator: (value) {
                     if (store.lastName.text.isEmpty) {
                       return "errors.fieldEmpty".tr();
@@ -147,16 +149,13 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 DefaultTextField(
                   controller: store.password,
                   hint: 'signUp.password'.tr(),
-                  obscureText: true,
+                  isPassword: true,
                   validator: (value) {
                     if (store.password.text.isEmpty) {
                       return "errors.fieldEmpty".tr();
                     }
                     if (store.password.text.length < 8) {
-                      return "errors.incorrectFormat".tr();
-                    }
-                    if (RegExpFields.passwordRegExp.hasMatch(store.password.text)) {
-                      return "errors.incorrectFormat".tr();
+                      return "errors.shortPassword".tr();
                     }
                     return null;
                   },
@@ -178,7 +177,7 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 DefaultTextField(
                   controller: store.passwordConfirm,
                   hint: 'signUp.confirmPassword'.tr(),
-                  obscureText: true,
+                  isPassword: true,
                   validator: (value) {
                     if (store.passwordConfirm.text.isEmpty) {
                       return "errors.fieldEmpty".tr();
@@ -203,29 +202,32 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 const SizedBox(
                   height: 30,
                 ),
-                ObserverListener(
-                  store: store,
-                  onFailure: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    return false;
-                  },
-                  onSuccess: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    await AlertDialogUtils.showSuccessDialog(context);
-                    PageRouter.pushNewReplacementRoute(context, const SignUpPage());
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: DefaultButton(
-                      title: 'signUp.generateAddress'.tr(),
-                      onPressed: () async {
-                        if (_key.currentState!.validate()) {
-                          AlertDialogUtils.showLoadingDialog(context);
-                          store.register();
-                        }
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: double.infinity,),
+                    ObserverListener(
+                      store: store,
+                      onFailure: () {
+                        return false;
                       },
+                      onSuccess: () async {
+                        await AlertDialogUtils.showSuccessDialog(context);
+                        PageRouter.pushNewReplacementRoute(context, const SignUpPage());
+                      },
+                      child: Observer(
+                        builder:(_) => LoginButton(
+                          title: 'signUp.generateAddress'.tr(),
+                          onTap: () async {
+                            if (_key.currentState!.validate()) {
+                              store.register();
+                            }
+                          },
+                          enabled: store.isLoading,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,

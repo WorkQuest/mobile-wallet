@@ -1,10 +1,11 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -54,28 +55,36 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             Padding(
               padding:
                   EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ObserverListener(
-                  onFailure: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    return false;
-                  },
-                  store: store,
-                  onSuccess: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    await AlertDialogUtils.showSuccessDialog(context);
-                    Navigator.pop(context, true);
-                  },
-                  child: DefaultButton(
-                    onPressed: () {
-                      AlertDialogUtils.showLoadingDialog(context);
-                      store.sendTransaction(
-                          widget.addressTo, widget.amount, widget.typeCoin);
-                    },
-                    title: 'meta.confirm'.tr(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
                   ),
-                ),
+                  ObserverListener(
+                    onFailure: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      return false;
+                    },
+                    store: store,
+                    onSuccess: () async {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      await AlertDialogUtils.showSuccessDialog(context);
+                      Navigator.pop(context, true);
+                    },
+                    child: Observer(
+                      builder: (_) => LoginButton(
+                        onTap: () {
+                          AlertDialogUtils.showLoadingDialog(context);
+                          store.sendTransaction(
+                              widget.addressTo, widget.amount, widget.typeCoin);
+                        },
+                        title: 'meta.confirm'.tr(),
+                        enabled: store.isLoading,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
           ],
