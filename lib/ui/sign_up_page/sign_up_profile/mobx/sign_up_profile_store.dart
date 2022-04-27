@@ -28,6 +28,7 @@ abstract class SignUpProfileStoreBase extends IStore<bool> with Store {
   register() async {
     try {
       onLoading();
+      await Future.delayed(const Duration(seconds: 1));
       final result = await Api().register(
         firstName.text,
         lastName.text,
