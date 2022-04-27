@@ -111,7 +111,7 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
       SignUpConfirm(
         nextPage: const PinCodePage(),
         email: '',
-        role: widget.store.role == UserRole.worker ? 'role.worker'.tr() : 'role.employer'.tr(),
+        role: widget.store.role == UserRole.worker ? 'worker' : 'employer',
       ),
     );
   }
@@ -128,18 +128,21 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
             color: Colors.black,
           ),
         ),
-        GestureDetector(
-          onTap: () async {
-            if (await canLaunch(link!)) {
-              await launch(link);
-            }
-          },
-          child: Text(
-            textLink,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColor.enabledButton,
-              decoration: TextDecoration.underline,
+        Expanded(
+          child: GestureDetector(
+            onTap: () async {
+              if (await canLaunch(link!)) {
+                await launch(link);
+              }
+            },
+            child: Text(
+              textLink,
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColor.enabledButton,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         )

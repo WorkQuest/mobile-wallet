@@ -24,6 +24,9 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
       appBar: DefaultAppBar(
         title: 'meta.back'.tr(),
         titleCenter: false,
+        onPressed: () {
+          Navigator.pop(context, true);
+        },
       ),
       body: LayoutWithScroll(
         child: Padding(
