@@ -77,6 +77,36 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
+  final _$indexFirstWordAtom = Atom(name: 'SignUpStoreBase.indexFirstWord');
+
+  @override
+  int? get indexFirstWord {
+    _$indexFirstWordAtom.reportRead();
+    return super.indexFirstWord;
+  }
+
+  @override
+  set indexFirstWord(int? value) {
+    _$indexFirstWordAtom.reportWrite(value, super.indexFirstWord, () {
+      super.indexFirstWord = value;
+    });
+  }
+
+  final _$indexSecondWordAtom = Atom(name: 'SignUpStoreBase.indexSecondWord');
+
+  @override
+  int? get indexSecondWord {
+    _$indexSecondWordAtom.reportRead();
+    return super.indexSecondWord;
+  }
+
+  @override
+  set indexSecondWord(int? value) {
+    _$indexSecondWordAtom.reportWrite(value, super.indexSecondWord, () {
+      super.indexSecondWord = value;
+    });
+  }
+
   final _$selectedFirstWordAtom =
       Atom(name: 'SignUpStoreBase.selectedFirstWord');
 

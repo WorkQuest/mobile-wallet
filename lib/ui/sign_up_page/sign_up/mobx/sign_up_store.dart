@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
@@ -26,6 +27,12 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   String? secondWord;
 
   @observable
+  int? indexFirstWord;
+
+  @observable
+  int? indexSecondWord;
+
+  @observable
   String? selectedFirstWord;
 
   @observable
@@ -49,52 +56,48 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   @action
   generateMnemonic() {
     mnemonic = AddressService().generateMnemonic();
-    final list = mnemonic!.split(' ').toList();
-    firstWord = list[2];
-    secondWord = list[6];
   }
 
   @action
   splitPhraseIntoWords() {
     setOfWords = ObservableList.of([]);
-
-    // final _random = Random();
-
     final list = mnemonic!.split(' ').toList();
+    setOfWords!.addAll(_listRandom(list));
 
-    setOfWords!.add(list[0]);
-    setOfWords!.add(list[10]);
-    setOfWords!.add(list[2]);
-    setOfWords!.add(list[8]);
-    setOfWords!.add(list[6]);
-    setOfWords!.add(list[4]);
-    setOfWords!.add(list[11]);
-
-    // for (var i = list.length - 1; i > 4; i--) {
-    //   var n = _random.nextInt(i + 1);
-    //   if (setOfWords!.length == 7) {
-    //     break;
-    //   }
-    //   while (setOfWords!.contains(list[n])) {
-    //     n = _random.nextInt(i + 1);
-    //   }
-    //   setOfWords!.add(list[n]);
-    // }
-    // if (!setOfWords!.contains(firstWord)) {
-    //   setOfWords!.removeLast();
-    //   setOfWords!.insert(0, firstWord!);
-    // }
-    // if (!setOfWords!.contains(secondWord)) {
-    //   setOfWords!.removeLast();
-    //   setOfWords!.insert(0, secondWord!);
-    // }
     setOfWords!.shuffle();
+  }
+
+  List<String> _listRandom(List<String> list) {
+    Random _random = Random();
+
+    indexFirstWord = _random.nextInt(5) + 1;
+    indexSecondWord = _random.nextInt(5) + 6;
+    while (indexSecondWord == indexFirstWord) {
+      indexSecondWord = _random.nextInt(11) + 1;
+    }
+    firstWord = list[indexFirstWord! - 1];
+    secondWord = list[indexSecondWord! - 1];
+
+    list.shuffle(_random);
+    List<String> result = [];
+    int i = 0;
+    while (result.length < 5) {
+      if (list[i] != firstWord && list[i] != secondWord) {
+        result.add(list[i]);
+      }
+      i++;
+    }
+    result.add(firstWord!);
+    result.add(secondWord!);
+    result.shuffle(_random);
+    return result;
   }
 
   @action
   openWallet() async {
     onLoading();
     try {
+      await Future.delayed(const Duration(seconds: 1));
       Wallet wallet = await Wallet.derive(mnemonic!);
       final result = await Api().registerWallet(wallet.publicKey!, wallet.address!);
       if (!result!) {
