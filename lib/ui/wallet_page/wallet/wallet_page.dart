@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -83,101 +84,52 @@ class _WalletPageState extends State<WalletPage> {
               onRefresh: _onRefresh,
             ),
           SliverToBoxAdapter(
-            child: Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.subtitleText,
-                      ),
-                    ),
-                    const Spacer(),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.2,
-                      onPressed: () {
-                        Clipboard.setData(
-                            ClipboardData(text: AccountRepository().userAddress));
-                        SnackBarUtils.success(
-                          context,
-                          title: 'wallet.copy'.tr(),
-                          duration: const Duration(milliseconds: 500),
-                        );
-                      },
-                      child: Container(
-                        height: 34,
-                        width: 34,
-                        padding: const EdgeInsets.all(7.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            color: AppColor.disabledButton),
-                        child: SvgPicture.asset(
-                          Images.walletCopyIcon,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.subtitleText,
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  width: double.infinity,
-                  child: _InfoCardBalance(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        pressedOpacity: 0.2,
-                        onPressed: () {
-                          PageRouter.pushNewRoute(context, const WithdrawPage());
-                        },
-                        child: Container(
-                          height: 43,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            border: Border.all(
-                              color: Colors.blue.withOpacity(0.1),
-                            ),
-                          ),
-                          child: Text(
-                            'wallet'.tr(gender: 'withdraw'),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: AppColor.enabledButton,
-                            ),
-                          ),
-                        ),
-                      ),
+                const Spacer(),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  pressedOpacity: 0.2,
+                  onPressed: () {
+                    Clipboard.setData(
+                        ClipboardData(text: AccountRepository().userAddress));
+                    SnackBarUtils.success(
+                      context,
+                      title: 'wallet.copy'.tr(),
+                      duration: const Duration(milliseconds: 500),
+                    );
+                  },
+                  child: Container(
+                    height: 34,
+                    width: 34,
+                    padding: const EdgeInsets.all(7.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: AppColor.disabledButton),
+                    child: SvgPicture.asset(
+                      Images.walletCopyIcon,
+                      color: AppColor.enabledButton,
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: DefaultButton(
-                        title: 'wallet'.tr(gender: 'deposit'),
-                        onPressed: () {
-                          PageRouter.pushNewRoute(context, const DepositPage());
-                        },
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ],
+            ),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _WalletView(
+              address: address,
+              minExtend: 0,
+              maxExtend: 270,
             ),
           ),
           SliverAppBar(
@@ -212,6 +164,111 @@ class _WalletPageState extends State<WalletPage> {
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     return GetIt.I.get<WalletStore>().getCoins();
   }
+}
+
+class _WalletView extends SliverPersistentHeaderDelegate {
+  final String address;
+  final double minExtend;
+  final double maxExtend;
+  BuildContext? walletPageContext;
+
+  _WalletView({
+    required this.address,
+    required this.minExtend,
+    required this.maxExtend,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          top: minExtent,
+          right: 0,
+          child: Transform.scale(
+            scale: 1 - (shrinkOffset / (500 * 3)),
+            child: Opacity(
+              opacity: max(
+                0,
+                1 - (shrinkOffset / (500 / 2)),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const SizedBox(
+                    width: double.infinity,
+                    child: _InfoCardBalance(),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          pressedOpacity: 0.2,
+                          onPressed: () {
+                            PageRouter.pushNewRoute(context, const WithdrawPage());
+                          },
+                          child: Container(
+                            height: 43,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.0),
+                              border: Border.all(
+                                color: Colors.blue.withOpacity(0.1),
+                              ),
+                            ),
+                            child: Text(
+                              'wallet'.tr(gender: 'withdraw'),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColor.enabledButton,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: DefaultButton(
+                          title: 'wallet'.tr(gender: 'deposit'),
+                          onPressed: () {
+                            PageRouter.pushNewRoute(context, const DepositPage());
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => maxExtend;
+
+  @override
+  double get minExtent => minExtend;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class _InfoCardBalance extends StatefulWidget {
