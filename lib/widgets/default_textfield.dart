@@ -7,7 +7,7 @@ class DefaultTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final Widget? prefitIcon;
   final String hint;
-  final bool obscureText;
+  final bool isPassword;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
@@ -21,7 +21,7 @@ class DefaultTextField extends StatefulWidget {
     this.validator,
     this.keyboardType,
     this.prefitIcon,
-    this.obscureText = false,
+    this.isPassword = false,
   }) : super(key: key);
 
   @override
@@ -29,11 +29,18 @@ class DefaultTextField extends StatefulWidget {
 }
 
 class _DefaultTextFieldState extends State<DefaultTextField> {
+  late bool _visiblePassword;
 
   @override
   void initState() {
     super.initState();
+    _visiblePassword = !widget.isPassword;
     widget.controller.addListener(() {
+      if (widget.keyboardType == TextInputType.name) {
+        final result = widget.controller.value.text.isEmpty ? '' : '${_upperFirst(
+            widget.controller.text)}';
+        widget.controller.value = widget.controller.value.copyWith(text: result);
+      }
       setState(() {});
     });
   }
@@ -51,11 +58,11 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       inputFormatters: widget.inputFormatters,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       validator: widget.validator,
-      obscureText: widget.obscureText,
+      obscureText: !_visiblePassword,
       decoration: InputDecoration(
         filled: true,
         fillColor:
-            widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
+        widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
         hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
@@ -106,10 +113,31 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
             style: BorderStyle.solid,
           ),
         ),
-        suffixIcon: widget.suffixIcon,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+          icon: Icon(
+            _visiblePassword ? Icons.visibility : Icons.visibility_off,
+            color: _visiblePassword ? Theme
+                .of(context)
+                .primaryColorDark : Colors.grey,
+            size: 20.0,
+          ),
+          padding: const EdgeInsets.only(right: 8.0),
+          splashRadius: 0.1,
+          onPressed: () {
+            setState(() {
+              _visiblePassword = !_visiblePassword;
+            });
+          },
+        )
+            : widget.suffixIcon,
         prefixIcon: widget.prefitIcon,
       ),
     );
   }
 
+  String? _upperFirst(String text) {
+    if (text.isEmpty) return text;
+    return '${text[0].toUpperCase()}${text.substring(1)}';
+  }
 }

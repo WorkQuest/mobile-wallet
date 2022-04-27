@@ -11,10 +11,10 @@ import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_choose_role/sign_up
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
-import 'package:workquest_wallet_app/widgets/login_button.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               left: 16.0,
               bottom: MediaQuery.of(context).padding.bottom + 10,
             ),
-            child: const Text('Version 1.1.3')),
+            child: const Text('Version 1.1.4')),
       ),
     );
   }
@@ -105,6 +105,7 @@ class _ContentScreenState extends State<_ContentScreen> {
           child: DefaultTextField(
             controller: mnemonicController,
             hint: 'wallet.enterMnemonicPhrase'.tr(),
+            isPassword: true,
             suffixIcon: null,
             inputFormatters: null,
             validator: (value) {
@@ -137,12 +138,9 @@ class _ContentScreenState extends State<_ContentScreen> {
                 } else {
                   final result =
                       await PageRouter.pushNewRoute(context, const SignUpChooseRole());
-                  print('result -> $result');
                   if (result != null && result) {
                     AccountRepository().clearData();
                     await Storage.deleteAllFromSecureStorage();
-                    print(AccountRepository().userAddresses == null);
-                    print('qweasd');
                   }
                 }
               },
