@@ -24,7 +24,8 @@
     "edit": "Edit",
     "registration": "Registration",
     "confirmYourEmail": "Confirm your email",
-    "emailConfirm": "Code has been sent on your email",
+    "emailConfirm": "Code has been sent on your email.",
+    "emailCheckSpam": "If you can't find confirmation code in your Inbox, also check your Spam or Ads folder.",
     "emailConfirmTitle": "Check your email."
   },
   "login": {
@@ -69,7 +70,9 @@
     "warning": "Warning",
     "return": "Return",
     "copied": "Copied",
-    "error": "Error"
+    "error": "Error",
+    "serviceUnavailable": "Service temporarily unavailable",
+    "languageChanged": "Language has been successfully changed"
   },
   "signIn": {
     "title": "Sign in",
@@ -331,7 +334,8 @@
     "incorrectMnemonicFormat": "Incorrect mnemonic format",
     "notInternet": "No internet access",
     "provideYourAddress": "You have provided your address.",
-    "invalidAmount": "Invalid value amount."
+    "invalidAmount": "Invalid value amount.",
+    "shortPassword": "Short password"
   },
   "404000": "Wallet not found",
   "400000": "Email used"

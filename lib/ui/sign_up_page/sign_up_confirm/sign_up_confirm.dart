@@ -1,12 +1,10 @@
-import 'package:easy_localization/src/public_ext.dart';
-import 'package:flutter/foundation.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -49,10 +47,6 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
           title: 'meta.back'.tr(),
           titleCenter: false,
           onPressed: () async {
-            AccountRepository().clearData();
-            await Storage.deleteAllFromSecureStorage();
-            print(AccountRepository().userAddresses == null);
-            print('testetestestesr');
             Navigator.pop(context, true);
           },
         ),
@@ -95,10 +89,12 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    'registration.emailConfirmTitle'.tr(),
-                    style: const TextStyle(
-                      fontSize: 16,
+                  Flexible(
+                    child: Text(
+                      '${'registration.emailConfirmTitle'.tr()} ${'registration.emailCheckSpam'.tr()}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   const SizedBox(
