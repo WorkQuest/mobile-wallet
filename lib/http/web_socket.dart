@@ -37,7 +37,7 @@ class WebSocket {
 """);
 
     channel!.stream.listen((message) {
-      print("WebSocket message: $message");
+      // print("WebSocket message: $message");
       var jsonResponse = jsonDecode(message);
       handleSubscription(jsonResponse);
     }, onDone: () async {
@@ -61,10 +61,6 @@ class WebSocket {
   void handleSubscription(dynamic jsonResponse) async {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
-      print('tran - ${transaction.result!.events!['ethereum_tx.recipient']!.first
-          .toString()
-          .toLowerCase()}');
-      print('my tran - ${myAddress.toLowerCase()}');
       if (transaction.result!.events!['ethereum_tx.recipient']!.first
               .toString()
               .toLowerCase() ==
@@ -83,7 +79,7 @@ class WebSocket {
         }
       }
     } catch (e, trace) {
-      print('web socket e - $e\ntrace - $trace');
+      // print('web socket e - $e\ntrace - $trace');
     }
   }
 }
