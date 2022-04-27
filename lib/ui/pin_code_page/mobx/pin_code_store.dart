@@ -22,6 +22,12 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
   bool canBiometrics = false;
 
   @observable
+  bool startSwitch = false;
+
+  @observable
+  bool startAnimation = false;
+
+  @observable
   StatePinCode statePin = StatePinCode.check;
 
   @action
@@ -52,10 +58,14 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
         signIn(isBiometric: true);
       } else {
         onError("PIN code is not suitable");
+        await Future.delayed(const Duration(milliseconds: 350));
+        errorMessage = null;
       }
     } catch (e) {
       print(e);
       onError("PIN code is not suitable");
+      await Future.delayed(const Duration(milliseconds: 350));
+      errorMessage = null;
     }
   }
 
@@ -78,42 +88,60 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
         onSuccess(StatePinCode.success);
         return;
       }
-      if (statePin == StatePinCode.create) {
-        newPinCode = pinCode;
-        pinCode = '';
-        statePin = StatePinCode.repeat;
-        onSuccess(StatePinCode.repeat);
-        return;
-      } else if (statePin == StatePinCode.repeat) {
-        if (newPinCode == pinCode) {
-          await Storage.write(StorageKeys.pinCode.toString(), pinCode);
-          statePin = StatePinCode.success;
-          onSuccess(StatePinCode.success);
-        } else {
-          attempts++;
-          if (attempts == 3) {
-            statePin = StatePinCode.toLogin;
-            onSuccess(StatePinCode.toLogin);
+      switch(statePin) {
+        case StatePinCode.create:
+          newPinCode = pinCode;
+          pinCode = '';
+          statePin = StatePinCode.repeat;
+          onSuccess(StatePinCode.repeat);
+          startSwitch = true;
+          return;
+        case StatePinCode.repeat:
+          print('newPinCode: $newPinCode');
+          print('pinCode: $pinCode');
+          if (newPinCode == pinCode) {
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 2));
+            await Storage.write(StorageKeys.pinCode.toString(), pinCode);
+            onSuccess(StatePinCode.success);
           } else {
-            pinCode = '';
-            onError("PIN code is not suitable $attempts");
+            attempts++;
+            if (attempts == 3) {
+              statePin = StatePinCode.toLogin;
+              onSuccess(StatePinCode.toLogin);
+            } else {
+              pinCode = '';
+              onError("PIN code is not suitable $attempts");
+              await Future.delayed(const Duration(milliseconds: 350));
+              errorMessage = null;
+            }
           }
-        }
-      } else {
-        final value = await Storage.read(StorageKeys.pinCode.toString());
-        if (value == pinCode) {
-          statePin = StatePinCode.success;
-          onSuccess(StatePinCode.success);
-        } else {
-          attempts++;
-          if (attempts == 3) {
-            statePin = StatePinCode.toLogin;
-            onSuccess(StatePinCode.toLogin);
+          break;
+        case StatePinCode.check:
+          final value = await Storage.read(StorageKeys.pinCode.toString());
+          if (value == pinCode) {
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 2));
+            onSuccess(StatePinCode.success);
           } else {
-            pinCode = '';
-            onError("PIN code is not suitable");
+            attempts++;
+            if (attempts == 3) {
+              statePin = StatePinCode.toLogin;
+              onSuccess(StatePinCode.toLogin);
+            } else {
+              pinCode = '';
+              onError("PIN code is not suitable");
+              await Future.delayed(const Duration(milliseconds: 350));
+              errorMessage = null;
+            }
           }
-        }
+          break;
+        case StatePinCode.toLogin:
+        // TODO: Handle this case.
+          break;
+        case StatePinCode.success:
+        // TODO: Handle this case.
+          break;
       }
     } catch (e) {
       onError(e.toString());

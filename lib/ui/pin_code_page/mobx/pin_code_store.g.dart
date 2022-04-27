@@ -69,6 +69,36 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
+  final _$startSwitchAtom = Atom(name: 'PinCodeStoreBase.startSwitch');
+
+  @override
+  bool get startSwitch {
+    _$startSwitchAtom.reportRead();
+    return super.startSwitch;
+  }
+
+  @override
+  set startSwitch(bool value) {
+    _$startSwitchAtom.reportWrite(value, super.startSwitch, () {
+      super.startSwitch = value;
+    });
+  }
+
+  final _$startAnimationAtom = Atom(name: 'PinCodeStoreBase.startAnimation');
+
+  @override
+  bool get startAnimation {
+    _$startAnimationAtom.reportRead();
+    return super.startAnimation;
+  }
+
+  @override
+  set startAnimation(bool value) {
+    _$startAnimationAtom.reportWrite(value, super.startAnimation, () {
+      super.startAnimation = value;
+    });
+  }
+
   final _$statePinAtom = Atom(name: 'PinCodeStoreBase.statePin');
 
   @override
@@ -139,6 +169,8 @@ pinCode: ${pinCode},
 newPinCode: ${newPinCode},
 attempts: ${attempts},
 canBiometrics: ${canBiometrics},
+startSwitch: ${startSwitch},
+startAnimation: ${startAnimation},
 statePin: ${statePin}
     ''';
   }

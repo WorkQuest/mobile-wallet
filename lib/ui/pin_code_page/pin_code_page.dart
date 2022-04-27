@@ -14,7 +14,9 @@ import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/mobx/pin_code_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
-import 'package:workquest_wallet_app/widgets/animation_switch.dart';
+import 'package:workquest_wallet_app/widgets/animation/animation_color.dart';
+import 'package:workquest_wallet_app/widgets/animation/animation_compression.dart';
+import 'package:workquest_wallet_app/widgets/animation/animation_switch.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../page_router.dart';
@@ -70,7 +72,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
           await Storage.deleteAllFromSecureStorage();
           AccountRepository().clearData();
           PageRouter.pushNewRemoveRoute(context, const LoginPage());
-        } else if (store.statePin == StatePinCode.success) {
+        } else if (store.successData == StatePinCode.success) {
           AccountRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
@@ -92,20 +94,25 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                 ),
                 if (store.statePin == StatePinCode.check)
                   _elementField(
-                    title: 'pinCode.comeUp'.tr(),
+                    title: 'pinCode.writePinCode'.tr(),
                     pinCode: store.pinCode,
+                    isLoading: store.startAnimation,
+                    activateAnimation: true,
                   )
                 else
                   AnimationSwitchWidget(
                     first: _elementField(
                       title: 'pinCode.comeUp'.tr(),
                       pinCode: store.pinCode,
+                      isLoading: store.startAnimation,
                     ),
                     second: _elementField(
                       title: 'pinCode.repeat'.tr(),
                       pinCode: store.pinCode,
+                      isLoading: store.startAnimation,
+                      activateAnimation: true,
                     ),
-                    enabled: store.statePin == StatePinCode.repeat,
+                    enabled: store.startSwitch,
                   ),
                 if (store.attempts != 0)
                   SizedBox(
@@ -198,6 +205,8 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
   Widget _elementField({
     required String title,
     required String pinCode,
+    required bool isLoading,
+    bool activateAnimation = false,
   }) {
     return Column(
       children: [
@@ -215,10 +224,25 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
         const SizedBox(
           height: 40,
         ),
-        PasswordField(
-          animationController: animationController,
-          pinCode: pinCode,
-        ),
+        if (activateAnimation)
+          AnimationCompression(
+            first: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: PasswordField(
+                animationController: animationController,
+                pinCode: pinCode,
+                haveError: store.errorMessage != null,
+              ),
+            ),
+            second: const CircularProgressIndicator(),
+            enabled: isLoading,
+          )
+        else
+          PasswordField(
+            animationController: animationController,
+            pinCode: pinCode,
+            haveError: store.errorMessage != null,
+          ),
         const SizedBox(
           height: 20,
         ),
@@ -230,11 +254,13 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
 class PasswordField extends StatefulWidget {
   final AnimationController? animationController;
   final String pinCode;
+  final bool haveError;
 
   const PasswordField({
     Key? key,
     required this.animationController,
     required this.pinCode,
+    required this.haveError,
   }) : super(key: key);
 
   @override
@@ -244,20 +270,14 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
-    final add = widget.pinCode.length != 4;
-    if (add) {
-      widget.animationController!
-          .forward()
-          .then((value) => widget.animationController!.reverse());
-    }
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (context, child) {
         final sineValue = sin(4 * 2 * pi * widget.animationController!.value);
         return Transform.translate(
-          offset: add
-              ? Offset(0, -2.5 * widget.animationController!.value)
-              : Offset(sineValue * 10, 0),
+          offset: widget.haveError
+              ? Offset(sineValue * 10, 0)
+              : Offset.zero,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -272,6 +292,14 @@ class _PasswordFieldState extends State<PasswordField> {
                     color: widget.pinCode.length >= i
                         ? AppColor.enabledButton
                         : const Color(0xffE9EDF2),
+                  ),
+                  child: AnimationColor(
+                    duration: const Duration(milliseconds: 350),
+                    width: 10,
+                    height: 10,
+                    startColor: Colors.transparent,
+                    endColor: Colors.red,
+                    enabled: widget.haveError,
                   ),
                 )
             ],
