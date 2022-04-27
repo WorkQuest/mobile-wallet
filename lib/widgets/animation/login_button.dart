@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
 
-import 'default_button.dart';
+import '../default_button.dart';
 
 const _durationSize = Duration(milliseconds: 400);
 const _durationOpacity = Duration(milliseconds: 200);
@@ -74,7 +74,7 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
                       ),
                     ),
                   ),
-                if (_buttonController.value < 0.8)
+                if (_buttonController.value < 0.7)
                   AnimatedOpacity(
                     opacity: 1 - _buttonController.value,
                     duration: _durationOpacity,

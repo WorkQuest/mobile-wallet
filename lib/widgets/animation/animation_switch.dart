@@ -32,11 +32,11 @@ class _AnimationSwitchWidgetState extends State<AnimationSwitchWidget>
     _firstController = AnimationController(vsync: this, duration: _duration);
     _secondController = AnimationController(vsync: this, duration: _duration);
 
-    _translateFirst = Tween(begin: 0.0, end: -300.0).animate(
+    _translateFirst = Tween(begin: 0.0, end: -350.0).animate(
       CurvedAnimation(parent: _firstController, curve: Curves.ease),
     );
 
-    _translateSecond = Tween(begin: 300.0, end: 0.0).animate(
+    _translateSecond = Tween(begin: 350.0, end: 0.0).animate(
       CurvedAnimation(parent: _firstController, curve: Curves.ease),
     );
   }
@@ -54,14 +54,6 @@ class _AnimationSwitchWidgetState extends State<AnimationSwitchWidget>
       _firstController.forward();
       _secondController.forward();
     }
-    // else {
-    //   if (_firstController.isCompleted) {
-    //     _firstController.reverse();
-    //   }
-    //   if (_secondController.isCompleted) {
-    //     _secondController.reverse();
-    //   }
-    // }
     return Stack(
       children: [
         AnimatedBuilder(
