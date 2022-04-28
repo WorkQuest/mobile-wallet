@@ -1,12 +1,11 @@
 import 'dart:math';
 
-import 'package:auto_animated/auto_animated.dart';
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
@@ -32,7 +31,7 @@ class ListTransactions extends StatelessWidget {
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return _shimmer();
+                return const _ShimmerTransactionItem();
               },
               childCount: 8,
             ),
@@ -48,86 +47,30 @@ class ListTransactions extends StatelessWidget {
               ),
             );
           }
-          return LiveSliverList.options(
-            options: const LiveOptions(
-              delay: Duration.zero,
-              reAnimateOnVisibility: false,
-              showItemDuration: Duration(milliseconds: 375),
-              showItemInterval: Duration(milliseconds: 50),
-            ),
-            controller: scrollController,
-            itemBuilder:
-                (BuildContext context, int index, Animation<double> animation) {
-                  if (store.isMoreLoading && index == store.transactions.length) {
-                    return Column(
-                      children: const [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CircularProgressIndicator.adaptive(),
-                      ],
-                    );
-                  }
-                  if (store.type == TYPE_COINS.wusd &&
-                      store.transactions[index].value == "0") {
-                    return Container();
-                  }
-                  if (!store.transactions[index].show) {
-                    store.transactions[index].show = true;
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.2),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: _infoElement(store.transactions[index]),
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                if (store.isMoreLoading && index == store.transactions.length) {
+                  return Column(
+                    children: const [
+                      SizedBox(
+                        height: 10,
                       ),
-                    );
-                  }
-                  return _infoElement(store.transactions[index]);
-                },
-            itemCount: store.isMoreLoading
-                ? store.transactions.length + 1
-                : store.transactions.length,
+                      CircularProgressIndicator.adaptive(),
+                    ],
+                  );
+                }
+                return TransactionItem(
+                  transaction: store.transactions[index],
+                  titleCoin: _getTitleCoin(),
+                  opacity: !store.transactions[index].show,
+                );
+              },
+              childCount: store.isMoreLoading
+                  ? store.transactions.length + 1
+                  : store.transactions.length,
+            ),
           );
-          // return SliverList(
-          //   delegate: SliverChildBuilderDelegate(
-          //     (BuildContext context, int index) {
-          //       if (store.isMoreLoading && index == store.transactions.length) {
-          //         return Column(
-          //           children: const [
-          //             SizedBox(
-          //               height: 10,
-          //             ),
-          //             CircularProgressIndicator.adaptive(),
-          //           ],
-          //         );
-          //       }
-          //       if (store.type == TYPE_COINS.wusd &&
-          //           store.transactions[index].value == "0") {
-          //         return Container();
-          //       }
-          //       if (!store.transactions[index].show) {
-          //         store.transactions[index].show = true;
-          //         return AnimationConfiguration.staggeredList(
-          //           position: index,
-          //           duration: const Duration(milliseconds: 375),
-          //           child: SlideAnimation(
-          //             verticalOffset: 30.0,
-          //             child: FadeInAnimation(
-          //               child: _infoElement(store.transactions[index]),
-          //             ),
-          //           ),
-          //         );
-          //       }
-          //       return _infoElement(store.transactions[index]);
-          //     },
-          //     childCount: store.isMoreLoading
-          //         ? store.transactions.length + 1
-          //         : store.transactions.length,
-          //   ),
-          // );
         }
         return SliverFillRemaining(
           child: Center(
@@ -138,22 +81,131 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  Widget _infoElement(
-    Tx transaction,
-  ) {
-    bool increase = transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
+  String _getTitleCoin() {
+    switch (GetIt.I.get<TransactionsStore>().type) {
+      case TYPE_COINS.wqt:
+        return "WQT";
+      case TYPE_COINS.wusd:
+        return "WUSD";
+      case TYPE_COINS.wBnb:
+        return "wBNB";
+      case TYPE_COINS.wEth:
+        return "wETH";
+      default:
+        return "WUSD";
+    }
+  }
+}
+
+class TransactionItem extends StatefulWidget {
+  final Tx transaction;
+  final String titleCoin;
+  final bool opacity;
+
+  const TransactionItem({
+    Key? key,
+    required this.transaction,
+    required this.titleCoin,
+    this.opacity = false,
+  }) : super(key: key);
+
+  @override
+  _TransactionItemState createState() => _TransactionItemState();
+}
+
+class _TransactionItemState extends State<TransactionItem> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 350), value: 0.15);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.opacity) {
+      _animationController.forward();
+    }
+    widget.transaction.show = true;
+    bool increase =
+        widget.transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score;
-    if (transaction.tokenTransfers != null && transaction.tokenTransfers!.isEmpty) {
-      score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
+    if (widget.transaction.tokenTransfers != null &&
+        widget.transaction.tokenTransfers!.isEmpty) {
+      score = BigInt.parse(widget.transaction.value!).toDouble() * pow(10, -18);
     } else {
-      if (transaction.amount != null) {
-        score = BigInt.parse(transaction.amount!).toDouble() * pow(10, -18);
+      if (widget.transaction.amount != null) {
+        score = BigInt.parse(widget.transaction.amount!).toDouble() * pow(10, -18);
       } else {
-        score = BigInt.parse(transaction.tokenTransfers!.first.amount!).toDouble() *
-            pow(10, -18);
+        score =
+            BigInt.parse(widget.transaction.tokenTransfers!.first.amount!).toDouble() *
+                pow(10, -18);
       }
     }
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Transform.translate(
+          filterQuality: FilterQuality.low,
+          offset: Offset(
+              widget.opacity ? (50 - (50 * _animationController.value - 0.001)) : 0.0,
+              0.0),
+          child: AnimatedOpacity(
+              opacity: widget.opacity ? _animationController.value : 1.0,
+              duration: const Duration(milliseconds: 450),
+              child: child!),
+        );
+      },
+      child: ExpandablePanel(
+        theme: const ExpandableThemeData(
+          hasIcon: false,
+          useInkWell: true,
+        ),
+        header: _HeaderTransactionWidget(
+          color: color,
+          score: score,
+          increase: increase,
+          titleCoin: widget.titleCoin,
+          transaction: widget.transaction,
+        ),
+        collapsed: const SizedBox(),
+        expanded: _ExpandedTransactionWidget(
+          hashTransaction: widget.transaction.hash!,
+          address: increase ? widget.transaction.fromAddressHash!.hex! : widget.transaction.toAddressHash!.hex!,
+          increase: increase,
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderTransactionWidget extends StatelessWidget {
+  final String titleCoin;
+  final Tx transaction;
+  final bool increase;
+  final double score;
+  final Color color;
+
+  const _HeaderTransactionWidget({
+    Key? key,
+    required this.color,
+    required this.score,
+    required this.increase,
+    required this.titleCoin,
+    required this.transaction,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -193,8 +245,8 @@ class ListTransactions extends StatelessWidget {
               Text(
                 DateFormat('dd.MM.yy HH:mm')
                     .format(transaction.amount != null
-                        ? transaction.insertedAt!.toLocal()
-                        : transaction.block!.timestamp!.toLocal())
+                    ? transaction.insertedAt!.toLocal()
+                    : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -209,7 +261,7 @@ class ListTransactions extends StatelessWidget {
           const Spacer(),
           Flexible(
             child: Text(
-              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin()}',
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} $titleCoin',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -223,8 +275,93 @@ class ListTransactions extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _shimmer() {
+class _ExpandedTransactionWidget extends StatelessWidget {
+  final String hashTransaction;
+  final String address;
+  final bool increase;
+
+  const _ExpandedTransactionWidget({
+    Key? key,
+    required this.address,
+    required this.increase,
+    required this.hashTransaction,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ItemInfoFromTransaction(
+            info: hashTransaction,
+            title: "Hash tx",
+            isSelectable: true,
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          _ItemInfoFromTransaction(
+            info: address,
+            title: increase ? "To" : "From",
+            isSelectable: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ItemInfoFromTransaction extends StatelessWidget {
+  final bool isSelectable;
+  final String title;
+  final String info;
+
+  const _ItemInfoFromTransaction({
+    Key? key,
+    required this.info,
+    required this.title,
+    this.isSelectable = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (isSelectable) {
+      return SelectableText.rich(
+        TextSpan(
+          text: "$title: ",
+          style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+          children: [
+            TextSpan(text: info, style: const TextStyle(color: Colors.black)),
+          ],
+        ),
+        style: TextStyle(overflow: TextOverflow.ellipsis),
+      );
+    } else {
+      return RichText(
+        text: TextSpan(
+          text: "$title: ",
+          style: const TextStyle(
+              fontSize: 14, color: AppColor.unselectedBottomIcon),
+          children: [
+            TextSpan(
+                text: info,
+                style: const TextStyle(fontSize: 14, color: Colors.black)),
+          ],
+        ),
+      );
+    }
+  }
+}
+
+class _ShimmerTransactionItem extends StatelessWidget {
+  const _ShimmerTransactionItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -284,31 +421,4 @@ class ListTransactions extends StatelessWidget {
       ),
     );
   }
-
-  String _getTitleCoin() {
-    switch (GetIt.I.get<TransactionsStore>().type) {
-      case TYPE_COINS.wqt:
-        return "WQT";
-      case TYPE_COINS.wusd:
-        return "WUSD";
-      case TYPE_COINS.wBnb:
-        return "wBNB";
-      case TYPE_COINS.wEth:
-        return "wETH";
-      default:
-        return "WUSD";
-    }
-  }
-}
-
-class ItemTransaction {
-  final DateTime date;
-  final String title;
-  final int count;
-
-  const ItemTransaction(
-    this.date,
-    this.title,
-    this.count,
-  );
 }

@@ -55,6 +55,7 @@ dependencies:
   auto_animated: ^3.0.1
   flutter_staggered_animations: ^1.0.0
   carousel_slider: 4.0.0
+  expandable: ^5.0.1
 
   #web3
   bip39: ^1.0.6
