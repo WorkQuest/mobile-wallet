@@ -26,15 +26,11 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
           );
       GetIt.I.get<WalletStore>().getCoins();
       onSuccess(true);
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 4));
       GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on RPCError catch (e) {
-      print('qweasd' + e.runtimeType.toString());
-      print('message - ${e.message}');
-      print('data - ${e.data}');
-      print('errorCode - ${e.errorCode}');
       onError(e.message);
     }
   }

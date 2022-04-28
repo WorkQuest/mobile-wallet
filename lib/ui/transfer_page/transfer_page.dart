@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,11 +49,11 @@ class _TransferPageState extends State<TransferPage> {
 
   bool get _selectedCoin => _currentCoin != null;
 
-  bool check = false;
 
   @override
   void initState() {
     super.initState();
+    print('initState TransferPage');
     store.getFee();
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
@@ -226,26 +225,19 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: Container(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Observer(
-                    builder: (_) => DefaultButton(
-                      title: 'wallet.transfer'.tr(),
-                      onPressed:
-                          store.statusButtonTransfer ? _pushConfirmTransferPage : null,
-                    ),
-                  ),
-                ),
-              )
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0, left: 10.0, right: 10.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Observer(
+            builder: (_) => DefaultButton(
+              title: 'wallet.transfer'.tr(),
+              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+            ),
           ),
         ),
       ),
