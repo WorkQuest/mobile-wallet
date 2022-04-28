@@ -10,6 +10,8 @@ import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 
+import '../../utils/alert_dialog.dart';
+
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class WithdrawPage extends StatefulWidget {
@@ -173,7 +175,9 @@ class _WithdrawWalletAddressState extends State<_WithdrawWalletAddress> {
                 bottom: MediaQuery.of(context).padding.bottom + 10.0),
             child: DefaultButton(
               title: 'wallet.withdraw'.tr(),
-              onPressed: () {},
+              onPressed: () {
+                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
+              },
             ),
           ),
         ),
