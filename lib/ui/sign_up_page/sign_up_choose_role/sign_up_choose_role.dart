@@ -10,7 +10,12 @@ import '../../../constants.dart';
 import 'mobx/sign_up_role_store.dart';
 
 class SignUpChooseRole extends StatefulWidget {
-  const SignUpChooseRole({Key? key}) : super(key: key);
+  final String email;
+
+  const SignUpChooseRole({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
 
   @override
   _SignUpChooseRoleState createState() => _SignUpChooseRoleState();
@@ -18,6 +23,7 @@ class SignUpChooseRole extends StatefulWidget {
 
 class _SignUpChooseRoleState extends State<SignUpChooseRole> {
   final store = SignUpRoleStore();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +45,8 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
               ),
               Text(
                 'role.choose'.tr(),
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
               ),
               const SizedBox(
                 height: 40,
@@ -53,6 +60,7 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
                     SignUpApproveRole(
                       isWorker: false,
                       store: store,
+                      email: widget.email,
                       child: _CardRole(
                         title: 'role.employer'.tr(),
                         description: 'role.employerWant'.tr(),
@@ -79,10 +87,10 @@ class _SignUpChooseRoleState extends State<SignUpChooseRole> {
                     SignUpApproveRole(
                       isWorker: true,
                       store: store,
+                      email: widget.email,
                       child: _CardRole(
                           title: 'role.worker'.tr(),
-                          description:
-                              'role.workerWant'.tr(),
+                          description: 'role.workerWant'.tr(),
                           imagePath: Images.workerImage,
                           isWorker: true),
                     ),
@@ -139,8 +147,8 @@ class _CardRole extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: color),
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600, color: color),
                 ),
                 const SizedBox(
                   height: 8,
@@ -149,7 +157,9 @@ class _CardRole extends StatelessWidget {
                   child: Text(
                     description,
                     style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w400, color: color),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: color),
                     overflow: TextOverflow.clip,
                   ),
                 ),

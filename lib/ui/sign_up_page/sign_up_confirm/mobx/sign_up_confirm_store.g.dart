@@ -39,6 +39,37 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     });
   }
 
+  final _$timerAtom = Atom(name: 'SignUpConfirmStoreBase.timer');
+
+  @override
+  Timer? get timer {
+    _$timerAtom.reportRead();
+    return super.timer;
+  }
+
+  @override
+  set timer(Timer? value) {
+    _$timerAtom.reportWrite(value, super.timer, () {
+      super.timer = value;
+    });
+  }
+
+  final _$secondsCodeAgainAtom =
+      Atom(name: 'SignUpConfirmStoreBase.secondsCodeAgain');
+
+  @override
+  int get secondsCodeAgain {
+    _$secondsCodeAgainAtom.reportRead();
+    return super.secondsCodeAgain;
+  }
+
+  @override
+  set secondsCodeAgain(int value) {
+    _$secondsCodeAgainAtom.reportWrite(value, super.secondsCodeAgain, () {
+      super.secondsCodeAgain = value;
+    });
+  }
+
   final _$confirmAsyncAction = AsyncAction('SignUpConfirmStoreBase.confirm');
 
   @override
@@ -46,11 +77,35 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     return _$confirmAsyncAction.run(() => super.confirm(role));
   }
 
+  final _$startTimerAsyncAction =
+      AsyncAction('SignUpConfirmStoreBase.startTimer');
+
+  @override
+  Future startTimer(String email) {
+    return _$startTimerAsyncAction.run(() => super.startTimer(email));
+  }
+
+  final _$SignUpConfirmStoreBaseActionController =
+      ActionController(name: 'SignUpConfirmStoreBase');
+
+  @override
+  dynamic stopTimer() {
+    final _$actionInfo = _$SignUpConfirmStoreBaseActionController.startAction(
+        name: 'SignUpConfirmStoreBase.stopTimer');
+    try {
+      return super.stopTimer();
+    } finally {
+      _$SignUpConfirmStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 code: ${code},
-canConfirm: ${canConfirm}
+canConfirm: ${canConfirm},
+timer: ${timer},
+secondsCodeAgain: ${secondsCodeAgain}
     ''';
   }
 }

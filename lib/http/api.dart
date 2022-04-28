@@ -15,16 +15,20 @@ class Api {
       ? "https://app-ver1.workquest.co/api/v1"
       : "https://app.workquest.co/api/v1";
 
-  static const isRelease = true;
+  static const isRelease = false;
 
   static const _register = "$baseUrl/auth/register";
-  static const _registerWallet = "$baseUrl/auth/register/wallet";
-  static const _refreshTokens = "$baseUrl/auth/refresh-tokens";
-  static const _confirmEmail = "$baseUrl/auth/confirm-email";
   static const _login = "$baseUrl/auth/login/wallet";
+  static const _confirmEmail = "$baseUrl/auth/confirm-email";
+  static const _refreshTokens = "$baseUrl/auth/refresh-tokens";
+  static const _resendEmail = "$baseUrl/auth/main/resend-email";
+  static const _registerWallet = "$baseUrl/auth/register/wallet";
 
   String _transactions(String address) =>
       "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+
+  String _walletAddressProfile(String address) =>
+      "$baseUrl/profile/wallet/$address";
 
   String _transactionsByToken({
     required String address,
@@ -60,10 +64,12 @@ class Api {
     }
   }
 
-  Future<Response?> register(String firstName,
-      String lastName,
-      String email,
-      String password,) async {
+  Future<Response?> register(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  ) async {
     try {
       final response = await _dio.post(
         _register,
@@ -139,6 +145,41 @@ class Api {
     }
   }
 
+  Future<bool?> resendCodeEmail({required String email}) async {
+    try {
+      final response = await _dio.post(
+        _resendEmail,
+        data: {
+          "email": email,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw FormatException(response.data['msg']);
+      }
+
+      return response.data['ok'];
+    } on DioError catch (e) {
+      print('catch DioError');
+      await handleError(e, translate: false);
+    }
+  }
+
+  Future<String?> getEmailProfile({required String address}) async {
+    try {
+      final response = await _dio.get(_walletAddressProfile(address));
+
+      if (response.statusCode != 200) {
+        throw FormatException(response.data['msg']);
+      }
+
+      return response.data['result']['email'];
+    } on DioError catch (e) {
+      print('catch DioError');
+      await handleError(e, translate: false);
+    }
+  }
+
   Future<String?> refreshToken(String refreshToken) async {
     _dio.options.headers["authorization"] = 'bearer $refreshToken';
 
@@ -167,8 +208,8 @@ class Api {
       bool status = true;
       List<Tx>? result = [];
       while (status) {
-        final response =
-        await _dio.get('${_transactions(address)}?limit=$limit&offset=$offset');
+        final response = await _dio
+            .get('${_transactions(address)}?limit=$limit&offset=$offset');
 
         if (response.statusCode != 200) {
           final message = await getTranslateMessage(
@@ -218,7 +259,8 @@ class Api {
         throw FormatException(message);
       }
 
-      return List<Tx>.from(response.data['result']['txs'].map((x) => Tx.fromJson(x)));
+      return List<Tx>.from(
+          response.data['result']['txs'].map((x) => Tx.fromJson(x)));
     } on DioError catch (e) {
       await handleError(e);
     }
@@ -236,7 +278,7 @@ class Api {
         );
         throw FormatException(message);
       } else {
-        print('FormatException(e.response!.data['"msg"'])');
+        print('FormatException(e.response!.data[' "msg" '])');
         throw FormatException(e.response!.data['msg']);
       }
     }
@@ -250,7 +292,8 @@ class Api {
     try {
       String fileString;
       print("language string ${EasyLocalization.of(globalContext!)!.locale}");
-      if (EasyLocalization.of(globalContext!)!.locale == const Locale("ru", "RU")) {
+      if (EasyLocalization.of(globalContext!)!.locale ==
+          const Locale("ru", "RU")) {
         fileString = await rootBundle.loadString('assets/lang/ru-RU.json');
       } else {
         fileString = await rootBundle.loadString('assets/lang/en-US.json');

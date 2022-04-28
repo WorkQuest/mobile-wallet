@@ -41,4 +41,5 @@ enum StorageKeys {
   wallets,
   pinCode,
   email,
+  timeTimer,
 }

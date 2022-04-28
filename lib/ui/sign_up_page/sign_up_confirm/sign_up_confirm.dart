@@ -1,8 +1,10 @@
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
+import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -11,6 +13,7 @@ import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
+import '../../../constants.dart';
 import 'mobx/sign_up_confirm_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -32,7 +35,14 @@ class SignUpConfirm extends StatefulWidget {
 }
 
 class _SignUpConfirmState extends State<SignUpConfirm> {
-  SignUpConfirmStore store = SignUpConfirmStore();
+  late SignUpConfirmStore store;
+
+  @override
+  void initState() {
+    super.initState();
+    store = GetIt.I.get<SignUpConfirmStore>();
+    store.initTime(widget.email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +108,15 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                     ),
                   ),
                   const SizedBox(
+                    height: 5,
+                  ),
+                  if (!Api.isRelease && widget.email.isNotEmpty)
+                    _TimerWidget(
+                      startTimer: () => store.startTimer(widget.email),
+                      seconds: store.secondsCodeAgain,
+                      isActiveTimer: store.timer != null && store.timer!.isActive,
+                    ),
+                  const SizedBox(
                     height: 40,
                   ),
                   DefaultTextField(
@@ -122,7 +141,8 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                       onSuccess: () async {
                         Navigator.of(context, rootNavigator: true).pop();
                         await AlertDialogUtils.showSuccessDialog(context);
-                        PageRouter.pushNewReplacementRoute(context, widget.nextPage);
+                        PageRouter.pushNewReplacementRoute(
+                            context, widget.nextPage);
                       },
                       store: store,
                       child: DefaultButton(
@@ -165,5 +185,56 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
         ),
       ),
     );
+  }
+}
+
+class _TimerWidget extends StatelessWidget {
+  final Function() startTimer;
+  final bool isActiveTimer;
+  final int seconds;
+
+  const _TimerWidget({
+    Key? key,
+    required this.isActiveTimer,
+    required this.startTimer,
+    required this.seconds,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Text(
+            'Send again',
+            style: TextStyle(
+              fontSize: 14,
+              color: isActiveTimer
+                  ? AppColor.disabledText
+                  : AppColor.enabledButton,
+            ),
+          ),
+          onPressed: isActiveTimer ? null : startTimer,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        if (isActiveTimer)
+          Text(
+            convertSecondToLine(seconds),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+      ],
+    );
+  }
+
+  String convertSecondToLine(int seconds) {
+    int min = seconds ~/ 60;
+    int sec = seconds - (min * 60);
+    return '${min < 10 ? '0$min' : '$min'}:${sec < 10 ? '0$sec' : '$sec'}';
   }
 }

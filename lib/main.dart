@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/mobx/sign_up_confirm_store.dart';
 import 'package:workquest_wallet_app/ui/splash_page/splash_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -16,6 +17,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
   GetIt.I.registerSingleton<TransactionsStore>(TransactionsStore());
+  GetIt.I.registerSingleton<SignUpConfirmStore>(SignUpConfirmStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
   try {
     final addressActive = await Storage.read(StorageKeys.address.toString());

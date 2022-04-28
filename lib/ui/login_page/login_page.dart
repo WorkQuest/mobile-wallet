@@ -137,7 +137,7 @@ class _ContentScreenState extends State<_ContentScreen> {
                   PageRouter.pushNewReplacementRoute(context, const PinCodePage());
                 } else {
                   final result =
-                      await PageRouter.pushNewRoute(context, const SignUpChooseRole());
+                      await PageRouter.pushNewRoute(context, const SignUpChooseRole(email: '',));
                   if (result != null && result) {
                     AccountRepository().clearData();
                     await Storage.deleteAllFromSecureStorage();

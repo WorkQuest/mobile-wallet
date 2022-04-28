@@ -1,9 +1,8 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/mobx/sign_up_profile_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
@@ -14,6 +13,9 @@ import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../constants.dart';
 import '../../../page_router.dart';
+import '../../../repository/account_repository.dart';
+import '../../../utils/storage.dart';
+import '../sign_up_choose_role/sign_up_choose_role.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -205,7 +207,9 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(width: double.infinity,),
+                    const SizedBox(
+                      width: double.infinity,
+                    ),
                     ObserverListener(
                       store: store,
                       onFailure: () {
@@ -213,10 +217,19 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                       },
                       onSuccess: () async {
                         await AlertDialogUtils.showSuccessDialog(context);
-                        PageRouter.pushNewReplacementRoute(context, const SignUpPage());
+                        final result = await PageRouter.pushNewRoute(
+                          context,
+                          SignUpChooseRole(
+                            email: store.email.text,
+                          ),
+                        );
+                        if (result != null && result) {
+                          AccountRepository().clearData();
+                          await Storage.deleteAllFromSecureStorage();
+                        }
                       },
                       child: Observer(
-                        builder:(_) => LoginButton(
+                        builder: (_) => LoginButton(
                           title: 'signUp.generateAddress'.tr(),
                           onTap: () async {
                             if (_key.currentState!.validate()) {
