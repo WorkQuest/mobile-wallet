@@ -19,13 +19,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   bool isMoreLoading = false;
 
   @observable
-  TYPE_COINS type = TYPE_COINS.wusd;
+  bool canMoreLoading = true;
+
+  @observable
+  TYPE_COINS type = TYPE_COINS.wqt;
 
   @action
   setType(TYPE_COINS value) => type = value;
 
   @action
   getTransactions({bool isForce = false}) async {
+    canMoreLoading = true;
     if (isForce) {
       onLoading();
     }
@@ -39,17 +43,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
       List<Tx>? result;
       switch (type) {
-        case TYPE_COINS.wusd:
+        case TYPE_COINS.wqt:
           result = await Api().getTransactions(
             AccountRepository().userAddress!,
             limit: 10,
             offset: isForce ? transactions.length : 0,
           );
           break;
-        case TYPE_COINS.wqt:
+        case TYPE_COINS.wusd:
           result = await Api().getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wqt,
+            addressToken: AddressCoins.wUsd,
             limit: 10,
             offset: isForce ? transactions.length : 0,
           );
@@ -75,8 +79,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       result!.map((tran) {
         if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
           switch (tran.fromAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.wqt;
+            case AddressCoins.wUsd:
+              tran.coin = TYPE_COINS.wusd;
               break;
             case AddressCoins.wEth:
               tran.coin = TYPE_COINS.wEth;
@@ -85,13 +89,13 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               tran.coin = TYPE_COINS.wBnb;
               break;
             default:
-              tran.coin = TYPE_COINS.wusd;
+              tran.coin = TYPE_COINS.wqt;
               break;
           }
         } else {
           switch (tran.toAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.wqt;
+            case AddressCoins.wUsd:
+              tran.coin = TYPE_COINS.wusd;
               break;
             case AddressCoins.wEth:
               tran.coin = TYPE_COINS.wEth;
@@ -100,7 +104,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               tran.coin = TYPE_COINS.wBnb;
               break;
             default:
-              tran.coin = TYPE_COINS.wusd;
+              tran.coin = TYPE_COINS.wqt;
               break;
           }
         }
@@ -131,17 +135,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     try {
       List<Tx>? result;
       switch (type) {
-        case TYPE_COINS.wusd:
+        case TYPE_COINS.wqt:
           result = await Api().getTransactions(
             AccountRepository().userAddress!,
             limit: 10,
             offset: transactions.length,
           );
           break;
-        case TYPE_COINS.wqt:
+        case TYPE_COINS.wusd:
           result = await Api().getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wqt,
+            addressToken: AddressCoins.wUsd,
             limit: 10,
             offset: transactions.length,
           );
@@ -163,7 +167,10 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           );
           break;
       }
-      result!.map((tran) {
+      if (result!.isEmpty) {
+        canMoreLoading = false;
+      }
+      result.map((tran) {
         final index = transactions.indexWhere((element) => element.hash == tran.hash);
         if (index == -1) {
           transactions.add(tran);

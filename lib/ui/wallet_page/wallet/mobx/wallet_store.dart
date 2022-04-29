@@ -31,28 +31,28 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       final list =
           await AccountRepository().client!.getAllBalance(AccountRepository().privateKey);
 
-      final ether = list.firstWhere((element) => element.title == 'ether');
-      final wqt =
-          await AccountRepository().client!.getBalanceFromContract(AddressCoins.wqt);
+      final wqt = list.firstWhere((element) => element.title == 'ether');
+      final wUsd =
+          await AccountRepository().client!.getBalanceFromContract(AddressCoins.wUsd);
       final wEth =
           await AccountRepository().client!.getBalanceFromContract(AddressCoins.wEth);
       final wBnb =
           await AccountRepository().client!.getBalanceFromContract(AddressCoins.wBnb);
 
       if (coins.isNotEmpty) {
-        coins[0].amount = ether.amount;
-        coins[1].amount = wqt.toString();
+        coins[0].amount = wqt.amount;
+        coins[1].amount = wUsd.toString();
         coins[2].amount = wBnb.toString();
         coins[3].amount = wEth.toString();
       } else {
         coins.addAll([
           BalanceItem(
-            "WUSD",
-            ether.amount,
+            "WQT",
+            wqt.amount,
           ),
           BalanceItem(
-            "WQT",
-            wqt.toString(),
+            "WUSD",
+            wUsd.toString(),
           ),
           BalanceItem(
             "wBNB",

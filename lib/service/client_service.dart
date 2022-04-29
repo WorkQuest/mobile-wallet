@@ -115,7 +115,7 @@ class ClientService implements ClientServiceI {
     final credentials = await getCredentials(privateKey);
     final myAddress = await AddressService().getPublicAddress(privateKey);
 
-    if (coin == TYPE_COINS.wusd) {
+    if (coin == TYPE_COINS.wqt) {
       hash = await ethClient!.sendTransaction(
         credentials,
         Transaction(
@@ -131,10 +131,10 @@ class ClientService implements ClientServiceI {
     } else {
       String addressToken = '';
       switch (coin) {
-        case TYPE_COINS.wusd:
-          break;
         case TYPE_COINS.wqt:
-          addressToken = AddressCoins.wqt;
+          break;
+        case TYPE_COINS.wusd:
+          addressToken = AddressCoins.wUsd;
           break;
         case TYPE_COINS.wBnb:
           addressToken = AddressCoins.wBnb;

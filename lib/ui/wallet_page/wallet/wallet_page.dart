@@ -2,14 +2,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
@@ -51,28 +50,23 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget _mainLayout() {
-    return LazyLoadScrollView(
-      onEndOfPage: () async {
-        if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
-          await GetIt.I.get<TransactionsStore>().getTransactionsMore();
-        }
-        setState(() {});
-      },
-      child: Platform.isAndroid
-          ? RefreshIndicator(
-              displacement: 20,
-              triggerMode: RefreshIndicatorTriggerMode.anywhere,
-              onRefresh: _onRefresh,
-              child: layout())
-          : layout(),
-    );
+    return Platform.isAndroid
+        ? RefreshIndicator(
+            displacement: 20,
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            onRefresh: _onRefresh,
+            child: layout())
+        : layout();
   }
 
   Widget layout() {
     final address = AccountRepository().userAddress ?? '1234567890';
-    return NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (OverscrollIndicatorNotification overscroll) {
-        overscroll.disallowGlow();
+    return NotificationListener<ScrollEndNotification>(
+      onNotification: (ScrollEndNotification scrollEnd) {
+        final metrics = scrollEnd.metrics;
+        if (metrics.maxScrollExtent < metrics.pixels &&!GetIt.I.get<TransactionsStore>().isMoreLoading && GetIt.I.get<TransactionsStore>().canMoreLoading) {
+          GetIt.I.get<TransactionsStore>().getTransactionsMore();
+        }
         return true;
       },
       child: CustomScrollView(
@@ -398,11 +392,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                     onPageChanged: (int index, _) {
                       switch (index) {
                         case 0:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
                           GetIt.I.get<WalletStore>().setIndex(0);
                           break;
                         case 1:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
+                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
                           GetIt.I.get<WalletStore>().setIndex(1);
                           break;
                         case 2:

@@ -24,8 +24,8 @@ import '../../page_router.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 List<_CoinItem> _coins = [
-  _CoinItem(Images.wusdCoinIcon, 'WUSD', TYPE_COINS.wusd, true),
   _CoinItem(Images.wqtCoinIcon, 'WQT', TYPE_COINS.wqt, true),
+  _CoinItem(Images.wusdCoinIcon, 'WUSD', TYPE_COINS.wusd, true),
   _CoinItem(Images.wbnbCoinIcon, 'wBNB', TYPE_COINS.wBnb, true),
   _CoinItem(Images.wethCoinIcon, 'wETH', TYPE_COINS.wEth, true),
 ];

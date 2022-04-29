@@ -39,6 +39,22 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
+  final _$canMoreLoadingAtom =
+      Atom(name: 'TransactionsStoreBase.canMoreLoading');
+
+  @override
+  bool get canMoreLoading {
+    _$canMoreLoadingAtom.reportRead();
+    return super.canMoreLoading;
+  }
+
+  @override
+  set canMoreLoading(bool value) {
+    _$canMoreLoadingAtom.reportWrite(value, super.canMoreLoading, () {
+      super.canMoreLoading = value;
+    });
+  }
+
   final _$typeAtom = Atom(name: 'TransactionsStoreBase.type');
 
   @override
@@ -91,6 +107,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     return '''
 transactions: ${transactions},
 isMoreLoading: ${isMoreLoading},
+canMoreLoading: ${canMoreLoading},
 type: ${type}
     ''';
   }

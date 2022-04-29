@@ -60,9 +60,16 @@ class ListTransactions extends StatelessWidget {
                     ],
                   );
                 }
+                final increase =
+                    store.transactions[index].fromAddressHash!.hex! !=
+                        AccountRepository().userAddress;
                 return TransactionItem(
                   transaction: store.transactions[index],
-                  titleCoin: _getTitleCoin(),
+                  titleCoin: increase
+                      ? _getTitleCoin(
+                          store.transactions[index].fromAddressHash!.hex!)
+                      : _getTitleCoin(
+                          store.transactions[index].toAddressHash!.hex!),
                   opacity: !store.transactions[index].show,
                 );
               },
@@ -81,18 +88,33 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  String _getTitleCoin() {
-    switch (GetIt.I.get<TransactionsStore>().type) {
-      case TYPE_COINS.wqt:
-        return "WQT";
-      case TYPE_COINS.wusd:
-        return "WUSD";
-      case TYPE_COINS.wBnb:
-        return "wBNB";
-      case TYPE_COINS.wEth:
-        return "wETH";
-      default:
-        return "WUSD";
+  String _getTitleCoin(String? addressContract) {
+    if (GetIt.I.get<TransactionsStore>().type == TYPE_COINS.wqt) {
+      switch(addressContract) {
+        case AddressCoins.wUsd:
+          return "WUSD";
+        case AddressCoins.wBnb:
+          return "wBNB";
+        case AddressCoins.wEth:
+          return "wETH";
+        default:
+          return "WQT";
+      }
+    } else {
+      switch (GetIt.I
+          .get<TransactionsStore>()
+          .type) {
+        case TYPE_COINS.wqt:
+          return "WQT";
+        case TYPE_COINS.wusd:
+          return "WUSD";
+        case TYPE_COINS.wBnb:
+          return "wBNB";
+        case TYPE_COINS.wEth:
+          return "wETH";
+        default:
+          return "WUSD";
+      }
     }
   }
 }
@@ -113,7 +135,8 @@ class TransactionItem extends StatefulWidget {
   _TransactionItemState createState() => _TransactionItemState();
 }
 
-class _TransactionItemState extends State<TransactionItem> with TickerProviderStateMixin {
+class _TransactionItemState extends State<TransactionItem>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -135,8 +158,8 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       _animationController.forward();
     }
     widget.transaction.show = true;
-    bool increase =
-        widget.transaction.fromAddressHash!.hex! != AccountRepository().userAddress;
+    bool increase = widget.transaction.fromAddressHash!.hex! !=
+        AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     double score;
     if (widget.transaction.tokenTransfers != null &&
@@ -144,11 +167,12 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       score = BigInt.parse(widget.transaction.value!).toDouble() * pow(10, -18);
     } else {
       if (widget.transaction.amount != null) {
-        score = BigInt.parse(widget.transaction.amount!).toDouble() * pow(10, -18);
-      } else {
         score =
-            BigInt.parse(widget.transaction.tokenTransfers!.first.amount!).toDouble() *
-                pow(10, -18);
+            BigInt.parse(widget.transaction.amount!).toDouble() * pow(10, -18);
+      } else {
+        score = BigInt.parse(widget.transaction.tokenTransfers!.first.amount!)
+                .toDouble() *
+            pow(10, -18);
       }
     }
     return AnimatedBuilder(
@@ -157,7 +181,9 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
         return Transform.translate(
           filterQuality: FilterQuality.low,
           offset: Offset(
-              widget.opacity ? (50 - (50 * _animationController.value - 0.001)) : 0.0,
+              widget.opacity
+                  ? (50 - (50 * _animationController.value - 0.001))
+                  : 0.0,
               0.0),
           child: AnimatedOpacity(
               opacity: widget.opacity ? _animationController.value : 1.0,
@@ -180,7 +206,9 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
         collapsed: const SizedBox(),
         expanded: _ExpandedTransactionWidget(
           hashTransaction: widget.transaction.hash!,
-          address: increase ? widget.transaction.fromAddressHash!.hex! : widget.transaction.toAddressHash!.hex!,
+          address: increase
+              ? widget.transaction.fromAddressHash!.hex!
+              : widget.transaction.toAddressHash!.hex!,
           increase: increase,
         ),
       ),
@@ -245,8 +273,8 @@ class _HeaderTransactionWidget extends StatelessWidget {
               Text(
                 DateFormat('dd.MM.yy HH:mm')
                     .format(transaction.amount != null
-                    ? transaction.insertedAt!.toLocal()
-                    : transaction.block!.timestamp!.toLocal())
+                        ? transaction.insertedAt!.toLocal()
+                        : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -306,7 +334,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           ),
           _ItemInfoFromTransaction(
             info: address,
-            title: increase ? "To" : "From",
+            title: increase ? "From" : "To",
             isSelectable: true,
           ),
         ],
@@ -333,7 +361,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
       return SelectableText.rich(
         TextSpan(
           text: "$title: ",
-          style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+          style: const TextStyle(
+              fontSize: 14, color: AppColor.unselectedBottomIcon),
           children: [
             TextSpan(text: info, style: const TextStyle(color: Colors.black)),
           ],
@@ -372,8 +401,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
               height: 34,
               width: 34,
               padding: const EdgeInsets.all(10.0),
-              decoration:
-                  const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
             ),
           ),
           const SizedBox(
@@ -387,7 +416,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                   height: 20,
                   width: 120,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(
@@ -398,7 +428,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                   height: 14,
                   width: 150,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -413,7 +444,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 height: 20,
                 width: 100,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.white),
               ),
             ),
           )
