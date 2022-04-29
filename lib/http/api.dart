@@ -205,35 +205,18 @@ class Api {
   Future<List<Tx>?> getTransactions(String address,
       {int limit = 10, int offset = 0}) async {
     try {
-      bool status = true;
-      List<Tx>? result = [];
-      while (status) {
-        final response = await _dio
-            .get('${_transactions(address)}?limit=$limit&offset=$offset');
+      final response = await _dio
+          .get('${_transactions(address)}?limit=$limit&offset=$offset');
 
-        if (response.statusCode != 200) {
-          final message = await getTranslateMessage(
-            code: response.data['code'],
-            message: response.data['msg'],
-          );
-          throw FormatException(message);
-        }
-
-        final res = TransactionsResponse.fromJson(response.data!);
-        res.result!.txs!.map((tran) {
-          if (tran.tokenTransfers != null && tran.tokenTransfers!.isEmpty) {
-            result.add(tran);
-          }
-        }).toList();
-        if (result.length >= 10 || res.result!.txs!.isEmpty) {
-          status = false;
-        } else {
-          offset += 10;
-        }
-        print('offset = $offset');
-        print('len result = ${result.length}');
+      if (response.statusCode != 200) {
+        final message = await getTranslateMessage(
+          code: response.data['code'],
+          message: response.data['msg'],
+        );
+        throw FormatException(message);
       }
-      return result;
+
+      return TransactionsResponse.fromJson(response.data).result!.txs;
     } on DioError catch (e) {
       await handleError(e);
     }
