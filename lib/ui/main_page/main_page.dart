@@ -11,8 +11,6 @@ import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import '../../constants.dart';
 
-const _paddingBottom = EdgeInsets.only(bottom: 6);
-
 final _keys = [
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
@@ -34,7 +32,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+    GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
   }
 

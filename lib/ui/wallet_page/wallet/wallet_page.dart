@@ -64,14 +64,18 @@ class _WalletPageState extends State<WalletPage> {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
-        if (metrics.maxScrollExtent < metrics.pixels &&!GetIt.I.get<TransactionsStore>().isMoreLoading && GetIt.I.get<TransactionsStore>().canMoreLoading) {
+        if (metrics.maxScrollExtent < metrics.pixels &&
+            !GetIt.I.get<TransactionsStore>().isMoreLoading &&
+            GetIt.I.get<TransactionsStore>().canMoreLoading) {
           GetIt.I.get<TransactionsStore>().getTransactionsMore();
         }
         return true;
       },
       child: CustomScrollView(
         controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
         slivers: [
           if (Platform.isIOS)
             CupertinoSliverRefreshControl(
@@ -137,7 +141,9 @@ class _WalletPageState extends State<WalletPage> {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -155,7 +161,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Future _onRefresh() async {
-    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+    GetIt.I.get<TransactionsStore>().getTransactions();
     return GetIt.I.get<WalletStore>().getCoins();
   }
 }
@@ -211,7 +217,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                           padding: EdgeInsets.zero,
                           pressedOpacity: 0.2,
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const WithdrawPage());
+                            PageRouter.pushNewRoute(
+                                context, const WithdrawPage());
                           },
                           child: Container(
                             height: 43,
@@ -240,7 +247,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                         child: DefaultButton(
                           title: 'wallet'.tr(gender: 'deposit'),
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const DepositPage());
+                            PageRouter.pushNewRoute(
+                                context, const DepositPage());
                           },
                         ),
                       )
@@ -392,23 +400,31 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                     onPageChanged: (int index, _) {
                       switch (index) {
                         case 0:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wqt);
                           GetIt.I.get<WalletStore>().setIndex(0);
                           break;
                         case 1:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wusd);
                           GetIt.I.get<WalletStore>().setIndex(1);
                           break;
                         case 2:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBnb);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wBnb);
                           GetIt.I.get<WalletStore>().setIndex(2);
                           break;
                         case 3:
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wEth);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wEth);
                           GetIt.I.get<WalletStore>().setIndex(3);
                           break;
                       }
-                      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+                      GetIt.I.get<TransactionsStore>().getTransactions();
                       setState(() {
                         _currencyIndex = index;
                       });
@@ -430,8 +446,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                                  color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );

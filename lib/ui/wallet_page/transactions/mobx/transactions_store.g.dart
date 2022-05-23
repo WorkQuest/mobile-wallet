@@ -74,9 +74,8 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
       AsyncAction('TransactionsStoreBase.getTransactions');
 
   @override
-  Future getTransactions({bool isForce = false}) {
-    return _$getTransactionsAsyncAction
-        .run(() => super.getTransactions(isForce: isForce));
+  Future getTransactions() {
+    return _$getTransactionsAsyncAction.run(() => super.getTransactions());
   }
 
   final _$getTransactionsMoreAsyncAction =
@@ -97,6 +96,17 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
         name: 'TransactionsStoreBase.setType');
     try {
       return super.setType(value);
+    } finally {
+      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic addTransaction({required Tx tran}) {
+    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
+        name: 'TransactionsStoreBase.addTransaction');
+    try {
+      return super.addTransaction(tran: tran);
     } finally {
       _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
     }
