@@ -165,6 +165,17 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
       ActionController(name: 'SignUpStoreBase');
 
   @override
+  dynamic setMnemonic(String value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setMnemonic');
+    try {
+      return super.setMnemonic(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setIsSaved(bool value) {
     final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
         name: 'SignUpStoreBase.setIsSaved');

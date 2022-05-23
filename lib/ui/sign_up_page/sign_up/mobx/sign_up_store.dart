@@ -42,6 +42,11 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   ObservableList<String>? setOfWords;
 
   @action
+  setMnemonic(String value) {
+    mnemonic = value;
+  }
+
+  @action
   setIsSaved(bool value) => isSaved = value;
 
   @computed

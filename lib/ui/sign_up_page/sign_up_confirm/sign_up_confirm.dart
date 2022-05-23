@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/page_router.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/import_wallet/import_wallet_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
@@ -14,6 +15,7 @@ import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../constants.dart';
+import '../sign_up/sign_up_page.dart';
 import 'mobx/sign_up_confirm_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -21,13 +23,11 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 class SignUpConfirm extends StatefulWidget {
   final String email;
   final String role;
-  final Widget nextPage;
 
   const SignUpConfirm({
     Key? key,
     required this.email,
     required this.role,
-    required this.nextPage,
   }) : super(key: key);
 
   @override
@@ -114,13 +114,15 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                     _TimerWidget(
                       startTimer: () => store.startTimer(widget.email),
                       seconds: store.secondsCodeAgain,
-                      isActiveTimer: store.timer != null && store.timer!.isActive,
+                      isActiveTimer:
+                          store.timer != null && store.timer!.isActive,
                     ),
                   const SizedBox(
                     height: 40,
                   ),
                   DefaultTextField(
                     controller: store.code,
+                    enableDispose: false,
                     hint: "Code",
                     suffixIcon: null,
                     keyboardType: TextInputType.text,
@@ -141,18 +143,21 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                       onSuccess: () async {
                         Navigator.of(context, rootNavigator: true).pop();
                         await AlertDialogUtils.showSuccessDialog(context);
-                        PageRouter.pushNewReplacementRoute(
-                            context, widget.nextPage);
+                        _showDialog();
                       },
                       store: store,
                       child: DefaultButton(
-                        onPressed: store.canConfirm
-                            ? () {
-                                AlertDialogUtils.showLoadingDialog(context);
-                                store.confirm(widget.role);
-                              }
-                            : null,
-                        title: 'meta.submit'.tr(),
+                        onPressed: store.isSuccess
+                            ? () => _showDialog()
+                            : (store.canConfirm
+                                ? () {
+                                    AlertDialogUtils.showLoadingDialog(context);
+                                    store.confirm(widget.role);
+                                  }
+                                : null),
+                        title: store.isSuccess
+                            ? 'meta.next'.tr()
+                            : 'meta.submit'.tr(),
                       ),
                     ),
                   ),
@@ -184,6 +189,42 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
           ),
         ),
       ),
+    );
+  }
+
+  _showDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          title: const Text("Wallet"),
+          content: const Text("Choose a way to add a wallet"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                PageRouter.pushNewRoute(
+                    context, const ImportWalletPage());
+              },
+              child: const Text(
+                "Import Wallet",
+                style: TextStyle(color: AppColor.enabledButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                PageRouter.pushNewRoute(context, const SignUpPage());
+              },
+              child: const Text(
+                "Create Wallet",
+                style: TextStyle(color: AppColor.enabledButton),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

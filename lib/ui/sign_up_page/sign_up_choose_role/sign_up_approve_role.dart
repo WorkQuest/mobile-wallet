@@ -8,7 +8,6 @@ import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/sign_up_con
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 
-import '../sign_up/sign_up_page.dart';
 import 'mobx/sign_up_role_store.dart';
 
 class SignUpApproveRole extends StatefulWidget {
@@ -111,7 +110,6 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
     PageRouter.pushNewRoute(
       context,
       SignUpConfirm(
-        nextPage: const SignUpPage(),
         email: widget.email,
         role: widget.store.role == UserRole.worker ? 'worker' : 'employer',
       ),

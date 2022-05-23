@@ -8,9 +8,12 @@ class DefaultTextField extends StatefulWidget {
   final Widget? prefitIcon;
   final String hint;
   final bool isPassword;
+  final bool enableDispose;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
+
+  final Function(String)? onChanged;
 
   const DefaultTextField({
     Key? key,
@@ -20,6 +23,8 @@ class DefaultTextField extends StatefulWidget {
     required this.inputFormatters,
     this.validator,
     this.keyboardType,
+    this.enableDispose = true,
+    this.onChanged,
     this.prefitIcon,
     this.isPassword = false,
   }) : super(key: key);
@@ -47,7 +52,9 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
 
   @override
   void dispose() {
-    widget.controller.dispose();
+    if (widget.enableDispose) {
+      widget.controller.dispose();
+    }
     super.dispose();
   }
 
@@ -59,6 +66,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       validator: widget.validator,
       obscureText: !_visiblePassword,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
         filled: true,
         fillColor:
