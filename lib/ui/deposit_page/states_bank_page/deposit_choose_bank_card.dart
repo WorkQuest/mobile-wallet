@@ -215,7 +215,7 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: DefaultButton(
-                    title: 'Deposit',
+                    title: 'wallet'.tr(gender: 'deposit'),
                     onPressed: _statusButton ? _depositPressed : null,
                   ),
                 ),

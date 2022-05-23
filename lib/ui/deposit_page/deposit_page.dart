@@ -40,8 +40,8 @@ class _DepositPageState extends State<DepositPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(
-        title: 'Deposit',
+      appBar: DefaultAppBar(
+        title: 'wallet'.tr(gender: 'deposit'),
       ),
       body: Column(
         children: [

@@ -39,8 +39,8 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(
-        title: 'Withdrawal',
+      appBar: DefaultAppBar(
+        title: 'wallet.withdraw'.tr(),
       ),
       body: ColoredBox(
         color: Colors.white,
