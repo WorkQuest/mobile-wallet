@@ -7,6 +7,7 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 
+
 class WebSocket {
   static final WebSocket _instance = WebSocket._internal();
 
@@ -44,9 +45,9 @@ class WebSocket {
       if (shouldReconnectFlag!) {
         init();
       }
-      print("WebSocket onDone ${channel!.closeReason}");
+      // print("WebSocket onDone ${channel!.closeReason}");
     }, onError: (error) {
-      print("WebSocket error: $error");
+      // print("WebSocket error: $error");
     });
   }
 
@@ -61,21 +62,59 @@ class WebSocket {
   void handleSubscription(dynamic jsonResponse) async {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
+      print('handleSubscription');
       if (transaction.result!.events!['ethereum_tx.recipient']!.first
               .toString()
               .toLowerCase() ==
           myAddress.toLowerCase()) {
-        await Future.delayed(const Duration(seconds: 8));
+        await Future.delayed(const Duration(seconds: 9));
         GetIt.I.get<WalletStore>().getCoins(isForce: false);
-        GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
+        GetIt.I.get<TransactionsStore>().getTransactions();
+
+        // final tx = await Api().getTransaction(
+        //     hashTx: transaction.result!.events!['ethereum_tx.txHash']!.first);
+        //
+        // GetIt.I.get<TransactionsStore>().addTransaction(
+        //       tran: Tx(
+        //           hash: tx!.result!.hash!,
+        //           insertedAt: DateTime.parse(tx.result!.insertedAt!),
+        //           amount: tx.result!.tokenTransfers!.isEmpty
+        //               ? tx.result!.value
+        //               : tx.result!.tokenTransfers!.first.amount,
+        //           toAddressHash:s
+        //               AddressHash.fromJson(tx.result!.toAddressHash!.toJson()),
+        //           fromAddressHash: AddressHash.fromJson(
+        //               tx.result!.fromAddressHash!.toJson()),
+        //           tokenTransfers: List<TokenTransfer>.from(tx
+        //               .result!.tokenTransfers!
+        //               .map((x) => TokenTransfer.fromJson(x.toJson())))),
+        //     );
       } else {
-        final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-        print('decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
+        final decode =
+            json.decode(transaction.result!.events!['tx_log.txLog']!.first);
         if ((decode['topics'] as List<dynamic>).last.substring(26) ==
             myAddress.substring(2)) {
-          await Future.delayed(const Duration(seconds: 8));
+          await Future.delayed(const Duration(seconds: 9));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
-          GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
+          GetIt.I.get<TransactionsStore>().getTransactions();
+          // final tx = await Api().getTransaction(
+          //     hashTx: transaction.result!.events!['ethereum_tx.txHash']!.first);
+          //
+          // GetIt.I.get<TransactionsStore>().addTransaction(
+          //   tran: Tx(
+          //           hash: tx!.result!.hash!,
+          //           insertedAt: DateTime.parse(tx.result!.insertedAt!),
+          //           amount: tx.result!.tokenTransfers!.isEmpty
+          //               ? tx.result!.value
+          //               : tx.result!.tokenTransfers!.first.amount,
+          //           toAddressHash: AddressHash.fromJson(
+          //               tx.result!.toAddressHash!.toJson()),
+          //           fromAddressHash: AddressHash.fromJson(
+          //               tx.result!.fromAddressHash!.toJson()),
+          //           tokenTransfers: List<TokenTransfer>.from(tx
+          //               .result!.tokenTransfers!
+          //               .map((x) => TokenTransfer.fromJson(x.toJson())))),
+          //     );
         }
       }
     } catch (e, trace) {

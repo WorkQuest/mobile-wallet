@@ -9,13 +9,14 @@ import 'package:workquest_wallet_app/http/http_client.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 
 import '../main.dart';
+import '../model/txs_info_response.dart';
 
 class Api {
   static const baseUrl = isRelease
       ? "https://app-ver1.workquest.co/api/v1"
       : "https://app.workquest.co/api/v1";
 
-  static const isRelease = false;
+  static const isRelease = true;
 
   static const _register = "$baseUrl/auth/register";
   static const _login = "$baseUrl/auth/login/wallet";
@@ -35,6 +36,11 @@ class Api {
     required String addressToken,
   }) =>
       "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+
+  String _transactionInfo({
+    required String hashTx,
+  }) =>
+      "https://dev-explorer.workquest.co/api/v1/transaction/$hashTx";
 
   final _dio = HttpClient().dio;
 
@@ -62,6 +68,7 @@ class Api {
       print('cry');
       await handleError(e);
     }
+    return null;
   }
 
   Future<Response?> register(
@@ -95,6 +102,7 @@ class Api {
     } on DioError catch (e) {
       await handleError(e);
     }
+    return null;
   }
 
   Future<bool?> registerWallet(String publicKey, String address) async {
@@ -119,6 +127,7 @@ class Api {
     } on DioError catch (e) {
       await handleError(e);
     }
+    return null;
   }
 
   Future<bool?> confirmEmail({
@@ -143,6 +152,7 @@ class Api {
       print('catch DioError');
       await handleError(e, translate: false);
     }
+    return null;
   }
 
   Future<bool?> resendCodeEmail({required String email}) async {
@@ -163,6 +173,7 @@ class Api {
       print('catch DioError');
       await handleError(e, translate: false);
     }
+    return null;
   }
 
   Future<String?> getEmailProfile({required String address}) async {
@@ -178,6 +189,7 @@ class Api {
       print('catch DioError');
       await handleError(e, translate: false);
     }
+    return null;
   }
 
   Future<String?> refreshToken(String refreshToken) async {
@@ -200,6 +212,7 @@ class Api {
     } on DioError catch (e) {
       await handleError(e);
     }
+    return null;
   }
 
   Future<List<Tx>?> getTransactions(String address,
@@ -220,6 +233,7 @@ class Api {
     } on DioError catch (e) {
       await handleError(e);
     }
+    return null;
   }
 
   Future<List<Tx>?> getTransactionsByToken({
@@ -247,6 +261,29 @@ class Api {
     } on DioError catch (e) {
       await handleError(e);
     }
+    return null;
+  }
+
+
+  Future<TxInfoResponse?> getTransaction({
+    required String hashTx,
+  }) async {
+    try {
+      final response = await _dio.get(_transactionInfo(hashTx: hashTx));
+
+      if (response.statusCode != 200) {
+        final message = await getTranslateMessage(
+          code: response.data['code'],
+          message: response.data['msg'],
+        );
+        throw FormatException(message);
+      }
+
+      return TxInfoResponse.fromJson(response.data);
+    } on DioError catch (e) {
+      await handleError(e);
+    }
+    return null;
   }
 
   handleError(DioError e, {bool translate = true}) async {
