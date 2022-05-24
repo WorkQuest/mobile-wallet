@@ -21,6 +21,7 @@ class Images {
   static const chooseCoinIcon = "$_svgPath/choose_coin_icon.svg";
   static const wbnbCoinIcon = "$_svgPath/wbnb_coin_icon.svg";
   static const wethCoinIcon = "$_svgPath/weth_coin_icon.svg";
+  static const usdtCoinIcon = "$_svgPath/usdt_coin_icon.svg";
   static const wqtCoinIcon = "$_svgPath/wqt_coin_icon.svg";
   static const wusdCoinIcon = "$_svgPath/wusd_coin_icon.svg";
   static const walletCopyIcon = "$_svgPath/wallet_copy_icon.svg";

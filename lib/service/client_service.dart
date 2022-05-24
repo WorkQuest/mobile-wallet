@@ -142,6 +142,9 @@ class ClientService implements ClientServiceI {
         case TYPE_COINS.wEth:
           addressToken = AddressCoins.wEth;
           break;
+        case TYPE_COINS.usdt:
+          addressToken = AddressCoins.uSdt;
+          break;
       }
       print('send ${coin.toString()}');
       final contract =
@@ -199,7 +202,12 @@ class ClientService implements ClientServiceI {
           Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
       final balance = await contract.balanceOf(
           EthereumAddress.fromHex(AccountRepository().userAddresses!.first.address!));
-      return balance.toDouble() * pow(10, -18);
+      switch (address) {
+        case AddressCoins.uSdt:
+          return balance.toDouble() * pow(10, -6);
+        default:
+          return balance.toDouble() * pow(10, -18);
+      }
     } catch (e) {
       return 0;
     }

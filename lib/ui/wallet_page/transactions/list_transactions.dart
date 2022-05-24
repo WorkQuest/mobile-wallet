@@ -89,16 +89,6 @@ class ListTransactions extends StatelessWidget {
   }
 
   String _getTitleCoin(String? addressContract) {
-    // switch(addressContract) {
-    //   case AddressCoins.wUsd:
-    //     return "WUSD";
-    //   case AddressCoins.wBnb:
-    //     return "wBNB";
-    //   case AddressCoins.wEth:
-    //     return "wETH";
-    //   default:
-    //     return "WQT";
-    // }
     if (GetIt.I.get<TransactionsStore>().type == TYPE_COINS.wqt) {
       switch(addressContract) {
         case AddressCoins.wUsd:
@@ -107,6 +97,8 @@ class ListTransactions extends StatelessWidget {
           return "wBNB";
         case AddressCoins.wEth:
           return "wETH";
+        case AddressCoins.uSdt:
+          return "USDT";
         default:
           return "WQT";
       }
@@ -120,6 +112,8 @@ class ListTransactions extends StatelessWidget {
           return "WUSD";
         case TYPE_COINS.wBnb:
           return "wBNB";
+        case TYPE_COINS.usdt:
+          return "USDT";
         case TYPE_COINS.wEth:
           return "wETH";
         default:

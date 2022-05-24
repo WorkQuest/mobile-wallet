@@ -38,5 +38,5 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
 }
 
 enum TYPE_COINS {
-  wusd, wqt, wBnb, wEth
+  wusd, wqt, wBnb, wEth, usdt
 }

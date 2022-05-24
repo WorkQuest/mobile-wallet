@@ -190,6 +190,8 @@ class _InformationWidget extends StatelessWidget {
         return 'wBNB';
       case TYPE_COINS.wEth:
         return 'wETH';
+      case TYPE_COINS.usdt:
+        return 'USDT';
     }
   }
 }
