@@ -147,35 +147,15 @@ class ClientService implements ClientServiceI {
           break;
       }
       print('send ${coin.toString()}');
+      final degree = coin == TYPE_COINS.usdt ? 6 : 18;
       final contract =
           Erc20(address: EthereumAddress.fromHex(addressToken), client: ethClient!);
-      // final tran = Transaction.callContract(
-      //   contract: contract.self,
-      //   function: contract.self.function('transferFrom'),
-      //   parameters: [
-      //     myAddress,
-      //     EthereumAddress.fromHex(addressTo),
-      //     BigInt.from(double.parse(amount) * pow(10, 18)),
-      //   ],
-      // );
-      // hash = await contract.approve(
-      //   myAddress,
-      //   BigInt.from(double.parse(amount) * pow(10, 18)),
-      //   credentials: credentials,
-      //   transaction: tran,
-      // );
-      // print('approve - $approve');
       hash = await contract.transfer(
         // myAddress,
         EthereumAddress.fromHex(addressTo),
-        BigInt.from(double.parse(amount) * pow(10, 18)),
+        BigInt.from(double.parse(amount) * pow(10, degree)),
         credentials: credentials,
       );
-      // hash = await ethClient!.sendTransaction(
-      //   credentials,
-      //   tran,
-      //   chainId: 20220112,
-      // );
       print('${coin.toString()} hash - $hash');
     }
 
