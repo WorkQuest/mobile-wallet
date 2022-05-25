@@ -11,6 +11,7 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+import 'package:workquest_wallet_app/utils/coins.dart';
 
 abstract class ClientServiceI {
   Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
@@ -42,15 +43,14 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-  final apiUrl = "https://dev-node-nyc3.workquest.co";
-  final wsUrl = "wss://wss-dev-node-nyc3.workquest.co";
 
   Web3Client? ethClient;
 
-  ClientService() {
+  ClientService(ConfigNetwork config) {
     try {
-      ethClient = Web3Client(apiUrl, Client(), socketConnector: () {
-        return IOWebSocketChannel.connect(wsUrl).cast<String>();
+      print('config rpc: ${config.rpc}');
+      ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
+        return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
     } catch (e, trace) {
       print('e -> $e\ntrace -> $trace');
@@ -59,46 +59,7 @@ class ClientService implements ClientServiceI {
 
   @override
   Future<EthPrivateKey> getCredentials(String privateKey) async {
-    return await ethClient!.credentialsFromPrivateKey(privateKey);
-  }
-
-  listenEvent(String address) async {
-    print('address - $address');
-    try {
-      final options = FilterOptions(
-          address: EthereumAddress.fromHex(address),
-          fromBlock: const BlockNum.exact(175177),
-          topics: [
-            ['0xd78a0cb8bb633d06981248b816e7bd33c2a35a6089241d099fa519e361cab902']
-          ]);
-      ethClient!.events(options).listen((event) {
-        print('listen');
-        try {
-          print('event - $event');
-        } catch (e) {
-          print('error listen - $e');
-        }
-      }, onDone: () async {
-        print("event onDone");
-      }, onError: (error) {
-        print("event onError: $error");
-      });
-
-      // final blockNumber = await ethClient!.getBlockNumber();
-      // print('number -> $blockNumber');
-
-      print(options.fromBlock);
-      print(options.toBlock);
-      final result = await ethClient!.getLogs(options);
-      print('len - > ${result.length}');
-      result.map((res) {
-        print(res.address!.hex);
-        print(res.data);
-        print(res.transactionHash);
-      }).toList();
-    } catch (e, trace) {
-      print('e -> $e\ntrace -> $trace');
-    }
+    return EthPrivateKey.fromHex(privateKey);
   }
 
   @override
@@ -129,23 +90,7 @@ class ClientService implements ClientServiceI {
         chainId: 20220112,
       );
     } else {
-      String addressToken = '';
-      switch (coin) {
-        case TYPE_COINS.wqt:
-          break;
-        case TYPE_COINS.wusd:
-          addressToken = AddressCoins.wUsd;
-          break;
-        case TYPE_COINS.wBnb:
-          addressToken = AddressCoins.wBnb;
-          break;
-        case TYPE_COINS.wEth:
-          addressToken = AddressCoins.wEth;
-          break;
-        case TYPE_COINS.usdt:
-          addressToken = AddressCoins.uSdt;
-          break;
-      }
+      String addressToken = CoinsUtils.getAddressCoin(coin, AccountRepository().getConfigNetwork().addresses);
       print('send ${coin.toString()}');
       final degree = coin == TYPE_COINS.usdt ? 6 : 18;
       final contract =
@@ -181,12 +126,12 @@ class ClientService implements ClientServiceI {
       final contract =
           Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
       final balance = await contract.balanceOf(
-          EthereumAddress.fromHex(AccountRepository().userAddresses!.first.address!));
-      switch (address) {
-        case AddressCoins.uSdt:
-          return balance.toDouble() * pow(10, -6);
-        default:
-          return balance.toDouble() * pow(10, -18);
+          EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+      final addresses = AccountRepository().getConfigNetwork().addresses;
+      if (address == addresses.usdt) {
+        return balance.toDouble() * pow(10, -6);
+      } else {
+        return balance.toDouble() * pow(10, -18);
       }
     } catch (e) {
       return 0;

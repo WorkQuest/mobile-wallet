@@ -256,7 +256,7 @@ class _TransferPageState extends State<TransferPage> {
         await store.getFee();
       }
       if (store.addressTo.toLowerCase() ==
-          AccountRepository().userAddress!.toLowerCase()) {
+          AccountRepository().userWallet!.address!.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
             title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
         return;

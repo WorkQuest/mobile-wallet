@@ -22,24 +22,13 @@ class Storage {
     await _secureStorage.deleteAll();
   }
 
-  static Future<List<Wallet>> readWallets() async {
-    String? wallets = await _secureStorage.read(key: StorageKeys.wallets.toString());
-    if (wallets == null || wallets.isEmpty) {
-      return [];
+  static Future<Wallet?> readWallet() async {
+    String? wallet = await _secureStorage.read(key: StorageKeys.wallet.toString());
+    if (wallet == null || wallet.isEmpty) {
+      return null;
     }
-
-    return List.from(jsonDecode(wallets)).map((json) {
-      return Wallet.fromJson(json);
-    }).toList();
+    return  Wallet.fromJson(jsonDecode(wallet));
   }
 }
 
-enum StorageKeys {
-  refreshToken,
-  accessToken,
-  address,
-  wallets,
-  pinCode,
-  email,
-  timeTimer,
-}
+enum StorageKeys { refreshToken, accessToken, wallet, pinCode, email, timeTimer, configName }

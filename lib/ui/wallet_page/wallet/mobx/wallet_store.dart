@@ -38,11 +38,13 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
 
       final list = await AccountRepository().client!.getAllBalance(AccountRepository().privateKey);
 
+      final addresses = Configs.configsNetwork[AccountRepository().configName]!.addresses;
+
       final wqt = list.firstWhere((element) => element.title == 'ether');
-      final wUsd = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wUsd);
-      final wEth = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wEth);
-      final wBnb = await AccountRepository().client!.getBalanceFromContract(AddressCoins.wBnb);
-      final uSdt = await AccountRepository().client!.getBalanceFromContract(AddressCoins.uSdt);
+      final wUsd = await AccountRepository().client!.getBalanceFromContract(addresses.wusd);
+      final wEth = await AccountRepository().client!.getBalanceFromContract(addresses.weth);
+      final wBnb = await AccountRepository().client!.getBalanceFromContract(addresses.wbnb);
+      final uSdt = await AccountRepository().client!.getBalanceFromContract(addresses.usdt);
 
       if (coins.isNotEmpty) {
         coins[0].amount = wqt.amount;
@@ -52,26 +54,11 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
         coins[4].amount = uSdt.toString();
       } else {
         coins.addAll([
-          BalanceItem(
-            "WQT",
-            wqt.amount,
-          ),
-          BalanceItem(
-            "WUSD",
-            wUsd.toString(),
-          ),
-          BalanceItem(
-            "wBNB",
-            wBnb.toString(),
-          ),
-          BalanceItem(
-            "wETH",
-            wEth.toString(),
-          ),
-          BalanceItem(
-            "USDT",
-            uSdt.toString(),
-          ),
+          BalanceItem("WQT", wqt.amount),
+          BalanceItem("WUSD", wUsd.toString()),
+          BalanceItem("wBNB", wBnb.toString()),
+          BalanceItem("wETH", wEth.toString()),
+          BalanceItem("USDT", uSdt.toString()),
         ]);
       }
 

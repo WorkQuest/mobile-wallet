@@ -109,10 +109,8 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
         onError("Server error");
         return;
       }
-      await Storage.write(StorageKeys.wallets.toString(), jsonEncode([wallet.toJson()]));
-      await Storage.write(StorageKeys.address.toString(), wallet.address!);
-      AccountRepository().userAddress = wallet.address;
-      AccountRepository().addWallet(wallet);
+      await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
+      AccountRepository().userWallet = wallet;
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

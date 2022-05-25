@@ -33,10 +33,9 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       final signature = await AccountRepository().client!.getSignature(wallet.privateKey!);
       final result = await Api().login(signature, wallet.address!);
 
-      await saveToStorage(result!, wallet);
+      await _saveToStorage(result!, wallet);
       AccountRepository().clearData();
-      AccountRepository().userAddress = wallet.address;
-      AccountRepository().addWallet(wallet);
+      AccountRepository().userWallet = wallet;
       if (result.data['result']['userStatus'] == 0) {
         onSuccess(false);
         return;
@@ -50,10 +49,9 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     }
   }
 
-  Future saveToStorage(Response result, Wallet wallet) async {
+  Future _saveToStorage(Response result, Wallet wallet) async {
     await Storage.write(StorageKeys.refreshToken.toString(), result.data['result']['refresh']);
     await Storage.write(StorageKeys.accessToken.toString(), result.data['result']['access']);
-    await Storage.write(StorageKeys.wallets.toString(), jsonEncode([wallet.toJson()]));
-    await Storage.write(StorageKeys.address.toString(), wallet.address!);
+    await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
   }
 }

@@ -4,12 +4,13 @@ import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 
+import '../../repository/account_repository.dart';
+
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
 const _networks = [
-  'Mainnet',
-  'Devnet',
-  'Testnet',
+  ConfigNameNetwork.devnet,
+  ConfigNameNetwork.testnet,
 ];
 
 class NetworkPage extends StatefulWidget {
@@ -20,7 +21,14 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-  String _currentNetwork = 'Mainnet';
+  late ConfigNameNetwork _currentNetwork;
+
+  @override
+  void initState() {
+    _currentNetwork = AccountRepository().configName!;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,33 +44,30 @@ class _NetworkPageState extends State<NetworkPage> {
               return Column(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _currentNetwork = network;
-                      });
-                    },
+                    onTap: () => _onPressedChange(network),
                     child: ColoredBox(
                       color: Colors.transparent,
                       child: SizedBox(
                         height: 36,
                         width: double.infinity,
                         child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              DefaultRadio(
-                                status: _currentNetwork == network,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            DefaultRadio(
+                              status: _currentNetwork == network,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              _getName(network.name),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColor.subtitleText,
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                network,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: AppColor.subtitleText,
-                                ),
-                              ),
-                            ]),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -76,5 +81,16 @@ class _NetworkPageState extends State<NetworkPage> {
         ),
       ),
     );
+  }
+
+  String _getName(String name) {
+    return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
+  }
+
+  _onPressedChange(ConfigNameNetwork network) {
+    setState(() {
+      _currentNetwork = network;
+    });
+    AccountRepository().changeNetwork(_currentNetwork);
   }
 }

@@ -60,7 +60,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userAddress ?? '1234567890';
+    final address = AccountRepository().userWallet!.address ?? '1234567890';
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
@@ -99,7 +99,7 @@ class _WalletPageState extends State<WalletPage> {
                   pressedOpacity: 0.2,
                   onPressed: () {
                     Clipboard.setData(
-                        ClipboardData(text: AccountRepository().userAddress));
+                        ClipboardData(text: address));
                     SnackBarUtils.success(
                       context,
                       title: 'wallet.copy'.tr(),

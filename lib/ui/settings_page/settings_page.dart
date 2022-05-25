@@ -16,6 +16,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../utils/snack_bar.dart';
 import 'language_page.dart';
+import 'network_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -63,15 +64,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 height: 20,
                 width: double.infinity,
               ),
-              // _SettingsItem(
-              //   title: 'Network',
-              //   subtitle: 'Mainnet',
-              //   imagePath: Images.settingsNetworkIcon,
-              //   onTab: () {
-              //     // PageRouter.pushNewRoute(context, const NetworkPage());
-              //     SnackBarUtils.example(context);
-              //   },
-              // ),
+              _SettingsItem(
+                title: 'Network',
+                subtitle: _getCurrentNameNetwork(),
+                imagePath: Images.settingsNetworkIcon,
+                onTab: () async {
+                  await PageRouter.pushNewRoute(context, const NetworkPage());
+                  setState(() {});
+                },
+              ),
               Expanded(child: Container()),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
@@ -105,6 +106,11 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  String _getCurrentNameNetwork() {
+    final name = AccountRepository().configName!.name;
+    return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
   }
 
   String _getTitleLanguage(Locale locale) {

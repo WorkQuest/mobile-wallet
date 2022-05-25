@@ -21,8 +21,7 @@ class DepositPage extends StatefulWidget {
   _DepositPageState createState() => _DepositPageState();
 }
 
-class _DepositPageState extends State<DepositPage>
-    with SingleTickerProviderStateMixin {
+class _DepositPageState extends State<DepositPage> with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -69,6 +68,8 @@ class _DepositPageState extends State<DepositPage>
 class _WalletAddress extends StatelessWidget {
   const _WalletAddress({Key? key}) : super(key: key);
 
+  String get address => AccountRepository().userWallet!.address!;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +81,7 @@ class _WalletAddress extends StatelessWidget {
               height: 25,
             ),
             QrImage(
-              data: AccountRepository().userAddress!,
+              data: address,
               version: QrVersions.auto,
               size: 206,
             ),
@@ -108,9 +109,7 @@ class _WalletAddress extends StatelessWidget {
               ),
               child: Text(
                 // '0xf376g...G7f3g8b',
-                '${AccountRepository().userAddress!.substring(0, 7)}...${AccountRepository()
-                    .userAddress!.substring(AccountRepository().userAddress!.length - 7,
-                    AccountRepository().userAddress!.length)}',
+                '${address.substring(0, 7)}...${address.substring(address.length - 7, address.length)}',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
@@ -120,10 +119,11 @@ class _WalletAddress extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(right: 16.0, left: 16.0, bottom: MediaQuery
-            .of(context)
-            .padding
-            .bottom + 10,),
+        padding: EdgeInsets.only(
+          right: 16.0,
+          left: 16.0,
+          bottom: MediaQuery.of(context).padding.bottom + 10,
+        ),
         child: Row(
           children: [
             Expanded(
@@ -168,11 +168,11 @@ class _WalletAddress extends StatelessWidget {
   }
 
   void _sharePressed() {
-    Share.share('${AccountRepository().userAddress}',);
+    Share.share(address);
   }
 
   void _copyPressed(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: AccountRepository().userAddress));
+    Clipboard.setData(ClipboardData(text: address));
     SnackBarUtils.success(
       context,
       title: 'wallet.copy'.tr(),
