@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Images {
@@ -33,7 +32,6 @@ class Images {
   static const passwordIcon = "$_svgPath/password_icon.svg";
   static const biometricIcon = "$_svgPath/biometric_icon.svg";
   static const removePinIcon = "$_svgPath/remove_pin_icon.svg";
-
 }
 
 class AppColor {
@@ -45,7 +43,6 @@ class AppColor {
   static const disabledButton = Color(0xffF7F8FA);
   static const unselectedBottomIcon = Color(0xffAAB0B9);
   static const selectedBottomIcon = enabledButton;
-
 }
 
 class RegExpFields {
@@ -57,9 +54,55 @@ class RegExpFields {
   static final addressRegExp = RegExp(r'[0-9a-fA-F]');
 }
 
+enum ConfigNameNetwork { devnet, testnet }
+
+class Configs {
+  static final configsNetwork = {
+    ConfigNameNetwork.devnet: ConfigNetwork(
+      rpc: 'https://dev-node-ams3.workquest.co',
+      wss: 'wss://wss-dev-node-ams3.workquest.co',
+      addresses: AddressCoins(
+        wusd: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+        wbnb: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+        weth: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
+        usdt: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
+      ),
+    ),
+    ConfigNameNetwork.testnet: ConfigNetwork(
+      rpc: 'https://test-gate-02.workquest.co/rpc',
+      wss: 'wss://wss-test-gate-02.workquest.co',
+      addresses: AddressCoins(
+        wusd: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+        wbnb: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+        weth: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+        usdt: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859'
+      )
+    )
+  };
+}
+
+class ConfigNetwork {
+  final String rpc;
+  final String wss;
+  final AddressCoins addresses;
+
+  ConfigNetwork({
+    required this.rpc,
+    required this.wss,
+    required this.addresses,
+  });
+}
+
 class AddressCoins {
-  static const wUsd = '0x0ed13a696fa29151f3064077acb2a281e68df2aa';
-  static const wEth = '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24';
-  static const wBnb = '0x75349c3f2c3cfd94488a71a350ba841c14309c5b';
-  static const uSdt = '0xbd5bbed9677401e911044947cff9fa4979c29bd8';
+  final String wusd;
+  final String wbnb;
+  final String weth;
+  final String usdt;
+
+  AddressCoins({
+    required this.wusd,
+    required this.wbnb,
+    required this.weth,
+    required this.usdt,
+  });
 }
