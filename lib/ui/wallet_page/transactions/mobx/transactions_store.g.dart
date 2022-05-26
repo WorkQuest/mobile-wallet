@@ -6,10 +6,11 @@ part of 'transactions_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TransactionsStore on TransactionsStoreBase, Store {
-  final _$transactionsAtom = Atom(name: 'TransactionsStoreBase.transactions');
+  late final _$transactionsAtom =
+      Atom(name: 'TransactionsStoreBase.transactions', context: context);
 
   @override
   ObservableList<Tx> get transactions {
@@ -24,7 +25,8 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
-  final _$isMoreLoadingAtom = Atom(name: 'TransactionsStoreBase.isMoreLoading');
+  late final _$isMoreLoadingAtom =
+      Atom(name: 'TransactionsStoreBase.isMoreLoading', context: context);
 
   @override
   bool get isMoreLoading {
@@ -39,8 +41,8 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
-  final _$canMoreLoadingAtom =
-      Atom(name: 'TransactionsStoreBase.canMoreLoading');
+  late final _$canMoreLoadingAtom =
+      Atom(name: 'TransactionsStoreBase.canMoreLoading', context: context);
 
   @override
   bool get canMoreLoading {
@@ -55,7 +57,8 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
-  final _$typeAtom = Atom(name: 'TransactionsStoreBase.type');
+  late final _$typeAtom =
+      Atom(name: 'TransactionsStoreBase.type', context: context);
 
   @override
   TYPE_COINS get type {
@@ -70,16 +73,17 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
-  final _$getTransactionsAsyncAction =
-      AsyncAction('TransactionsStoreBase.getTransactions');
+  late final _$getTransactionsAsyncAction =
+      AsyncAction('TransactionsStoreBase.getTransactions', context: context);
 
   @override
   Future getTransactions() {
     return _$getTransactionsAsyncAction.run(() => super.getTransactions());
   }
 
-  final _$getTransactionsMoreAsyncAction =
-      AsyncAction('TransactionsStoreBase.getTransactionsMore');
+  late final _$getTransactionsMoreAsyncAction = AsyncAction(
+      'TransactionsStoreBase.getTransactionsMore',
+      context: context);
 
   @override
   Future getTransactionsMore() {
@@ -87,8 +91,8 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
         .run(() => super.getTransactionsMore());
   }
 
-  final _$TransactionsStoreBaseActionController =
-      ActionController(name: 'TransactionsStoreBase');
+  late final _$TransactionsStoreBaseActionController =
+      ActionController(name: 'TransactionsStoreBase', context: context);
 
   @override
   dynamic setType(TYPE_COINS value) {

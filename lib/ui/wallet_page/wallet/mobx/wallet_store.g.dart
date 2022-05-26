@@ -6,10 +6,11 @@ part of 'wallet_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$WalletStore on WalletStoreBase, Store {
-  final _$coinsAtom = Atom(name: 'WalletStoreBase.coins');
+  late final _$coinsAtom =
+      Atom(name: 'WalletStoreBase.coins', context: context);
 
   @override
   ObservableList<BalanceItem> get coins {
@@ -24,7 +25,8 @@ mixin _$WalletStore on WalletStoreBase, Store {
     });
   }
 
-  final _$indexAtom = Atom(name: 'WalletStoreBase.index');
+  late final _$indexAtom =
+      Atom(name: 'WalletStoreBase.index', context: context);
 
   @override
   int get index {
@@ -39,15 +41,42 @@ mixin _$WalletStore on WalletStoreBase, Store {
     });
   }
 
-  final _$getCoinsAsyncAction = AsyncAction('WalletStoreBase.getCoins');
+  late final _$typeAtom = Atom(name: 'WalletStoreBase.type', context: context);
+
+  @override
+  TYPE_COINS get type {
+    _$typeAtom.reportRead();
+    return super.type;
+  }
+
+  @override
+  set type(TYPE_COINS value) {
+    _$typeAtom.reportWrite(value, super.type, () {
+      super.type = value;
+    });
+  }
+
+  late final _$getCoinsAsyncAction =
+      AsyncAction('WalletStoreBase.getCoins', context: context);
 
   @override
   Future getCoins({bool isForce = true}) {
     return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
-  final _$WalletStoreBaseActionController =
-      ActionController(name: 'WalletStoreBase');
+  late final _$WalletStoreBaseActionController =
+      ActionController(name: 'WalletStoreBase', context: context);
+
+  @override
+  dynamic setType(TYPE_COINS value) {
+    final _$actionInfo = _$WalletStoreBaseActionController.startAction(
+        name: 'WalletStoreBase.setType');
+    try {
+      return super.setType(value);
+    } finally {
+      _$WalletStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setIndex(int value) {
@@ -64,7 +93,8 @@ mixin _$WalletStore on WalletStoreBase, Store {
   String toString() {
     return '''
 coins: ${coins},
-index: ${index}
+index: ${index},
+type: ${type}
     ''';
   }
 }

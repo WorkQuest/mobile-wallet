@@ -6,7 +6,7 @@ part of 'sign_up_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SignUpStore on SignUpStoreBase, Store {
   Computed<bool>? _$statusGenerateButtonComputed;
@@ -17,7 +17,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
               name: 'SignUpStoreBase.statusGenerateButton'))
       .value;
 
-  final _$mnemonicAtom = Atom(name: 'SignUpStoreBase.mnemonic');
+  late final _$mnemonicAtom =
+      Atom(name: 'SignUpStoreBase.mnemonic', context: context);
 
   @override
   String? get mnemonic {
@@ -32,7 +33,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$isSavedAtom = Atom(name: 'SignUpStoreBase.isSaved');
+  late final _$isSavedAtom =
+      Atom(name: 'SignUpStoreBase.isSaved', context: context);
 
   @override
   bool get isSaved {
@@ -47,7 +49,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$firstWordAtom = Atom(name: 'SignUpStoreBase.firstWord');
+  late final _$firstWordAtom =
+      Atom(name: 'SignUpStoreBase.firstWord', context: context);
 
   @override
   String? get firstWord {
@@ -62,7 +65,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$secondWordAtom = Atom(name: 'SignUpStoreBase.secondWord');
+  late final _$secondWordAtom =
+      Atom(name: 'SignUpStoreBase.secondWord', context: context);
 
   @override
   String? get secondWord {
@@ -77,7 +81,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$indexFirstWordAtom = Atom(name: 'SignUpStoreBase.indexFirstWord');
+  late final _$indexFirstWordAtom =
+      Atom(name: 'SignUpStoreBase.indexFirstWord', context: context);
 
   @override
   int? get indexFirstWord {
@@ -92,7 +97,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$indexSecondWordAtom = Atom(name: 'SignUpStoreBase.indexSecondWord');
+  late final _$indexSecondWordAtom =
+      Atom(name: 'SignUpStoreBase.indexSecondWord', context: context);
 
   @override
   int? get indexSecondWord {
@@ -107,8 +113,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$selectedFirstWordAtom =
-      Atom(name: 'SignUpStoreBase.selectedFirstWord');
+  late final _$selectedFirstWordAtom =
+      Atom(name: 'SignUpStoreBase.selectedFirstWord', context: context);
 
   @override
   String? get selectedFirstWord {
@@ -123,8 +129,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$selectedSecondWordAtom =
-      Atom(name: 'SignUpStoreBase.selectedSecondWord');
+  late final _$selectedSecondWordAtom =
+      Atom(name: 'SignUpStoreBase.selectedSecondWord', context: context);
 
   @override
   String? get selectedSecondWord {
@@ -139,7 +145,8 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$setOfWordsAtom = Atom(name: 'SignUpStoreBase.setOfWords');
+  late final _$setOfWordsAtom =
+      Atom(name: 'SignUpStoreBase.setOfWords', context: context);
 
   @override
   ObservableList<String>? get setOfWords {
@@ -154,15 +161,16 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  final _$openWalletAsyncAction = AsyncAction('SignUpStoreBase.openWallet');
+  late final _$openWalletAsyncAction =
+      AsyncAction('SignUpStoreBase.openWallet', context: context);
 
   @override
   Future openWallet() {
     return _$openWalletAsyncAction.run(() => super.openWallet());
   }
 
-  final _$SignUpStoreBaseActionController =
-      ActionController(name: 'SignUpStoreBase');
+  late final _$SignUpStoreBaseActionController =
+      ActionController(name: 'SignUpStoreBase', context: context);
 
   @override
   dynamic setMnemonic(String value) {

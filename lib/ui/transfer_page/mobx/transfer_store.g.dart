@@ -6,7 +6,7 @@ part of 'transfer_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TransferStore on TransferStoreBase, Store {
   Computed<bool>? _$statusButtonTransferComputed;
@@ -17,7 +17,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
-  final _$typeCoinAtom = Atom(name: 'TransferStoreBase.typeCoin');
+  late final _$typeCoinAtom =
+      Atom(name: 'TransferStoreBase.typeCoin', context: context);
 
   @override
   TYPE_COINS? get typeCoin {
@@ -32,7 +33,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
-  final _$addressToAtom = Atom(name: 'TransferStoreBase.addressTo');
+  late final _$addressToAtom =
+      Atom(name: 'TransferStoreBase.addressTo', context: context);
 
   @override
   String get addressTo {
@@ -47,7 +49,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
-  final _$amountAtom = Atom(name: 'TransferStoreBase.amount');
+  late final _$amountAtom =
+      Atom(name: 'TransferStoreBase.amount', context: context);
 
   @override
   String get amount {
@@ -62,7 +65,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
-  final _$feeAtom = Atom(name: 'TransferStoreBase.fee');
+  late final _$feeAtom = Atom(name: 'TransferStoreBase.fee', context: context);
 
   @override
   String get fee {
@@ -77,23 +80,24 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
-  final _$getMaxAmountAsyncAction =
-      AsyncAction('TransferStoreBase.getMaxAmount');
+  late final _$getMaxAmountAsyncAction =
+      AsyncAction('TransferStoreBase.getMaxAmount', context: context);
 
   @override
   Future getMaxAmount() {
     return _$getMaxAmountAsyncAction.run(() => super.getMaxAmount());
   }
 
-  final _$getFeeAsyncAction = AsyncAction('TransferStoreBase.getFee');
+  late final _$getFeeAsyncAction =
+      AsyncAction('TransferStoreBase.getFee', context: context);
 
   @override
   Future getFee() {
     return _$getFeeAsyncAction.run(() => super.getFee());
   }
 
-  final _$TransferStoreBaseActionController =
-      ActionController(name: 'TransferStoreBase');
+  late final _$TransferStoreBaseActionController =
+      ActionController(name: 'TransferStoreBase', context: context);
 
   @override
   dynamic setAddressTo(String value) {
