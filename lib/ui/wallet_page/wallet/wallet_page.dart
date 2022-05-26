@@ -60,7 +60,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userWallet!.address ?? '1234567890';
+    final address = AccountRepository().userWallet?.address ?? '1234567890';
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;

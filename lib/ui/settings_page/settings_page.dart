@@ -8,7 +8,6 @@ import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
@@ -80,7 +79,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: EdgeInsets.zero,
                   onPressed: () async {
                     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
-                    await Storage.deleteAllFromSecureStorage();
                     WebSocket().closeWebSocket();
                     AccountRepository().clearData();
                   },
@@ -109,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   String _getCurrentNameNetwork() {
-    final name = AccountRepository().configName!.name;
+    final name = AccountRepository().configName?.name ?? ConfigNameNetwork.devnet.name;
     return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
   }
 

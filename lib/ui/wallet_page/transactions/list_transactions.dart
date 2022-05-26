@@ -61,8 +61,8 @@ class ListTransactions extends StatelessWidget {
                     ],
                   );
                 }
-                final increase =
-                    store.transactions[index].fromAddressHash!.hex! != AccountRepository().userWallet!.address!;
+                final increase = store.transactions[index].fromAddressHash!.hex! !=
+                    (AccountRepository().userWallet?.address ?? '1234');
                 return TransactionItem(
                   transaction: store.transactions[index],
                   coin: increase

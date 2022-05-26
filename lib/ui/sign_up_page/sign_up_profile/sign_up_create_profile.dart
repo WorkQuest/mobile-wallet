@@ -14,7 +14,6 @@ import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 import '../../../constants.dart';
 import '../../../page_router.dart';
 import '../../../repository/account_repository.dart';
-import '../../../utils/storage.dart';
 import '../sign_up_choose_role/sign_up_choose_role.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -225,7 +224,6 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                         );
                         if (result != null && result) {
                           AccountRepository().clearData();
-                          await Storage.deleteAllFromSecureStorage();
                         }
                       },
                       child: Observer(

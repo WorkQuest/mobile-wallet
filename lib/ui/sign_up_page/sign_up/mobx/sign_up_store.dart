@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/http/api.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
 
 part 'sign_up_store.g.dart';
@@ -109,8 +106,6 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
         onError("Server error");
         return;
       }
-      await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
-      AccountRepository().userWallet = wallet;
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

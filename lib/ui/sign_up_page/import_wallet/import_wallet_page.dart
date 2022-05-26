@@ -6,7 +6,7 @@ import '../../../page_router.dart';
 import '../../../widgets/animation/login_button.dart';
 import '../../../widgets/default_textfield.dart';
 import '../../../widgets/observer_consumer.dart';
-import '../../pin_code_page/pin_code_page.dart';
+import '../../login_page/login_page.dart';
 import '../sign_up/mobx/sign_up_store.dart';
 
 class ImportWalletPage extends StatefulWidget {
@@ -83,8 +83,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                   onSuccess: () async {
                     Navigator.of(context, rootNavigator: true).pop();
                     await AlertDialogUtils.showSuccessDialog(context);
-                    PageRouter.pushNewReplacementRoute(
-                        context, const PinCodePage());
+                    PageRouter.pushNewRemoveRoute(context, const LoginPage());
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,

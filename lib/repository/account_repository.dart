@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -17,6 +18,7 @@ class AccountRepository {
   Wallet? userWallet;
   ClientService? client;
   ConfigNameNetwork? configName;
+  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.devnet);
 
   String get privateKey => userWallet!.privateKey!;
 
@@ -27,8 +29,8 @@ class AccountRepository {
 
   setNetwork(String name) {
     final configName = _getNetworkNameKey(name);
-    print('configName: $configName');
     this.configName = configName;
+    notifier.value = configName;
   }
 
   changeNetwork(ConfigNameNetwork configName) {
@@ -46,8 +48,9 @@ class AccountRepository {
   clearData() {
     userWallet = null;
     configName = null;
+    notifier.value = null;
     _disconnectWeb3Client();
-    _deleteNetwork();
+    Storage.deleteAllFromSecureStorage();
   }
 
   ConfigNetwork getConfigNetwork() {
@@ -56,13 +59,12 @@ class AccountRepository {
 
   _saveNetwork(ConfigNameNetwork configName) {
     this.configName = configName;
+    notifier.value = configName;
     Storage.write(StorageKeys.configName.toString(), configName.name);
   }
 
-  _deleteNetwork() => Storage.delete(StorageKeys.configName.toString());
-
   _disconnectWeb3Client() {
-    if (client!.ethClient != null) {
+    if (client?.ethClient != null) {
       client!.ethClient!.dispose();
       client!.ethClient = null;
     }
@@ -73,7 +75,7 @@ class AccountRepository {
       case 'devnet':
         return ConfigNameNetwork.devnet;
       case 'testnet':
-        return  ConfigNameNetwork.testnet;
+        return ConfigNameNetwork.testnet;
       default:
         throw Exception('Unknown name network');
     }

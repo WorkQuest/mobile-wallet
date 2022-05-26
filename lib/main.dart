@@ -10,6 +10,7 @@ import 'package:workquest_wallet_app/ui/splash_page/splash_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/widgets/banner/CustomBanner.dart';
 
 BuildContext? globalContext;
 
@@ -20,20 +21,16 @@ void main() async {
   GetIt.I.registerSingleton<TransactionsStore>(TransactionsStore());
   GetIt.I.registerSingleton<SignUpConfirmStore>(SignUpConfirmStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
-  try {
 
+  try {
     final wallet = await Storage.readWallet();
-    final configName = await Storage.read(StorageKeys.configName.toString());
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
-    }
-    if (configName != null) {
-      AccountRepository().setNetwork(configName);
-    } else {
-      AccountRepository().setNetwork(ConfigNameNetwork.devnet.name);
+      final configName = await Storage.read(StorageKeys.configName.toString());
+      AccountRepository().setNetwork(configName!);
     }
   } catch (e) {
-    Storage.deleteAllFromSecureStorage();
+    AccountRepository().clearData();
   }
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -62,28 +59,44 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     globalContext = context;
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      title: 'WorkQuest Wallet',
-      theme: ThemeData(
-        textTheme: GoogleFonts.interTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      builder: (context, child) {
-        /// Set app text scale between 90% and 110%
-        final mq = MediaQuery.of(context);
-        double fontScale = mq.textScaleFactor.clamp(0.8, 1.0);
-        return MediaQuery(
-          data: mq.copyWith(textScaleFactor: fontScale),
+    return ValueListenableBuilder<ConfigNameNetwork?>(
+      valueListenable: AccountRepository().notifier,
+      builder: (_, value, child) {
+        final name = value?.name ?? ConfigNameNetwork.devnet.name;
+        final visible = name != ConfigNameNetwork.devnet.name;
+        return CustomBanner(
+          text: '${name.substring(0,1).toUpperCase()}${name.substring(1)}',
+          visible: false,
+          color: visible ? AppColor.blue : Colors.transparent,
+          textStyle: visible
+              ? const TextStyle(color:  AppColor.enabledText, fontWeight: FontWeight.bold)
+              : const TextStyle(color: Colors.transparent, fontWeight: FontWeight.bold),
           child: child!,
         );
       },
-      home: const SplashPage(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        title: 'WorkQuest Wallet',
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          scaffoldBackgroundColor: Colors.white,
+        ),
+        builder: (context, child) {
+          /// Set app text scale between 90% and 110%
+          final mq = MediaQuery.of(context);
+          double fontScale = mq.textScaleFactor.clamp(0.8, 1.0);
+          return MediaQuery(
+            data: mq.copyWith(textScaleFactor: fontScale),
+            child: child!,
+          );
+        },
+        home: const SplashPage(),
+      ),
     );
   }
 }

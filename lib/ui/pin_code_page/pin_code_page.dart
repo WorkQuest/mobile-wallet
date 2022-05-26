@@ -13,7 +13,6 @@ import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/mobx/pin_code_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_color.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_compression.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_switch.dart';
@@ -69,10 +68,11 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       },
       onSuccess: () async {
         if (store.statePin == StatePinCode.toLogin) {
-          await Storage.deleteAllFromSecureStorage();
+          /// Failed
           AccountRepository().clearData();
           PageRouter.pushNewRemoveRoute(context, const LoginPage());
         } else if (store.successData == StatePinCode.success) {
+          /// Success
           AccountRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);

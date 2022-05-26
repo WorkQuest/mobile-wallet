@@ -10,7 +10,6 @@ import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_choose_role/sign_up_choose_role.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -140,7 +139,6 @@ class _ContentScreenState extends State<_ContentScreen> {
                       await PageRouter.pushNewRoute(context, const SignUpChooseRole(email: '',));
                   if (result != null && result) {
                     AccountRepository().clearData();
-                    await Storage.deleteAllFromSecureStorage();
                   }
                 }
               },
