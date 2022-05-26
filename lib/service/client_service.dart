@@ -46,14 +46,18 @@ class ClientService implements ClientServiceI {
 
   Web3Client? ethClient;
 
-  ClientService(ConfigNetwork config) {
+  ClientService(ConfigNetwork config, {String? customRpc}) {
     try {
-      print('config rpc: ${config.rpc}');
+      if (customRpc != null) {
+        ethClient = Web3Client(customRpc, Client());
+        return;
+      }
       ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
     } catch (e, trace) {
       print('e -> $e\ntrace -> $trace');
+      throw Exception(e.toString());
     }
   }
 
@@ -133,7 +137,8 @@ class ClientService implements ClientServiceI {
       } else {
         return balance.toDouble() * pow(10, -18);
       }
-    } catch (e) {
+    } catch (e, trace) {
+      // print('getBalanceFromContract | e: $e\ntrace: $trace');
       return 0;
     }
   }

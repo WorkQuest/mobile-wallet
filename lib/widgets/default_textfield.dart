@@ -10,6 +10,7 @@ class DefaultTextField extends StatefulWidget {
   final bool isPassword;
   final bool enableDispose;
   final TextInputType? keyboardType;
+  final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -19,9 +20,10 @@ class DefaultTextField extends StatefulWidget {
     Key? key,
     required this.controller,
     required this.hint,
-    required this.suffixIcon,
-    required this.inputFormatters,
+    this.inputFormatters,
+    this.suffixIcon,
     this.validator,
+    this.autovalidateMode,
     this.keyboardType,
     this.enableDispose = true,
     this.onChanged,
@@ -67,6 +69,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       validator: widget.validator,
       obscureText: !_visiblePassword,
       onChanged: widget.onChanged,
+      autovalidateMode: widget.autovalidateMode,
       decoration: InputDecoration(
         filled: true,
         fillColor:
@@ -74,6 +77,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
         hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
+        errorMaxLines: 3,
         hintStyle: const TextStyle(
           fontSize: 16,
           color: AppColor.disabledText,
