@@ -41,6 +41,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
       statePin = StatePinCode.check;
       final auth = LocalAuthentication();
       canBiometrics = await auth.canCheckBiometrics;
+      biometricScan();
     } else {
       statePin = StatePinCode.create;
     }
@@ -84,7 +85,9 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
     onLoading();
     try {
       if (isBiometric) {
-        statePin = StatePinCode.success;
+        startAnimation = true;
+        await Future.delayed(const Duration(seconds: 2));
+        statePin = StatePinCode.check;
         onSuccess(StatePinCode.success);
         return;
       }
