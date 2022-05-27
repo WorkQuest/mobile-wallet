@@ -9,6 +9,7 @@ class DefaultTextField extends StatefulWidget {
   final String hint;
   final bool isPassword;
   final bool enableDispose;
+  final bool enabled;
   final TextInputType? keyboardType;
   final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
@@ -23,6 +24,7 @@ class DefaultTextField extends StatefulWidget {
     this.inputFormatters,
     this.suffixIcon,
     this.validator,
+    this.enabled = true,
     this.autovalidateMode,
     this.keyboardType,
     this.enableDispose = true,
@@ -69,6 +71,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       validator: widget.validator,
       obscureText: !_visiblePassword,
       onChanged: widget.onChanged,
+      enabled: widget.enabled,
       autovalidateMode: widget.autovalidateMode,
       decoration: InputDecoration(
         filled: true,
