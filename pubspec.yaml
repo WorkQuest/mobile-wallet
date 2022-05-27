@@ -87,6 +87,7 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/lang/
+    - assets/contracts/
 #    - assets/fonts/
 #    - assets/fonts/inter/
 #    - assets/fonts/inter/Inter-Bold.ttf
