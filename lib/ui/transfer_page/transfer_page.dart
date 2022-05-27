@@ -12,7 +12,6 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/swap_page/swap_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -179,14 +178,6 @@ class _TransferPageState extends State<TransferPage> {
               ),
               const SizedBox(
                 height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: DefaultButton(
-                    onPressed: () async {
-                      PageRouter.pushNewRoute(context, const SwapPage());
-                    },
-                    title: 'Get WQT'),
               ),
             ],
           ),

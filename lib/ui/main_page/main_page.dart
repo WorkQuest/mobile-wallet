@@ -1,4 +1,4 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,8 +10,10 @@ import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dar
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import '../../constants.dart';
+import '../swap_page/swap_page.dart';
 
 final _keys = [
+  GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
@@ -79,6 +81,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
+                    Images.transferIconBar,
+                    width: 20,
+                    height: 16,
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    Images.transferIconBar,
+                    color: AppColor.enabledButton,
+                    width: 20,
+                    height: 16,
+                  ),
+                  label: 'Swap'.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
                     Images.settingsIconBar,
                     width: 20,
                     height: 20,
@@ -102,9 +118,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 return TransferPage(
                   key: _keys[1],
                 );
-              } else {
-                return SettingsPage(
+              } else if (index == 2) {
+                return SwapPage(
                   key: _keys[2],
+                );
+              }  else {
+                return SettingsPage(
+                  key: _keys[3],
                   update: _update,
                 );
               }
