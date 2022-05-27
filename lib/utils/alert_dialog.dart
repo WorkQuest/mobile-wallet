@@ -59,7 +59,7 @@ class AlertDialogUtils {
     }
   }
 
-  static Future<void> showLoadingDialog(BuildContext context) async {
+  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -69,7 +69,7 @@ class AlertDialogUtils {
           width: 15,
         ),
         Text(
-          '${'meta'.tr(gender: 'loading')}...',
+          message ?? '${'meta'.tr(gender: 'loading')}...',
           style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
