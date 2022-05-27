@@ -592,6 +592,11 @@
       },
       {
         "internalType": "string",
+        "name": "userId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
         "name": "symbol",
         "type": "string"
       }

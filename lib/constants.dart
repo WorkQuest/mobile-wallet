@@ -60,7 +60,7 @@ class Configs {
   static final configsNetwork = {
     ConfigNameNetwork.devnet: ConfigNetwork(
       rpc: 'https://dev-node-ams3.workquest.co',
-      wss: 'wss://wss-dev-node-ams3.workquest.co',
+      wss: 'wss://dev-node-nyc3.workquest.co',
       addresses: AddressCoins(
         wusd: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
         wbnb: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
