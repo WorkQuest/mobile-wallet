@@ -124,7 +124,7 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address) async {
+  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false}) async {
     try {
       address = address.toLowerCase();
       final contract =
@@ -132,14 +132,17 @@ class ClientService implements ClientServiceI {
       final balance = await contract.balanceOf(
           EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
       final addresses = AccountRepository().getConfigNetwork().addresses;
+      if (otherNetwork) {
+        return balance.toDouble() * pow(10, -6);
+      }
       if (address == addresses.usdt) {
         return balance.toDouble() * pow(10, -6);
       } else {
         return balance.toDouble() * pow(10, -18);
       }
     } catch (e, trace) {
-      // print('getBalanceFromContract | e: $e\ntrace: $trace');
-      return 0;
+      print('e: $e\ntrace: $trace');
+     throw Exception("Error connection to network");
     }
   }
 
