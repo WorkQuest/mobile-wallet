@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
@@ -9,6 +10,7 @@ import 'package:workquest_wallet_app/http/http_client.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 
 import '../main.dart';
+import '../model/course_tokens_response.dart';
 import '../model/txs_info_response.dart';
 
 class Api {
@@ -16,7 +18,7 @@ class Api {
       ? "https://app-ver1.workquest.co/api/v1"
       : "https://app.workquest.co/api/v1";
 
-  static const isRelease = true;
+  static const isRelease = false;
 
   static const _register = "$baseUrl/auth/register";
   static const _login = "$baseUrl/auth/login/wallet";
@@ -24,6 +26,7 @@ class Api {
   static const _refreshTokens = "$baseUrl/auth/refresh-tokens";
   static const _resendEmail = "$baseUrl/auth/main/resend-email";
   static const _registerWallet = "$baseUrl/auth/register/wallet";
+  static const _courseWQT = "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
 
   String _transactions(String address) =>
       "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
@@ -280,6 +283,28 @@ class Api {
       }
 
       return TxInfoResponse.fromJson(response.data);
+    } on DioError catch (e) {
+      await handleError(e);
+    }
+    return null;
+  }
+
+  Future<double?> getCourseWQT() async {
+    try {
+      final response = await _dio.get(_courseWQT);
+
+      if (response.statusCode != 200) {
+        final message = await getTranslateMessage(
+          code: response.data['code'],
+          message: response.data['msg'],
+        );
+        throw FormatException(message);
+      }
+      
+      final result = CourseTokenResponse.fromJson(response.data);
+      final _indexWQT = result.result!.symbols!.indexWhere((element) => element == 'WQT');
+      final _course= result.result!.prices![_indexWQT];
+      return double.parse(_course) * pow(10, -18);
     } on DioError catch (e) {
       await handleError(e);
     }
