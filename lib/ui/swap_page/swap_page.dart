@@ -6,18 +6,17 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/swap_page/store/swap_store.dart';
+import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/bottom_sheet.dart';
-import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
-import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 import 'package:workquest_wallet_app/widgets/selected_item.dart';
 
 import '../../../constants.dart';
 import '../../../widgets/dismiss_keyboard.dart';
+import '../../widgets/main_app_bar.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 const _divider = SizedBox(
@@ -48,9 +47,14 @@ class _SwapPageState extends State<SwapPage> {
   void initState() {
     store = SwapStore();
     store.setNetwork(SwapNetworks.ethereum);
-    _showLoading();
+    _showLoading(start: true, message: 'Connecting to server...');
     _amountController = TextEditingController();
-    _amountController.addListener(() => store.setAmount(double.tryParse(_amountController.text) ?? 0.0));
+    _amountController.addListener(() {
+      store.setAmount(double.tryParse(_amountController.text) ?? 0.0);
+      if (store.isConnect) {
+        store.getCourseWQT();
+      }
+    });
 
     _addressToController = TextEditingController();
     _addressToController.addListener(() {});
@@ -60,21 +64,35 @@ class _SwapPageState extends State<SwapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(
+      backgroundColor: Colors.white,
+      appBar: const MainAppBar(
         title: 'Buying WQT',
       ),
       body: ObserverListener(
         store: store,
         onSuccess: () {
           Navigator.of(context, rootNavigator: true).pop();
+          if (store.successData!) {
+            AlertDialogUtils.showSuccessDialog(context);
+          }
         },
         onFailure: () {
           Navigator.of(context, rootNavigator: true).pop();
           return false;
         },
         child: Observer(
-          builder: (_) => LayoutWithScroll(
-            child: DismissKeyboard(
+          builder: (_) => RefreshIndicator(
+            onRefresh: () {
+              if (store.isConnect) {
+                store.getCourseWQT(isForce: true);
+                store.getMaxBalance();
+              } else {
+                store.setNetwork(store.network!);
+              }
+              return Future.delayed(const Duration(seconds: 1));
+            },
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               child: Padding(
                 padding: _padding,
                 child: Form(
@@ -98,7 +116,10 @@ class _SwapPageState extends State<SwapPage> {
                                   'Retry',
                                   style: TextStyle(color: AppColor.enabledButton),
                                 ),
-                                onPressed: () => store.setNetwork(store.network!),
+                                onPressed: () {
+                                  _showLoading(message: 'Connecting to network...');
+                                  store.setNetwork(store.network!);
+                                },
                               ),
                             ),
                         ],
@@ -123,15 +144,39 @@ class _SwapPageState extends State<SwapPage> {
                         onTap: _onPressedSelectToken,
                       ),
                       _spaceDivider,
-                      const Text(
-                        'Amount',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      Row(
+                        children: [
+                          Text(
+                            'Amount (Balance: ${store.maxAmount ?? 0.0})',
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          if (store.isConnect)
+                            SizedBox(
+                              height: 18,
+                              child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                child: const Text(
+                                  'Update',
+                                  style: TextStyle(
+                                    color: AppColor.enabledButton,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  store.getMaxBalance();
+                                },
+                              ),
+                            )
+                        ],
                       ),
                       _divider,
                       DefaultTextField(
                         enableDispose: false,
                         controller: _amountController,
                         hint: 'Amount',
+                        enabled: store.isConnect,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null) {
@@ -144,6 +189,11 @@ class _SwapPageState extends State<SwapPage> {
                             }
                             if (val > 100.0) {
                               return _maximumError;
+                            }
+                            if (store.maxAmount != null) {
+                              if (store.maxAmount! < val) {
+                                return 'Higher max amount';
+                              }
                             }
                           } catch (e) {
                             return "errors.incorrectFormat".tr();
@@ -165,6 +215,9 @@ class _SwapPageState extends State<SwapPage> {
                             ),
                           ),
                           onPressed: () {
+                            if (!store.isConnect) {
+                              return;
+                            }
                             _amountController.text = store.maxAmount.toString();
                             _addressToController.text = AccountRepository().userWallet!.address!;
                           },
@@ -180,6 +233,7 @@ class _SwapPageState extends State<SwapPage> {
                         enableDispose: false,
                         controller: _addressToController,
                         hint: 'Address to',
+                        enabled: store.isConnect,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         inputFormatters: [
                           MaskTextInputFormatter(
@@ -195,6 +249,25 @@ class _SwapPageState extends State<SwapPage> {
                           return null;
                         },
                       ),
+                      _spaceDivider,
+                      Row(
+                        children: [
+                          const Text('Amount of WQT ≈ '),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          if (store.isLoadingCourse)
+                            const SizedBox(
+                              height: 10,
+                              width: 10,
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                          if (store.isSuccessCourse) Text(store.convertWQT.toString()),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 250,
+                      ),
                     ],
                   ),
                 ),
@@ -204,17 +277,61 @@ class _SwapPageState extends State<SwapPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: _padding,
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0 + MediaQuery.of(context).padding.bottom),
         child: DefaultButton(
           title: 'Send',
-          onPressed: () {},
+          onPressed: _onPressedSend,
         ),
       ),
     );
   }
 
-  _showLoading() {
-    Future.delayed(const Duration(milliseconds: 50)).then((value) => AlertDialogUtils.showLoadingDialog(context));
+  _showLoading({bool start = false, String? message}) {
+    if (start) {
+      Future.delayed(const Duration(milliseconds: 150)).then(
+        (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
+      );
+    } else {
+      AlertDialogUtils.showLoadingDialog(context, message: message);
+    }
+  }
+
+  _onPressedSend() {
+    if (_formKey.currentState!.validate()) {
+      _showLoading(message: 'Buying WQT');
+      store.createSwap(_addressToController.text);
+    }
+  }
+
+  _onPressedSelectNetwork() {
+    BottomSheetUtils.showDefaultBottomSheet(
+      context,
+      child: _ListBottomWidget(
+        onTap: (value) {
+          store.setNetwork(value);
+          _showLoading(message: 'Connecting to server...');
+        },
+        title: 'Choose network',
+        items: [
+          _ModelItem(iconPath: Images.wethCoinIcon, item: SwapNetworks.ethereum),
+          _ModelItem(iconPath: Images.wbnbCoinIcon, item: SwapNetworks.binance),
+          _ModelItem(iconPath: Images.wqtCoinIcon, item: SwapNetworks.matic),
+        ],
+      ),
+    );
+  }
+
+  _onPressedSelectToken() {
+    BottomSheetUtils.showDefaultBottomSheet(
+      context,
+      child: _ListBottomWidget(
+        onTap: (value) => store.setToken(value),
+        title: 'Choose token',
+        items: [
+          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
+        ],
+      ),
+    );
   }
 
   _getTitleNetwork(SwapNetworks network) {
@@ -246,37 +363,6 @@ class _SwapPageState extends State<SwapPage> {
       case SwapNetworks.matic:
         return Images.wqtCoinIcon;
     }
-  }
-
-  _onPressedSelectNetwork() {
-    BottomSheetUtils.showDefaultBottomSheet(
-      context,
-      child: _ListBottomWidget(
-        onTap: (value) {
-          store.setNetwork(value);
-          _showLoading();
-        },
-        title: 'Choose network',
-        items: [
-          _ModelItem(iconPath: Images.wethCoinIcon, item: SwapNetworks.ethereum),
-          _ModelItem(iconPath: Images.wbnbCoinIcon, item: SwapNetworks.binance),
-          _ModelItem(iconPath: Images.wqtCoinIcon, item: SwapNetworks.matic),
-        ],
-      ),
-    );
-  }
-
-  _onPressedSelectToken() {
-    BottomSheetUtils.showDefaultBottomSheet(
-      context,
-      child: _ListBottomWidget(
-        onTap: (value) => store.setToken(value),
-        title: 'Choose token',
-        items: [
-          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
-        ],
-      ),
-    );
   }
 }
 
@@ -349,8 +435,8 @@ class _ListBottomWidget extends StatelessWidget {
                                   child: InkWell(
                                     splashColor: Colors.transparent,
                                     onTap: () {
-                                      onTap.call(item.item);
                                       Navigator.pop(context);
+                                      onTap.call(item.item);
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(

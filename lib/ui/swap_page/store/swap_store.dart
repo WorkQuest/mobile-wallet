@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
 
@@ -18,6 +22,8 @@ class SwapStore = SwapStoreBase with _$SwapStore;
 abstract class SwapStoreBase extends IStore<bool> with Store {
   ClientService? service;
 
+  double? courseWQT;
+
   @observable
   SwapNetworks? network;
 
@@ -28,19 +34,29 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   double amount = 0.0;
 
   @observable
-  double maxAmount = 1000.0;
+  double? maxAmount;
 
   @observable
   bool isConnect = false;
+
+  @observable
+  double? convertWQT;
+
+  @observable
+  bool isLoadingCourse = false;
+
+  @observable
+  bool isSuccessCourse = false;
 
   @action
   setNetwork(SwapNetworks value) async {
     try {
       onLoading();
       network = value;
+      maxAmount = null;
       await _connectRpc();
       isConnect = true;
-      onSuccess(true);
+      onSuccess(false);
     } catch (e) {
       isConnect = false;
       onError(e.toString());
@@ -55,10 +71,24 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async {
-    maxAmount = await service!.getBalanceFromContract(_getTokenUSDT(network!));
-    print('network: $network');
-    print('address usdt: ${_getTokenUSDT(network!)}');
-    print('maxAmount: $maxAmount');
+    maxAmount = await service!.getBalanceFromContract(_getTokenUSDT(network!), otherNetwork: true);
+  }
+
+  @action
+  getCourseWQT({bool isForce = false}) async {
+    isLoadingCourse = true;
+    isSuccessCourse = false;
+    try {
+      courseWQT ??= await Api().getCourseWQT();
+      if (isForce) {
+        courseWQT = await Api().getCourseWQT();
+      }
+      convertWQT = (amount / courseWQT!) * (1 - 0.01);
+      isSuccessCourse = true;
+    } catch (e) {
+      onError(e.toString());
+    }
+    isLoadingCourse = false;
   }
 
   @action
@@ -66,17 +96,24 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     try {
       onLoading();
       Web3Client _client = service!.ethClient!;
-      final _address = AccountRepository().userWallet!.privateKey!;
-      final _cred = await service!.getCredentials(_address);
+      final _address = AccountRepository().userWallet!.address!;
+      final _privateKey = AccountRepository().userWallet!.privateKey!;
       final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
+      final _cred = await service!.getCredentials(_privateKey);
+      final _gas = await service!.getGas();
+      final _chainId = await service!.ethClient!.getChainId();
       final _contract = await _getContract();
+      print('price: $amount');
+      await _approve();
       final _hashTx = await _client.sendTransaction(
         _cred,
         Transaction.callContract(
+          from: EthereumAddress.fromHex(_address),
           contract: _contract,
           function: _contract.function('swap'),
+          gasPrice: _gas,
+          maxGas: 2000000,
           parameters: [
-
             ///nonce uint256
             BigInt.from(_nonce),
 
@@ -84,28 +121,35 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
             BigInt.from(1.0),
 
             ///amount uint256
-            BigInt.from(amount),
+            BigInt.from(amount * pow(10, 6)),
 
             ///recipient address
-            EthereumAddress.fromHex(_address),
+            EthereumAddress.fromHex(address),
+
+            ///userId string
+            '1',
 
             ///symbol string
-            'TUSDT'
+            'USDT'
           ],
         ),
+        chainId: _chainId.toInt(),
       );
       int _attempts = 0;
-      while (_attempts < 5) {
+      while (_attempts < 8) {
         final result = await _client.getTransactionReceipt(_hashTx);
         if (result != null) {
+          getMaxBalance();
           onSuccess(true);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
         _attempts++;
       }
+      getMaxBalance();
       onError('Waiting time has expired');
-    } catch (e) {
+    } catch (e, trace) {
+      print('createSwap | e: $e\ntrace: $trace');
       onError(e.toString());
     }
   }
@@ -120,7 +164,28 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       Configs.configsNetwork[ConfigNameNetwork.devnet]!,
       customRpc: _getRpcNetwork(network!),
     );
+    await Future.delayed(const Duration(seconds: 2));
     await getMaxBalance();
+  }
+
+  _approve() async {
+    final contract = Erc20(address: EthereumAddress.fromHex(_getTokenUSDT(network!)), client: service!.ethClient!);
+
+    print('address: ${AccountRepository().userWallet!.address!}');
+    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
+    print('address: ${_cred.address}');
+    final _spender = EthereumAddress.fromHex(_getAddressContract(network!));
+    final _gas = await service!.getGas();
+    await contract.approve(
+      _spender,
+      BigInt.from(amount * pow(10, 6)),
+      credentials: _cred,
+      transaction: Transaction(
+        gasPrice: _gas,
+        maxGas: 2000000,
+        value: EtherAmount.zero(),
+      )
+    );
   }
 
   Future<DeployedContract> _getContract() async {
@@ -146,7 +211,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   String _getRpcNetwork(SwapNetworks network) {
     switch (network) {
       case SwapNetworks.ethereum:
-        return 'https://rinkeby.infura.io/v3';
+        return 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
       case SwapNetworks.binance:
         return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
       case SwapNetworks.matic:

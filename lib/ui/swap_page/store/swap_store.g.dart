@@ -60,13 +60,13 @@ mixin _$SwapStore on SwapStoreBase, Store {
       Atom(name: 'SwapStoreBase.maxAmount', context: context);
 
   @override
-  double get maxAmount {
+  double? get maxAmount {
     _$maxAmountAtom.reportRead();
     return super.maxAmount;
   }
 
   @override
-  set maxAmount(double value) {
+  set maxAmount(double? value) {
     _$maxAmountAtom.reportWrite(value, super.maxAmount, () {
       super.maxAmount = value;
     });
@@ -88,6 +88,54 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
+  late final _$convertWQTAtom =
+      Atom(name: 'SwapStoreBase.convertWQT', context: context);
+
+  @override
+  double? get convertWQT {
+    _$convertWQTAtom.reportRead();
+    return super.convertWQT;
+  }
+
+  @override
+  set convertWQT(double? value) {
+    _$convertWQTAtom.reportWrite(value, super.convertWQT, () {
+      super.convertWQT = value;
+    });
+  }
+
+  late final _$isLoadingCourseAtom =
+      Atom(name: 'SwapStoreBase.isLoadingCourse', context: context);
+
+  @override
+  bool get isLoadingCourse {
+    _$isLoadingCourseAtom.reportRead();
+    return super.isLoadingCourse;
+  }
+
+  @override
+  set isLoadingCourse(bool value) {
+    _$isLoadingCourseAtom.reportWrite(value, super.isLoadingCourse, () {
+      super.isLoadingCourse = value;
+    });
+  }
+
+  late final _$isSuccessCourseAtom =
+      Atom(name: 'SwapStoreBase.isSuccessCourse', context: context);
+
+  @override
+  bool get isSuccessCourse {
+    _$isSuccessCourseAtom.reportRead();
+    return super.isSuccessCourse;
+  }
+
+  @override
+  set isSuccessCourse(bool value) {
+    _$isSuccessCourseAtom.reportWrite(value, super.isSuccessCourse, () {
+      super.isSuccessCourse = value;
+    });
+  }
+
   late final _$setNetworkAsyncAction =
       AsyncAction('SwapStoreBase.setNetwork', context: context);
 
@@ -102,6 +150,22 @@ mixin _$SwapStore on SwapStoreBase, Store {
   @override
   Future getMaxBalance() {
     return _$getMaxBalanceAsyncAction.run(() => super.getMaxBalance());
+  }
+
+  late final _$getCourseWQTAsyncAction =
+      AsyncAction('SwapStoreBase.getCourseWQT', context: context);
+
+  @override
+  Future getCourseWQT({bool isForce = false}) {
+    return _$getCourseWQTAsyncAction.run(() => super.getCourseWQT(isForce: isForce));
+  }
+
+  late final _$createSwapAsyncAction =
+      AsyncAction('SwapStoreBase.createSwap', context: context);
+
+  @override
+  Future createSwap(String address) {
+    return _$createSwapAsyncAction.run(() => super.createSwap(address));
   }
 
   late final _$SwapStoreBaseActionController =
@@ -136,7 +200,10 @@ network: ${network},
 token: ${token},
 amount: ${amount},
 maxAmount: ${maxAmount},
-isConnect: ${isConnect}
+isConnect: ${isConnect},
+convertWQT: ${convertWQT},
+isLoadingCourse: ${isLoadingCourse},
+isSuccessCourse: ${isSuccessCourse}
     ''';
   }
 }
