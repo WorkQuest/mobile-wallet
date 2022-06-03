@@ -6,7 +6,7 @@ part of 'i_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$IStore<T> on _IStore<T>, Store {
   Computed<bool>? _$isSuccessComputed;
@@ -16,8 +16,7 @@ mixin _$IStore<T> on _IStore<T>, Store {
           Computed<bool>(() => super.isSuccess, name: '_IStore.isSuccess'))
       .value;
 
-  late final _$isLoadingAtom =
-      Atom(name: '_IStore.isLoading', context: context);
+  final _$isLoadingAtom = Atom(name: '_IStore.isLoading');
 
   @override
   bool get isLoading {
@@ -32,8 +31,7 @@ mixin _$IStore<T> on _IStore<T>, Store {
     });
   }
 
-  late final _$successDataAtom =
-      Atom(name: '_IStore.successData', context: context);
+  final _$successDataAtom = Atom(name: '_IStore.successData');
 
   @override
   T? get successData {
@@ -48,8 +46,7 @@ mixin _$IStore<T> on _IStore<T>, Store {
     });
   }
 
-  late final _$errorMessageAtom =
-      Atom(name: '_IStore.errorMessage', context: context);
+  final _$errorMessageAtom = Atom(name: '_IStore.errorMessage');
 
   @override
   String? get errorMessage {

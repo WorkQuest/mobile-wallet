@@ -6,11 +6,10 @@ part of 'sign_up_profile_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
-  late final _$emailAtom =
-      Atom(name: 'SignUpProfileStoreBase.email', context: context);
+  final _$emailAtom = Atom(name: 'SignUpProfileStoreBase.email');
 
   @override
   TextEditingController get email {
@@ -25,8 +24,7 @@ mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
     });
   }
 
-  late final _$firstNameAtom =
-      Atom(name: 'SignUpProfileStoreBase.firstName', context: context);
+  final _$firstNameAtom = Atom(name: 'SignUpProfileStoreBase.firstName');
 
   @override
   TextEditingController get firstName {
@@ -41,8 +39,7 @@ mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
     });
   }
 
-  late final _$lastNameAtom =
-      Atom(name: 'SignUpProfileStoreBase.lastName', context: context);
+  final _$lastNameAtom = Atom(name: 'SignUpProfileStoreBase.lastName');
 
   @override
   TextEditingController get lastName {
@@ -57,8 +54,7 @@ mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
     });
   }
 
-  late final _$passwordAtom =
-      Atom(name: 'SignUpProfileStoreBase.password', context: context);
+  final _$passwordAtom = Atom(name: 'SignUpProfileStoreBase.password');
 
   @override
   TextEditingController get password {
@@ -73,8 +69,8 @@ mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
     });
   }
 
-  late final _$passwordConfirmAtom =
-      Atom(name: 'SignUpProfileStoreBase.passwordConfirm', context: context);
+  final _$passwordConfirmAtom =
+      Atom(name: 'SignUpProfileStoreBase.passwordConfirm');
 
   @override
   TextEditingController get passwordConfirm {
@@ -89,8 +85,7 @@ mixin _$SignUpProfileStore on SignUpProfileStoreBase, Store {
     });
   }
 
-  late final _$registerAsyncAction =
-      AsyncAction('SignUpProfileStoreBase.register', context: context);
+  final _$registerAsyncAction = AsyncAction('SignUpProfileStoreBase.register');
 
   @override
   Future register() {

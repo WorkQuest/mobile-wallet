@@ -63,15 +63,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 height: 20,
                 width: double.infinity,
               ),
-              _SettingsItem(
-                title: 'Network',
-                subtitle: _getCurrentNameNetwork(),
-                imagePath: Images.settingsNetworkIcon,
-                onTab: () async {
-                  await PageRouter.pushNewRoute(context, const NetworkPage());
-                  setState(() {});
-                },
-              ),
+              // _SettingsItem(
+              //   title: 'Network',
+              //   subtitle: _getCurrentNameNetwork(),
+              //   imagePath: Images.settingsNetworkIcon,
+              //   onTab: () async {
+              //     await PageRouter.pushNewRoute(context, const NetworkPage());
+              //     setState(() {});
+              //   },
+              // ),
               Expanded(child: Container()),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),

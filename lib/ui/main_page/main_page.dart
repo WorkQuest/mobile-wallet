@@ -79,20 +79,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ),
                   label: 'wallet.transfer'.tr(),
                 ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    Images.transferIconBar,
-                    width: 20,
-                    height: 16,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    Images.transferIconBar,
-                    color: AppColor.enabledButton,
-                    width: 20,
-                    height: 16,
-                  ),
-                  label: 'Swap'.tr(),
-                ),
+                // BottomNavigationBarItem(
+                //   icon: SvgPicture.asset(
+                //     Images.transferIconBar,
+                //     width: 20,
+                //     height: 16,
+                //   ),
+                //   activeIcon: SvgPicture.asset(
+                //     Images.transferIconBar,
+                //     color: AppColor.enabledButton,
+                //     width: 20,
+                //     height: 16,
+                //   ),
+                //   label: 'Swap'.tr(),
+                // ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     Images.settingsIconBar,
@@ -118,11 +118,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 return TransferPage(
                   key: _keys[1],
                 );
-              } else if (index == 2) {
-                return SwapPage(
-                  key: _keys[2],
-                );
-              }  else {
+              }
+              // else if (index == 2) {
+              //   return SwapPage(
+              //     key: _keys[2],
+              //   );
+              // }
+              else {
                 return SettingsPage(
                   key: _keys[3],
                   update: _update,

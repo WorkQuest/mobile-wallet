@@ -6,11 +6,10 @@ part of 'swap_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SwapStore on SwapStoreBase, Store {
-  late final _$networkAtom =
-      Atom(name: 'SwapStoreBase.network', context: context);
+  final _$networkAtom = Atom(name: 'SwapStoreBase.network');
 
   @override
   SwapNetworks? get network {
@@ -25,7 +24,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$tokenAtom = Atom(name: 'SwapStoreBase.token', context: context);
+  final _$tokenAtom = Atom(name: 'SwapStoreBase.token');
 
   @override
   SwapToken get token {
@@ -40,8 +39,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$amountAtom =
-      Atom(name: 'SwapStoreBase.amount', context: context);
+  final _$amountAtom = Atom(name: 'SwapStoreBase.amount');
 
   @override
   double get amount {
@@ -56,8 +54,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$maxAmountAtom =
-      Atom(name: 'SwapStoreBase.maxAmount', context: context);
+  final _$maxAmountAtom = Atom(name: 'SwapStoreBase.maxAmount');
 
   @override
   double? get maxAmount {
@@ -72,8 +69,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$isConnectAtom =
-      Atom(name: 'SwapStoreBase.isConnect', context: context);
+  final _$isConnectAtom = Atom(name: 'SwapStoreBase.isConnect');
 
   @override
   bool get isConnect {
@@ -88,8 +84,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$convertWQTAtom =
-      Atom(name: 'SwapStoreBase.convertWQT', context: context);
+  final _$convertWQTAtom = Atom(name: 'SwapStoreBase.convertWQT');
 
   @override
   double? get convertWQT {
@@ -104,8 +99,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$isLoadingCourseAtom =
-      Atom(name: 'SwapStoreBase.isLoadingCourse', context: context);
+  final _$isLoadingCourseAtom = Atom(name: 'SwapStoreBase.isLoadingCourse');
 
   @override
   bool get isLoadingCourse {
@@ -120,8 +114,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$isSuccessCourseAtom =
-      Atom(name: 'SwapStoreBase.isSuccessCourse', context: context);
+  final _$isSuccessCourseAtom = Atom(name: 'SwapStoreBase.isSuccessCourse');
 
   @override
   bool get isSuccessCourse {
@@ -136,40 +129,37 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  late final _$setNetworkAsyncAction =
-      AsyncAction('SwapStoreBase.setNetwork', context: context);
+  final _$setNetworkAsyncAction = AsyncAction('SwapStoreBase.setNetwork');
 
   @override
   Future setNetwork(SwapNetworks value) {
     return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
   }
 
-  late final _$getMaxBalanceAsyncAction =
-      AsyncAction('SwapStoreBase.getMaxBalance', context: context);
+  final _$getMaxBalanceAsyncAction = AsyncAction('SwapStoreBase.getMaxBalance');
 
   @override
   Future getMaxBalance() {
     return _$getMaxBalanceAsyncAction.run(() => super.getMaxBalance());
   }
 
-  late final _$getCourseWQTAsyncAction =
-      AsyncAction('SwapStoreBase.getCourseWQT', context: context);
+  final _$getCourseWQTAsyncAction = AsyncAction('SwapStoreBase.getCourseWQT');
 
   @override
   Future getCourseWQT({bool isForce = false}) {
-    return _$getCourseWQTAsyncAction.run(() => super.getCourseWQT(isForce: isForce));
+    return _$getCourseWQTAsyncAction
+        .run(() => super.getCourseWQT(isForce: isForce));
   }
 
-  late final _$createSwapAsyncAction =
-      AsyncAction('SwapStoreBase.createSwap', context: context);
+  final _$createSwapAsyncAction = AsyncAction('SwapStoreBase.createSwap');
 
   @override
   Future createSwap(String address) {
     return _$createSwapAsyncAction.run(() => super.createSwap(address));
   }
 
-  late final _$SwapStoreBaseActionController =
-      ActionController(name: 'SwapStoreBase', context: context);
+  final _$SwapStoreBaseActionController =
+      ActionController(name: 'SwapStoreBase');
 
   @override
   dynamic setToken(SwapToken value) {

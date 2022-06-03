@@ -6,11 +6,10 @@ part of 'sign_up_confirm_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
-  late final _$codeAtom =
-      Atom(name: 'SignUpConfirmStoreBase.code', context: context);
+  final _$codeAtom = Atom(name: 'SignUpConfirmStoreBase.code');
 
   @override
   TextEditingController get code {
@@ -25,8 +24,7 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     });
   }
 
-  late final _$canConfirmAtom =
-      Atom(name: 'SignUpConfirmStoreBase.canConfirm', context: context);
+  final _$canConfirmAtom = Atom(name: 'SignUpConfirmStoreBase.canConfirm');
 
   @override
   bool get canConfirm {
@@ -41,8 +39,7 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     });
   }
 
-  late final _$timerAtom =
-      Atom(name: 'SignUpConfirmStoreBase.timer', context: context);
+  final _$timerAtom = Atom(name: 'SignUpConfirmStoreBase.timer');
 
   @override
   Timer? get timer {
@@ -57,8 +54,8 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     });
   }
 
-  late final _$secondsCodeAgainAtom =
-      Atom(name: 'SignUpConfirmStoreBase.secondsCodeAgain', context: context);
+  final _$secondsCodeAgainAtom =
+      Atom(name: 'SignUpConfirmStoreBase.secondsCodeAgain');
 
   @override
   int get secondsCodeAgain {
@@ -73,24 +70,23 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
     });
   }
 
-  late final _$confirmAsyncAction =
-      AsyncAction('SignUpConfirmStoreBase.confirm', context: context);
+  final _$confirmAsyncAction = AsyncAction('SignUpConfirmStoreBase.confirm');
 
   @override
   Future confirm(String role) {
     return _$confirmAsyncAction.run(() => super.confirm(role));
   }
 
-  late final _$startTimerAsyncAction =
-      AsyncAction('SignUpConfirmStoreBase.startTimer', context: context);
+  final _$startTimerAsyncAction =
+      AsyncAction('SignUpConfirmStoreBase.startTimer');
 
   @override
   Future startTimer(String email) {
     return _$startTimerAsyncAction.run(() => super.startTimer(email));
   }
 
-  late final _$SignUpConfirmStoreBaseActionController =
-      ActionController(name: 'SignUpConfirmStoreBase', context: context);
+  final _$SignUpConfirmStoreBaseActionController =
+      ActionController(name: 'SignUpConfirmStoreBase');
 
   @override
   dynamic stopTimer() {

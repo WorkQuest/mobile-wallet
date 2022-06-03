@@ -6,7 +6,7 @@ part of 'sign_up_role_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
   Computed<bool>? _$canAgreeRoleComputed;
@@ -17,8 +17,7 @@ mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
               name: 'SignUpRoleStoreBase.canAgreeRole'))
           .value;
 
-  late final _$roleAtom =
-      Atom(name: 'SignUpRoleStoreBase.role', context: context);
+  final _$roleAtom = Atom(name: 'SignUpRoleStoreBase.role');
 
   @override
   UserRole get role {
@@ -33,8 +32,7 @@ mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
     });
   }
 
-  late final _$privacyPolicyAtom =
-      Atom(name: 'SignUpRoleStoreBase.privacyPolicy', context: context);
+  final _$privacyPolicyAtom = Atom(name: 'SignUpRoleStoreBase.privacyPolicy');
 
   @override
   bool get privacyPolicy {
@@ -49,8 +47,8 @@ mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
     });
   }
 
-  late final _$termsConditionsAtom =
-      Atom(name: 'SignUpRoleStoreBase.termsConditions', context: context);
+  final _$termsConditionsAtom =
+      Atom(name: 'SignUpRoleStoreBase.termsConditions');
 
   @override
   bool get termsConditions {
@@ -65,8 +63,7 @@ mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
     });
   }
 
-  late final _$amlCtfPolicyAtom =
-      Atom(name: 'SignUpRoleStoreBase.amlCtfPolicy', context: context);
+  final _$amlCtfPolicyAtom = Atom(name: 'SignUpRoleStoreBase.amlCtfPolicy');
 
   @override
   bool get amlCtfPolicy {
@@ -81,8 +78,8 @@ mixin _$SignUpRoleStore on SignUpRoleStoreBase, Store {
     });
   }
 
-  late final _$SignUpRoleStoreBaseActionController =
-      ActionController(name: 'SignUpRoleStoreBase', context: context);
+  final _$SignUpRoleStoreBaseActionController =
+      ActionController(name: 'SignUpRoleStoreBase');
 
   @override
   dynamic setRole(UserRole value) {

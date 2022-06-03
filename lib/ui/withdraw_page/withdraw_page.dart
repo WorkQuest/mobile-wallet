@@ -42,25 +42,26 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
       appBar: DefaultAppBar(
         title: 'wallet.withdraw'.tr(),
       ),
-      body: ColoredBox(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Padding(
-              padding: _padding,
-              child: CustomTabBar(
-                tabController: _tabController,
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [_WithdrawWalletAddress(), WithdrawBankCard()],
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: const _WithdrawWalletAddress(),
+      // ColoredBox(
+      //   color: Colors.white,
+      //   child: Column(
+      //     children: [
+      //       Padding(
+      //         padding: _padding,
+      //         child: CustomTabBar(
+      //           tabController: _tabController,
+      //         ),
+      //       ),
+      //       Expanded(
+      //         child: TabBarView(
+      //           controller: _tabController,
+      //           children: const [_WithdrawWalletAddress(), WithdrawBankCard()],
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

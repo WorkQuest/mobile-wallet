@@ -6,11 +6,10 @@ part of 'pin_code_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PinCodeStore on PinCodeStoreBase, Store {
-  late final _$pinCodeAtom =
-      Atom(name: 'PinCodeStoreBase.pinCode', context: context);
+  final _$pinCodeAtom = Atom(name: 'PinCodeStoreBase.pinCode');
 
   @override
   String get pinCode {
@@ -25,8 +24,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$newPinCodeAtom =
-      Atom(name: 'PinCodeStoreBase.newPinCode', context: context);
+  final _$newPinCodeAtom = Atom(name: 'PinCodeStoreBase.newPinCode');
 
   @override
   String get newPinCode {
@@ -41,8 +39,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$attemptsAtom =
-      Atom(name: 'PinCodeStoreBase.attempts', context: context);
+  final _$attemptsAtom = Atom(name: 'PinCodeStoreBase.attempts');
 
   @override
   int get attempts {
@@ -57,8 +54,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$canBiometricsAtom =
-      Atom(name: 'PinCodeStoreBase.canBiometrics', context: context);
+  final _$canBiometricsAtom = Atom(name: 'PinCodeStoreBase.canBiometrics');
 
   @override
   bool get canBiometrics {
@@ -73,8 +69,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$startSwitchAtom =
-      Atom(name: 'PinCodeStoreBase.startSwitch', context: context);
+  final _$startSwitchAtom = Atom(name: 'PinCodeStoreBase.startSwitch');
 
   @override
   bool get startSwitch {
@@ -89,8 +84,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$startAnimationAtom =
-      Atom(name: 'PinCodeStoreBase.startAnimation', context: context);
+  final _$startAnimationAtom = Atom(name: 'PinCodeStoreBase.startAnimation');
 
   @override
   bool get startAnimation {
@@ -105,8 +99,7 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$statePinAtom =
-      Atom(name: 'PinCodeStoreBase.statePin', context: context);
+  final _$statePinAtom = Atom(name: 'PinCodeStoreBase.statePin');
 
   @override
   StatePinCode get statePin {
@@ -121,24 +114,22 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
     });
   }
 
-  late final _$initAsyncAction =
-      AsyncAction('PinCodeStoreBase.init', context: context);
+  final _$initAsyncAction = AsyncAction('PinCodeStoreBase.init');
 
   @override
   Future init() {
     return _$initAsyncAction.run(() => super.init());
   }
 
-  late final _$biometricScanAsyncAction =
-      AsyncAction('PinCodeStoreBase.biometricScan', context: context);
+  final _$biometricScanAsyncAction =
+      AsyncAction('PinCodeStoreBase.biometricScan');
 
   @override
   Future<dynamic> biometricScan() {
     return _$biometricScanAsyncAction.run(() => super.biometricScan());
   }
 
-  late final _$signInAsyncAction =
-      AsyncAction('PinCodeStoreBase.signIn', context: context);
+  final _$signInAsyncAction = AsyncAction('PinCodeStoreBase.signIn');
 
   @override
   Future signIn({bool isBiometric = false}) {
@@ -146,8 +137,8 @@ mixin _$PinCodeStore on PinCodeStoreBase, Store {
         .run(() => super.signIn(isBiometric: isBiometric));
   }
 
-  late final _$PinCodeStoreBaseActionController =
-      ActionController(name: 'PinCodeStoreBase', context: context);
+  final _$PinCodeStoreBaseActionController =
+      ActionController(name: 'PinCodeStoreBase');
 
   @override
   dynamic inputPin(int pin) {
