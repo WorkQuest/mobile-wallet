@@ -17,7 +17,6 @@ import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/list_transactions.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
-import 'package:workquest_wallet_app/ui/withdraw_page/withdraw_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
@@ -211,37 +210,37 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                   ),
                   Row(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          pressedOpacity: 0.2,
-                          onPressed: () {
-                            PageRouter.pushNewRoute(
-                                context, const WithdrawPage());
-                          },
-                          child: Container(
-                            height: 43,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6.0),
-                              border: Border.all(
-                                color: Colors.blue.withOpacity(0.1),
-                              ),
-                            ),
-                            child: Text(
-                              'wallet'.tr(gender: 'withdraw'),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColor.enabledButton,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      // Expanded(
+                      //   flex: 1,
+                      //   child: CupertinoButton(
+                      //     padding: EdgeInsets.zero,
+                      //     pressedOpacity: 0.2,
+                      //     onPressed: () {
+                      //       PageRouter.pushNewRoute(
+                      //           context, const WithdrawPage());
+                      //     },
+                      //     child: Container(
+                      //       height: 43,
+                      //       alignment: Alignment.center,
+                      //       decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.circular(6.0),
+                      //         border: Border.all(
+                      //           color: Colors.blue.withOpacity(0.1),
+                      //         ),
+                      //       ),
+                      //       child: Text(
+                      //         'wallet'.tr(gender: 'withdraw'),
+                      //         style: const TextStyle(
+                      //           fontSize: 16,
+                      //           color: AppColor.enabledButton,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   width: 10,
+                      // ),
                       Expanded(
                         flex: 1,
                         child: DefaultButton(

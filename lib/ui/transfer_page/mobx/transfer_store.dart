@@ -75,6 +75,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
         default:
           break;
       }
+      if (double.parse(amount) <= 0.0) {
+        amount = "0.0";
+      }
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");

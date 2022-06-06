@@ -76,39 +76,39 @@ class _TransferPageState extends State<TransferPage> {
       body: LayoutWithScroll(
         child: Padding(
           padding: _padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
-                width: double.infinity,
-              ),
-              Text(
-                'wallet.chooseCoin'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SelectedItem(
-                title: _currentCoin?.title,
-                iconPath: _currentCoin?.iconPath,
-                isSelected: _selectedCoin,
-                onTap: _chooseCoin,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.recipientsAddress'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Form(
-                key: _key,
-                child: DefaultTextField(
+          child: Form(
+            key: _key,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
+                  width: double.infinity,
+                ),
+                Text(
+                  'wallet.chooseCoin'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SelectedItem(
+                  title: _currentCoin?.title,
+                  iconPath: _currentCoin?.iconPath,
+                  isSelected: _selectedCoin,
+                  onTap: _chooseCoin,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.recipientsAddress'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                DefaultTextField(
                   controller: _addressController,
                   hint: 'wallet.enterAddress'.tr(),
                   suffixIcon: null,
@@ -126,60 +126,68 @@ class _TransferPageState extends State<TransferPage> {
                     return null;
                   },
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.amount'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              DefaultTextField(
-                controller: _amountController,
-                hint: 'wallet.enterAmount'.tr(),
-                // keyboardType: TextInputType.number,
-                suffixIcon: ObserverListener(
-                  store: store,
-                  onFailure: () {
-                    print('onFailure');
-                    return false;
-                  },
-                  onSuccess: () {
-                    _amountController.text = store.amount;
-                  },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.only(right: 12.5),
-                    child: Text(
-                      'wallet.max'.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.enabledButton,
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (store.typeCoin != null) {
-                        store.getMaxAmount();
-                      } else {
-                        final title = 'meta.error'.tr();
-                        final content = 'crediting.chooseCoin'.tr();
-                        AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
-                      }
-                    },
-                  ),
+                const SizedBox(
+                  height: 15,
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                ],
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
+                Text(
+                  'wallet.amount'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                DefaultTextField(
+                  controller: _amountController,
+                  hint: 'wallet.enterAmount'.tr(),
+                  validator: (text) {
+                    return double.parse(text ?? "0") > 0.0
+                        ? null
+                        : "Please enter a value greater than 0";
+                  },
+                  // keyboardType: TextInputType.number,
+                  suffixIcon: ObserverListener(
+                    store: store,
+                    onFailure: () {
+                      print('onFailure');
+                      return false;
+                    },
+                    onSuccess: () {
+                      _amountController.text = store.amount;
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.only(right: 12.5),
+                      child: Text(
+                        'wallet.max'.tr(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColor.enabledButton,
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (store.typeCoin != null) {
+                          store.getMaxAmount();
+                        } else {
+                          final title = 'meta.error'.tr();
+                          final content = 'crediting.chooseCoin'.tr();
+                          AlertDialogUtils.showInfoAlertDialog(context,
+                              title: title, content: content);
+                        }
+                      },
+                    ),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,18}')),
+                  ],
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -190,7 +198,8 @@ class _TransferPageState extends State<TransferPage> {
           child: Observer(
             builder: (_) => DefaultButton(
               title: 'wallet.transfer'.tr(),
-              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+              onPressed:
+                  store.statusButtonTransfer ? _pushConfirmTransferPage : null,
             ),
           ),
         ),
@@ -207,13 +216,16 @@ class _TransferPageState extends State<TransferPage> {
       if (store.fee.isEmpty) {
         await store.getFee();
       }
-      if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
+      if (store.addressTo.toLowerCase() ==
+          AccountRepository().userWallet!.address!.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+            title: 'meta.error'.tr(),
+            content: 'errors.provideYourAddress'.tr());
         return;
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await PageRouter.pushNewRoute(
@@ -304,11 +316,14 @@ class _TransferPageState extends State<TransferPage> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Container(
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
                                                       colors: [
                                                         AppColor.enabledButton,
                                                         AppColor.blue,
@@ -330,7 +345,9 @@ class _TransferPageState extends State<TransferPage> {
                                                   coin.title,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                                                    color: coin.isEnable
+                                                        ? Colors.black
+                                                        : AppColor.disabledText,
                                                   ),
                                                 ),
                                               ],
