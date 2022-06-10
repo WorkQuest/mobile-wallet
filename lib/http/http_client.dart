@@ -1,12 +1,15 @@
+import 'dart:io';
+
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
 
-class HttpClient {
-  static final HttpClient _instance = HttpClient._internal();
+class MyHttpClient {
+  static final MyHttpClient _instance = MyHttpClient._internal();
 
-  factory HttpClient() => _instance;
+  factory MyHttpClient() => _instance;
 
-  HttpClient._internal() {
+  MyHttpClient._internal() {
     _setUpDio();
     _setInterceptors();
   }
@@ -78,6 +81,12 @@ class HttpClient {
           },
         ),
       );
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
     } catch (e, trace) {
       print('_setInterceptors e -> $e, trace -> $trace');
     }
