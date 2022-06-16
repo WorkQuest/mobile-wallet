@@ -45,7 +45,7 @@ class Api {
   }) =>
       "https://dev-explorer.workquest.co/api/v1/transaction/$hashTx";
 
-  final _dio = HttpClient().dio;
+  final _dio = MyHttpClient().dio;
 
   Future<Response?> login(String signature, String address) async {
     try {
@@ -64,7 +64,7 @@ class Api {
         throw FormatException(message);
       }
 
-      HttpClient().setAccessToken = response.data['result']['access'];
+      MyHttpClient().setAccessToken = response.data['result']['access'];
 
       return response;
     } on DioError catch (e) {
@@ -99,7 +99,7 @@ class Api {
         throw FormatException(message);
       }
 
-      HttpClient().setAccessToken = response.data['result']['access'];
+      MyHttpClient().setAccessToken = response.data['result']['access'];
 
       return response;
     } on DioError catch (e) {
@@ -209,7 +209,7 @@ class Api {
         throw FormatException(message);
       }
 
-      HttpClient().accessToken = response.data['result']['access'];
+      MyHttpClient().accessToken = response.data['result']['access'];
 
       return response.data['result']['refresh'];
     } on DioError catch (e) {
