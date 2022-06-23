@@ -18,9 +18,15 @@ class AccountRepository {
   Wallet? userWallet;
   ClientService? client;
   ConfigNameNetwork? configName;
-  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.devnet);
+  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
+
+  String get userAddress => userWallet!.address!;
 
   String get privateKey => userWallet!.privateKey!;
+
+  ClientService getClient() {
+    return client!;
+  }
 
   connectClient() {
     final config = Configs.configsNetwork[configName];
@@ -70,12 +76,18 @@ class AccountRepository {
     }
   }
 
+  bool get isConfigTestnet => configName == ConfigNameNetwork.testnet;
+
   ConfigNameNetwork _getNetworkNameKey(String name) {
     switch (name) {
-      case 'devnet':
-        return ConfigNameNetwork.devnet;
       case 'testnet':
         return ConfigNameNetwork.testnet;
+      case 'rinkeby':
+        return ConfigNameNetwork.rinkeby;
+      case 'polygon':
+        return ConfigNameNetwork.polygon;
+      case 'binance':
+        return ConfigNameNetwork.binance;
       default:
         throw Exception('Unknown name network');
     }

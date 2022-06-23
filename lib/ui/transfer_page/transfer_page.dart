@@ -10,7 +10,6 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
@@ -25,14 +24,6 @@ import '../../utils/bottom_sheet.dart';
 import '../../widgets/dismiss_keyboard.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
-
-List<_CoinItem> _coins = [
-  _CoinItem(Images.wqtCoinIcon, 'WQT', TYPE_COINS.wqt, true),
-  _CoinItem(Images.wusdCoinIcon, 'WUSD', TYPE_COINS.wusd, true),
-  _CoinItem(Images.wbnbCoinIcon, 'wBNB', TYPE_COINS.wBnb, true),
-  _CoinItem(Images.wethCoinIcon, 'wETH', TYPE_COINS.wEth, true),
-  _CoinItem(Images.usdtCoinIcon, 'USDT', TYPE_COINS.usdt, true),
-];
 
 class TransferPage extends StatefulWidget {
   const TransferPage({
@@ -49,13 +40,27 @@ class _TransferPageState extends State<TransferPage> {
   final _key = GlobalKey<FormState>();
   _CoinItem? _currentCoin;
 
+  final String coinsPath = "assets/coins";
+  late final List<_CoinItem> _coins = [];
+
   TransferStore store = TransferStore();
 
   bool get _selectedCoin => _currentCoin != null;
 
+  _initCoins() {
+    final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+    _coins..clear()..addAll(_dataTokens
+        .map((coin) => _CoinItem(
+    coin.iconPath,
+    coin.symbolToken.name,
+    coin.symbolToken,
+    true,
+    )).toList());
+  }
+
   @override
   void initState() {
-    super.initState();
+    _initCoins();
     print('initState TransferPage');
     store.getFee();
     _amountController.addListener(() {
@@ -64,10 +69,12 @@ class _TransferPageState extends State<TransferPage> {
     _addressController.addListener(() {
       store.setAddressTo(_addressController.text);
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _initCoins();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MainAppBar(
@@ -376,7 +383,7 @@ class _TransferPageState extends State<TransferPage> {
 class _CoinItem {
   String iconPath;
   String title;
-  TYPE_COINS typeCoin;
+  TokenSymbols typeCoin;
   bool isEnable;
 
   _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);

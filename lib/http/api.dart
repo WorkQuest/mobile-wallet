@@ -14,11 +14,7 @@ import '../model/course_tokens_response.dart';
 import '../model/txs_info_response.dart';
 
 class Api {
-  static const baseUrl = isRelease
-      ? "https://app-ver1.workquest.co/api/v1"
-      : "https://app.workquest.co/api/v1";
-
-  static const isRelease = false;
+  static const baseUrl = 'https://testnet-app.workquest.co/api/v1';
 
   static const _register = "$baseUrl/auth/register";
   static const _login = "$baseUrl/auth/login/wallet";
@@ -29,7 +25,7 @@ class Api {
   static const _courseWQT = "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
 
   String _transactions(String address) =>
-      "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+      "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
 
   String _walletAddressProfile(String address) =>
       "$baseUrl/profile/wallet/$address";
@@ -38,12 +34,12 @@ class Api {
     required String address,
     required String addressToken,
   }) =>
-      "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+      "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
 
   String _transactionInfo({
     required String hashTx,
   }) =>
-      "https://dev-explorer.workquest.co/api/v1/transaction/$hashTx";
+      "https://testnet-explorer-api.workquest.co/api/v1/transaction/$hashTx";
 
   final _dio = MyHttpClient().dio;
 

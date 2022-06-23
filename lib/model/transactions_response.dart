@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
 
 TransactionsResponse transactionsResponseFromJson(String str) =>
     TransactionsResponse.fromJson(json.decode(str));
@@ -90,7 +90,7 @@ class Tx {
   DateTime? insertedAt;
   Block? block;
   List<TokenTransfer>? tokenTransfers;
-  TYPE_COINS? coin;
+  TokenSymbols? coin;
   bool show = false;
 
   factory Tx.fromJson(Map<String, dynamic> json) => Tx(

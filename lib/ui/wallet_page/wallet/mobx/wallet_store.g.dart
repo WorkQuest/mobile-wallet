@@ -13,13 +13,13 @@ mixin _$WalletStore on WalletStoreBase, Store {
       Atom(name: 'WalletStoreBase.coins', context: context);
 
   @override
-  ObservableList<BalanceItem> get coins {
+  ObservableList<_CoinEntity> get coins {
     _$coinsAtom.reportRead();
     return super.coins;
   }
 
   @override
-  set coins(ObservableList<BalanceItem> value) {
+  set coins(ObservableList<_CoinEntity> value) {
     _$coinsAtom.reportWrite(value, super.coins, () {
       super.coins = value;
     });
@@ -44,13 +44,13 @@ mixin _$WalletStore on WalletStoreBase, Store {
   late final _$typeAtom = Atom(name: 'WalletStoreBase.type', context: context);
 
   @override
-  TYPE_COINS get type {
+  TokenSymbols get type {
     _$typeAtom.reportRead();
     return super.type;
   }
 
   @override
-  set type(TYPE_COINS value) {
+  set type(TokenSymbols value) {
     _$typeAtom.reportWrite(value, super.type, () {
       super.type = value;
     });
@@ -68,7 +68,7 @@ mixin _$WalletStore on WalletStoreBase, Store {
       ActionController(name: 'WalletStoreBase', context: context);
 
   @override
-  dynamic setType(TYPE_COINS value) {
+  dynamic setType(TokenSymbols value) {
     final _$actionInfo = _$WalletStoreBaseActionController.startAction(
         name: 'WalletStoreBase.setType');
     try {

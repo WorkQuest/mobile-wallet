@@ -161,7 +161,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       service = null;
     }
     service = ClientService(
-      Configs.configsNetwork[ConfigNameNetwork.devnet]!,
+      Configs.configsNetwork[ConfigNameNetwork.testnet]!,
       customRpc: _getRpcNetwork(network!),
     );
     await Future.delayed(const Duration(seconds: 2));

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/import_wallet/import_wallet_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
@@ -110,13 +109,11 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                   const SizedBox(
                     height: 5,
                   ),
-                  if (!Api.isRelease && widget.email.isNotEmpty)
-                    _TimerWidget(
-                      startTimer: () => store.startTimer(widget.email),
-                      seconds: store.secondsCodeAgain,
-                      isActiveTimer:
-                          store.timer != null && store.timer!.isActive,
-                    ),
+                  _TimerWidget(
+                    startTimer: () => store.startTimer(widget.email),
+                    seconds: store.secondsCodeAgain,
+                    isActiveTimer: store.timer != null && store.timer!.isActive,
+                  ),
                   const SizedBox(
                     height: 40,
                   ),
@@ -155,9 +152,7 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                                     store.confirm(widget.role);
                                   }
                                 : null),
-                        title: store.isSuccess
-                            ? 'meta.next'.tr()
-                            : 'meta.submit'.tr(),
+                        title: store.isSuccess ? 'meta.next'.tr() : 'meta.submit'.tr(),
                       ),
                     ),
                   ),
@@ -204,8 +199,7 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                PageRouter.pushNewRoute(
-                    context, const ImportWalletPage());
+                PageRouter.pushNewRoute(context, const ImportWalletPage());
               },
               child: const Text(
                 "Import Wallet",
@@ -251,9 +245,7 @@ class _TimerWidget extends StatelessWidget {
             'Send again',
             style: TextStyle(
               fontSize: 14,
-              color: isActiveTimer
-                  ? AppColor.disabledText
-                  : AppColor.enabledButton,
+              color: isActiveTimer ? AppColor.disabledText : AppColor.enabledButton,
             ),
           ),
           onPressed: isActiveTimer ? null : startTimer,

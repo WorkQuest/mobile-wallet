@@ -30,7 +30,7 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       onLoading();
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic);
-      AccountRepository().setNetwork(ConfigNameNetwork.devnet.name);
+      AccountRepository().setNetwork(ConfigNameNetwork.testnet.name);
       AccountRepository().setWallet(wallet);
       AccountRepository().connectClient();
       final signature = await AccountRepository().client!.getSignature(wallet.privateKey!);
@@ -55,6 +55,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     await Storage.write(StorageKeys.refreshToken.toString(), result.data['result']['refresh']);
     await Storage.write(StorageKeys.accessToken.toString(), result.data['result']['access']);
     await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
-    await Storage.write(StorageKeys.configName.toString(), ConfigNameNetwork.devnet.name);
+    await Storage.write(StorageKeys.configName.toString(), ConfigNameNetwork.testnet.name);
   }
 }

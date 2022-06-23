@@ -61,13 +61,13 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
       Atom(name: 'TransactionsStoreBase.type', context: context);
 
   @override
-  TYPE_COINS get type {
+  TokenSymbols get type {
     _$typeAtom.reportRead();
     return super.type;
   }
 
   @override
-  set type(TYPE_COINS value) {
+  set type(TokenSymbols value) {
     _$typeAtom.reportWrite(value, super.type, () {
       super.type = value;
     });
@@ -95,22 +95,11 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
       ActionController(name: 'TransactionsStoreBase', context: context);
 
   @override
-  dynamic setType(TYPE_COINS value) {
+  dynamic setType(TokenSymbols value) {
     final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
         name: 'TransactionsStoreBase.setType');
     try {
       return super.setType(value);
-    } finally {
-      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic addTransaction({required Tx tran}) {
-    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
-        name: 'TransactionsStoreBase.addTransaction');
-    try {
-      return super.addTransaction(tran: tran);
     } finally {
       _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
     }

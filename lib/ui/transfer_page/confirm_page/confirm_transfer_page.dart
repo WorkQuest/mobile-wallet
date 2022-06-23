@@ -11,7 +11,7 @@ import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class ConfirmTransferPage extends StatefulWidget {
-  final TYPE_COINS typeCoin;
+  final TokenSymbols typeCoin;
   final String addressTo;
   final String amount;
   final String fee;
@@ -96,7 +96,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
 class _InformationWidget extends StatelessWidget {
   final String addressTo;
-  final TYPE_COINS typeCoin;
+  final TokenSymbols typeCoin;
   final String amount;
   final String fee;
 
@@ -149,7 +149,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            '$amount ${_getTitleCoin(typeCoin)}',
+            '$amount ${typeCoin.name}',
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
@@ -180,18 +180,4 @@ class _InformationWidget extends StatelessWidget {
     );
   }
 
-  String _getTitleCoin(TYPE_COINS type) {
-    switch (type) {
-      case TYPE_COINS.wusd:
-        return 'WUSD';
-      case TYPE_COINS.wqt:
-        return 'WQT';
-      case TYPE_COINS.wBnb:
-        return 'wBNB';
-      case TYPE_COINS.wEth:
-        return 'wETH';
-      case TYPE_COINS.usdt:
-        return 'USDT';
-    }
-  }
 }

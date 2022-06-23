@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
-import 'package:workquest_wallet_app/utils/coins.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/shimmer.dart';
 
 import '../../../constants.dart';
@@ -39,41 +39,53 @@ class ListTransactions extends StatelessWidget {
           );
         }
         if (store.isSuccess) {
-          if (store.transactions.isEmpty) {
+          final _isTestnet = AccountRepository().isConfigTestnet;
+          if (_isTestnet) {
+            if (store.transactions.isEmpty) {
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    'wallet.noTransactions'.tr(),
+                  ),
+                ),
+              );
+            }
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  if (store.isMoreLoading && index == store.transactions.length) {
+                    return Column(
+                      children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircularProgressIndicator.adaptive(),
+                      ],
+                    );
+                  }
+                  final increase = store.transactions[index].fromAddressHash!.hex! !=
+                      (AccountRepository().userWallet?.address ?? '1234');
+                  return TransactionItem(
+                    transaction: store.transactions[index],
+                    coin: increase
+                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!)
+                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!),
+                    opacity: !store.transactions[index].show,
+                  );
+                },
+                childCount: store.isMoreLoading ? store.transactions.length + 1 : store.transactions.length,
+              ),
+            );
+          } else {
             return SliverFillRemaining(
               child: Center(
-                child: Text(
-                  'wallet.noTransactions'.tr(),
+                child: LoginButton(
+                  title: 'Go to explorer',
+                  onTap: _onPressedGoToExplorer,
                 ),
               ),
             );
           }
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                if (store.isMoreLoading && index == store.transactions.length) {
-                  return Column(
-                    children: const [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CircularProgressIndicator.adaptive(),
-                    ],
-                  );
-                }
-                final increase = store.transactions[index].fromAddressHash!.hex! !=
-                    (AccountRepository().userWallet?.address ?? '1234');
-                return TransactionItem(
-                  transaction: store.transactions[index],
-                  coin: increase
-                      ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!)
-                      : _getTitleCoin(store.transactions[index].toAddressHash!.hex!),
-                  opacity: !store.transactions[index].show,
-                );
-              },
-              childCount: store.isMoreLoading ? store.transactions.length + 1 : store.transactions.length,
-            ),
-          );
         }
         return SliverFillRemaining(
           child: Center(
@@ -84,31 +96,50 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  TYPE_COINS _getTitleCoin(String? addressContract) {
-    if (GetIt.I.get<TransactionsStore>().type == TYPE_COINS.wqt) {
-      final _type = CoinsUtils.getTypeCoin(addressContract!, AccountRepository().getConfigNetwork().addresses);
-      return _type;
+  TokenSymbols _getTitleCoin(String? addressContract) {
+    if (GetIt.I.get<TransactionsStore>().type == TokenSymbols.WQT) {
+      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+      if (addressContract == _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.WUSD).addressToken) {
+        return TokenSymbols.WUSD;
+      } else if (addressContract ==
+          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wBNB).addressToken) {
+        return TokenSymbols.wBNB;
+      } else if (addressContract ==
+          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wETH).addressToken) {
+        return TokenSymbols.wETH;
+      } else if (addressContract ==
+          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.USDT).addressToken) {
+        return TokenSymbols.USDT;
+      } else {
+        return TokenSymbols.WQT;
+      }
     } else {
       switch (GetIt.I.get<TransactionsStore>().type) {
-        case TYPE_COINS.wqt:
-          return TYPE_COINS.wqt;
-        case TYPE_COINS.wusd:
-          return TYPE_COINS.wusd;
-        case TYPE_COINS.wBnb:
-          return TYPE_COINS.wBnb;
-        case TYPE_COINS.usdt:
-          return TYPE_COINS.usdt;
-        case TYPE_COINS.wEth:
-          return TYPE_COINS.wEth;
+        case TokenSymbols.WQT:
+          return TokenSymbols.WQT;
+        case TokenSymbols.WUSD:
+          return TokenSymbols.WUSD;
+        case TokenSymbols.wBNB:
+          return TokenSymbols.wBNB;
+        case TokenSymbols.USDT:
+          return TokenSymbols.USDT;
+        case TokenSymbols.wETH:
+          return TokenSymbols.wETH;
         default:
-          return TYPE_COINS.wusd;
+          return TokenSymbols.WUSD;
       }
     }
+  }
+
+  _onPressedGoToExplorer() {
+    final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer + AccountRepository().userAddress;
+    print('url: $_urlExplorer');
+    launch(_urlExplorer);
   }
 }
 
 class TransactionItem extends StatefulWidget {
-  final TYPE_COINS coin;
+  final TokenSymbols coin;
   final Tx transaction;
   final bool opacity;
 
@@ -189,7 +220,7 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
     if (tx.amount != null) {
       return BigInt.parse(tx.amount!).toDouble() * pow(10, -18);
     }
-    if (widget.coin == TYPE_COINS.usdt) {
+    if (widget.coin == TokenSymbols.USDT) {
       return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -6);
     }
     return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -18);

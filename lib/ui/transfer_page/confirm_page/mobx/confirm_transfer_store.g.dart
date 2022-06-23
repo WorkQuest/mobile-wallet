@@ -13,7 +13,8 @@ mixin _$ConfirmTransferStore on ConfirmTransferStoreBase, Store {
       AsyncAction('ConfirmTransferStoreBase.sendTransaction', context: context);
 
   @override
-  Future sendTransaction(String addressTo, String amount, TYPE_COINS typeCoin) {
+  Future sendTransaction(
+      String addressTo, String amount, TokenSymbols typeCoin) {
     return _$sendTransactionAsyncAction
         .run(() => super.sendTransaction(addressTo, amount, typeCoin));
   }

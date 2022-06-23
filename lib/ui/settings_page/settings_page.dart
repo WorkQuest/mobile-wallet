@@ -107,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   String _getCurrentNameNetwork() {
-    final name = AccountRepository().configName?.name ?? ConfigNameNetwork.devnet.name;
+    final name = AccountRepository().configName?.name ?? ConfigNameNetwork.testnet.name;
     return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
   }
 

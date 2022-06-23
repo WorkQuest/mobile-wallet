@@ -8,10 +8,7 @@ import '../../repository/account_repository.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
-const _networks = [
-  ConfigNameNetwork.devnet,
-  ConfigNameNetwork.testnet,
-];
+const _networks = ConfigNameNetwork.values;
 
 class NetworkPage extends StatefulWidget {
   const NetworkPage({Key? key}) : super(key: key);

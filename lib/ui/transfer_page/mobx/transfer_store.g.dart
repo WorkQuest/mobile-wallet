@@ -21,13 +21,13 @@ mixin _$TransferStore on TransferStoreBase, Store {
       Atom(name: 'TransferStoreBase.typeCoin', context: context);
 
   @override
-  TYPE_COINS? get typeCoin {
+  TokenSymbols? get typeCoin {
     _$typeCoinAtom.reportRead();
     return super.typeCoin;
   }
 
   @override
-  set typeCoin(TYPE_COINS? value) {
+  set typeCoin(TokenSymbols? value) {
     _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
       super.typeCoin = value;
     });
@@ -122,7 +122,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
-  dynamic setTitleSelectedCoin(TYPE_COINS? value) {
+  dynamic setTitleSelectedCoin(TokenSymbols? value) {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.setTitleSelectedCoin');
     try {

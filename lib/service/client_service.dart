@@ -10,8 +10,6 @@ import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
-import 'package:workquest_wallet_app/utils/coins.dart';
 
 abstract class ClientServiceI {
   Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
@@ -38,7 +36,7 @@ abstract class ClientServiceI {
     required String privateKey,
     required String addressTo,
     required String amount,
-    required TYPE_COINS coin,
+    required TokenSymbols coin,
   });
 }
 
@@ -71,7 +69,7 @@ class ClientService implements ClientServiceI {
     required String privateKey,
     required String addressTo,
     required String amount,
-    required TYPE_COINS coin,
+    required TokenSymbols coin,
   }) async {
     print('client sendTransaction');
     addressTo = addressTo.toLowerCase();
@@ -80,7 +78,7 @@ class ClientService implements ClientServiceI {
     final credentials = await getCredentials(privateKey);
     final myAddress = await AddressService().getPublicAddress(privateKey);
 
-    if (coin == TYPE_COINS.wqt) {
+    if (coin == TokenSymbols.WQT) {
       hash = await ethClient!.sendTransaction(
         credentials,
         Transaction(
@@ -94,13 +92,14 @@ class ClientService implements ClientServiceI {
         chainId: 20220112,
       );
     } else {
-      String addressToken = CoinsUtils.getAddressCoin(coin, AccountRepository().getConfigNetwork().addresses);
-      print('send ${coin.toString()}');
-      final degree = coin == TYPE_COINS.usdt ? 6 : 18;
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(addressToken), client: ethClient!);
+      String addressToken = AccountRepository()
+          .getConfigNetwork()
+          .dataCoins
+          .firstWhere((element) => element.symbolToken == coin)
+          .addressToken!;
+      final degree = coin == TokenSymbols.USDT ? 6 : 18;
+      final contract = Erc20(address: EthereumAddress.fromHex(addressToken), client: ethClient!);
       hash = await contract.transfer(
-        // myAddress,
         EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, degree)),
         credentials: credentials,
@@ -124,22 +123,18 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false}) async {
+  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
     try {
       address = address.toLowerCase();
       final contract =
           Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
       final balance = await contract.balanceOf(
           EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      final addresses = AccountRepository().getConfigNetwork().addresses;
-      if (otherNetwork) {
+      if (otherNetwork || isUSDT) {
         return balance.toDouble() * pow(10, -6);
       }
-      if (address == addresses.usdt) {
-        return balance.toDouble() * pow(10, -6);
-      } else {
-        return balance.toDouble() * pow(10, -18);
-      }
+
+      return balance.toDouble() * pow(10, -18);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
      throw Exception("Error connection to network");

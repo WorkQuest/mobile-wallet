@@ -3,8 +3,7 @@ import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
-import 'package:workquest_wallet_app/utils/coins.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 import '../../../../constants.dart';
 
@@ -23,17 +22,22 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   bool canMoreLoading = true;
 
   @observable
-  TYPE_COINS type = TYPE_COINS.wqt;
+  TokenSymbols type = TokenSymbols.WQT;
 
   @action
-  setType(TYPE_COINS value) => type = value;
+  setType(TokenSymbols value) => type = value;
 
   String get myAddress => AccountRepository().userWallet!.address!;
 
-  AddressCoins get addresses => AccountRepository().getConfigNetwork().addresses;
 
   @action
   getTransactions() async {
+    final _type = _getTypeNetwork();
+    if (_type != ConfigNameNetwork.testnet) {
+      transactions.clear();
+      onSuccess(true);
+      return;
+    }
     canMoreLoading = true;
     onLoading();
 
@@ -43,57 +47,25 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
       isMoreLoading = false;
       List<Tx>? result;
-      switch (type) {
-        case TYPE_COINS.wqt:
-          result = await Api().getTransactions(
-            myAddress,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wusd:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.wusd,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wBnb:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.wbnb,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wEth:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.weth,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.usdt:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.usdt,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
+      final _addressToken = Web3Utils.getAddressToken(type);
+
+      if (type == TokenSymbols.WQT) {
+        result = await Api().getTransactions(
+          AccountRepository().userAddress,
+          limit: 10,
+          offset: transactions.length,
+        );
+      } else {
+        result = await Api().getTransactionsByToken(
+          address: AccountRepository().userAddress,
+          addressToken: _addressToken,
+          limit: 10,
+          offset: transactions.length,
+        );
       }
 
-      result!.map((tran) {
-        String address = '';
-        if (tran.toAddressHash!.hex! == myAddress) {
-          address = tran.fromAddressHash!.hex!;
-        } else {
-          address = tran.toAddressHash!.hex!;
-        }
-        tran.coin = CoinsUtils.getTypeCoin(address, addresses);
-      }).toList();
+      _setTypeCoinInTxs(result!);
+
       transactions.addAll(result);
 
       onSuccess(true);
@@ -108,49 +80,29 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   @action
   getTransactionsMore() async {
+    final _type = _getTypeNetwork();
+    if (_type != ConfigNameNetwork.testnet) {
+      transactions.clear();
+      onSuccess(true);
+      return;
+    }
     isMoreLoading = true;
     try {
       List<Tx>? result;
-      switch (type) {
-        case TYPE_COINS.wqt:
-          result = await Api().getTransactions(
-            myAddress,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wusd:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.wusd,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wBnb:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.wbnb,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wEth:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.weth,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.usdt:
-          result = await Api().getTransactionsByToken(
-            address: myAddress,
-            addressToken: addresses.usdt,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
+      final _addressToken = Web3Utils.getAddressToken(type);
+      if (type == TokenSymbols.WQT) {
+        result = await Api().getTransactions(
+          AccountRepository().userAddress,
+          limit: 10,
+          offset: transactions.length,
+        );
+      } else {
+        result = await Api().getTransactionsByToken(
+          address: AccountRepository().userAddress,
+          addressToken: _addressToken,
+          limit: 10,
+          offset: transactions.length,
+        );
       }
       if (result!.isEmpty) {
         canMoreLoading = false;
@@ -170,18 +122,22 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  @action
-  addTransaction({required Tx tran}) {
-    String address = '';
-    if (tran.toAddressHash!.hex! == myAddress) {
-      address = tran.fromAddressHash!.hex!;
-    } else {
-      address = tran.toAddressHash!.hex!;
-    }
-    tran.coin = CoinsUtils.getTypeCoin(address, addresses);
-    if (type == tran.coin || type == TYPE_COINS.wqt) {
-      transactions.add(tran);
-    }
+  _setTypeCoinInTxs(List<Tx> txs) {
+    txs.map((tran) {
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD)) {
+        tran.coin = TokenSymbols.WUSD;
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wETH)) {
+        tran.coin = TokenSymbols.wETH;
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wBNB)) {
+        tran.coin = TokenSymbols.wBNB;
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.USDT)) {
+        tran.coin = TokenSymbols.USDT;
+      } else {
+        tran.coin = TokenSymbols.WQT;
+      }
+    }).toList();
   }
+
+  ConfigNameNetwork _getTypeNetwork() => AccountRepository().configName!;
 
 }

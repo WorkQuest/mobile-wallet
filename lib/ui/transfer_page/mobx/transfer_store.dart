@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:mobx/mobx.dart';
-import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'transfer_store.g.dart';
 
@@ -13,7 +13,7 @@ class TransferStore = TransferStoreBase with _$TransferStore;
 
 abstract class TransferStoreBase extends IStore<bool> with Store {
   @observable
-  TYPE_COINS? typeCoin;
+  TokenSymbols? typeCoin;
 
   @observable
   String addressTo = '';
@@ -35,45 +35,24 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   setAmount(String value) => amount = value;
 
   @action
-  setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
+  setTitleSelectedCoin(TokenSymbols? value) => typeCoin = value;
 
   @action
   getMaxAmount() async {
     onLoading();
     try {
-      final balance = await AccountRepository()
-          .client!
-          .getBalance(AccountRepository().privateKey);
-      final gas = await AccountRepository().client!.getGas();
-      final addresses = AccountRepository().getConfigNetwork().addresses;
-      switch (typeCoin) {
-        case TYPE_COINS.wqt:
-          final count = (balance.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
-          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 250);
-          amount = (count.toDouble() - _gas).toString();
-          break;
-        case TYPE_COINS.wusd:
-          final count = await AccountRepository().client!.getBalanceFromContract(addresses.wusd);
-          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
-          amount = (count.toDouble() - _gas).toStringAsFixed(18);
-          break;
-        case TYPE_COINS.wEth:
-          final count = await AccountRepository().client!.getBalanceFromContract(addresses.weth);
-          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
-          amount = (count.toDouble() - _gas).toStringAsFixed(18);
-          break;
-        case TYPE_COINS.wBnb:
-          final count = await AccountRepository().client!.getBalanceFromContract(addresses.wbnb);
-          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
-          amount = (count.toDouble() - _gas).toStringAsFixed(18);
-          break;
-        case TYPE_COINS.usdt:
-          final count = await  AccountRepository().client!.getBalanceFromContract(addresses.usdt);
-          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
-          amount = (count.toDouble() - _gas).toStringAsFixed(18);
-          break;
-        default:
-          break;
+      final _client = AccountRepository().getClient();
+      final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
+      final _isHaveAddressCoin =
+          _dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken == null;
+      if (_isHaveAddressCoin) {
+        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _balanceInWei = _balance.getInWei;
+        final _gasInWei = await _client.getGas();
+        amount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(18);
+      } else {
+        final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
+        amount = _balance.toStringAsFixed(18);
       }
       onSuccess(true);
     } on SocketException catch (_) {
@@ -94,5 +73,13 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } on SocketException catch (_) {
       onError("Lost connection to server");
     }
+  }
+
+  Future<double> _getBalanceToken(String addressToken) async {
+    final _balance = await AccountRepository().getClient().getBalanceFromContract(
+      addressToken,
+      isUSDT: typeCoin == TokenSymbols.USDT,
+    );
+    return _balance;
   }
 }

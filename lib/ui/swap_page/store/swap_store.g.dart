@@ -157,7 +157,8 @@ mixin _$SwapStore on SwapStoreBase, Store {
 
   @override
   Future getCourseWQT({bool isForce = false}) {
-    return _$getCourseWQTAsyncAction.run(() => super.getCourseWQT(isForce: isForce));
+    return _$getCourseWQTAsyncAction
+        .run(() => super.getCourseWQT(isForce: isForce));
   }
 
   late final _$createSwapAsyncAction =

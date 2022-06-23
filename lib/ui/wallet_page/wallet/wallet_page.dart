@@ -13,7 +13,6 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_page.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/list_transactions.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -328,7 +327,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           else
                             Text(
                               // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                              '${num.parse(balance.amount!)} ${balance.symbol.name}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
@@ -345,7 +344,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(balance.title, balance.amount),
+                              _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -365,6 +364,9 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: store.coins.map((balance) {
+                    if (_currencyIndex >= store.coins.length) {
+                      _currencyIndex = 0;
+                    }
                     bool isCurrency = balance == store.coins[_currencyIndex];
                     return GestureDetector(
                       onTap: () => _controller.nextPage(),
@@ -426,24 +428,24 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
   _onPageChanged(int index, dynamic _) {
     switch (index) {
       case 0:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wqt);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wqt);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.WQT);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WQT);
         break;
       case 1:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wusd);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wusd);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.WUSD);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBnb);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBnb);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.wBNB);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wBNB);
         break;
       case 3:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wEth);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wEth);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.wETH);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wETH);
         break;
       case 4:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.usdt);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.usdt);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.USDT);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);
         break;
     }
     GetIt.I.get<TransactionsStore>().getTransactions();
