@@ -23,7 +23,7 @@ class WebSocket {
   init() async {
     // print('web socket init');
     shouldReconnectFlag = true;
-    channel = IOWebSocketChannel.connect("${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket");
+    channel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     channel!.sink.add("""
     {
         "jsonrpc": "2.0",
@@ -53,6 +53,16 @@ class WebSocket {
     print('closeWebSocket');
     shouldReconnectFlag = false;
     channel!.sink.close(closeCode, "closeCode");
+  }
+
+  _closeWalletSocket() {
+    if (channel != null) {
+      channel!.sink.close();
+    }
+  }
+
+  reconnectWalletSocket() {
+    _closeWalletSocket();
   }
 
   String get myAddress => AccountRepository().userWallet!.address!;

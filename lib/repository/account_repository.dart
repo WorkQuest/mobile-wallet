@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
+import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
@@ -42,6 +43,7 @@ class AccountRepository {
   changeNetwork(ConfigNameNetwork configName) {
     _saveNetwork(configName);
     _disconnectWeb3Client();
+    WebSocket().reconnectWalletSocket();
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
