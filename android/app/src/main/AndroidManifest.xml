@@ -6,7 +6,7 @@
 
    <application
         android:label="WQ Wallet"
-        android:icon="@mipmap/ic_wallet">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
