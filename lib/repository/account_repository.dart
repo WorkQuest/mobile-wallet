@@ -78,10 +78,12 @@ class AccountRepository {
     }
   }
 
-  bool get isConfigTestnet => configName == ConfigNameNetwork.testnet;
+  bool get isOtherNetwork => configName != ConfigNameNetwork.testnet && configName != ConfigNameNetwork.devnet;
 
   ConfigNameNetwork _getNetworkNameKey(String name) {
     switch (name) {
+      case 'devnet':
+        return ConfigNameNetwork.devnet;
       case 'testnet':
         return ConfigNameNetwork.testnet;
       case 'rinkeby':

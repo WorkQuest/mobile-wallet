@@ -28,7 +28,13 @@ void main() async {
       AccountRepository().setWallet(wallet);
     }
     final configName = await Storage.read(StorageKeys.configName.toString());
-    AccountRepository().setNetwork(configName ?? 'testnet');
+    if (configName == null) {
+      AccountRepository().setNetwork('testnet');
+    } else {
+      AccountRepository().setNetwork(configName);
+      await Storage.write(StorageKeys.configName.toString(), ConfigNameNetwork.testnet.name);
+    }
+
   } catch (e) {
     AccountRepository().clearData();
   }

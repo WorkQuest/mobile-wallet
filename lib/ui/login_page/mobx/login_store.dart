@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
-import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
@@ -30,7 +29,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       onLoading();
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic);
-      AccountRepository().setNetwork(ConfigNameNetwork.testnet.name);
       AccountRepository().setWallet(wallet);
       AccountRepository().connectClient();
       final signature = await AccountRepository().client!.getSignature(wallet.privateKey!);
@@ -55,6 +53,5 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     await Storage.write(StorageKeys.refreshToken.toString(), result.data['result']['refresh']);
     await Storage.write(StorageKeys.accessToken.toString(), result.data['result']['access']);
     await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
-    await Storage.write(StorageKeys.configName.toString(), ConfigNameNetwork.testnet.name);
   }
 }

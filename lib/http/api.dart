@@ -6,35 +6,61 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/http_client.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 
 import '../main.dart';
 import '../model/course_tokens_response.dart';
 import '../model/txs_info_response.dart';
 
 class Api {
-  static const baseUrl = 'https://testnet-app.workquest.co/api/v1';
+  String _baseUrl = 'https://testnet-app.workquest.co/api/v1';
+  
+  String _getBaseUrl() {
+    ConfigNameNetwork _network = AccountRepository().configName ?? ConfigNameNetwork.binance;
+    if (_network == ConfigNameNetwork.testnet) {
+      _baseUrl = 'https://testnet-app.workquest.co/api/v1';
+    } else if (_network == ConfigNameNetwork.devnet){
+      _baseUrl = 'https://dev-app.workquest.co/api/v1';
+    }
+    return _baseUrl;
+  }
 
-  static const _register = "$baseUrl/auth/register";
-  static const _login = "$baseUrl/auth/login/wallet";
-  static const _confirmEmail = "$baseUrl/auth/confirm-email";
-  static const _refreshTokens = "$baseUrl/auth/refresh-tokens";
-  static const _resendEmail = "$baseUrl/auth/main/resend-email";
-  static const _registerWallet = "$baseUrl/auth/register/wallet";
-  static const _courseWQT = "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+  bool get currentNetworkIsTestnet => _getBaseUrl() == 'https://testnet-app.workquest.co/api/v1';
 
-  String _transactions(String address) =>
-      "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+  String get _register => "${_getBaseUrl()}/auth/register";
+  String get _login => "${_getBaseUrl()}/auth/login/wallet";
+  String get _confirmEmail => "${_getBaseUrl()}/auth/confirm-email";
+  String get _refreshTokens => "${_getBaseUrl()}/auth/refresh-tokens";
+  String get _resendEmail => "${_getBaseUrl()}/auth/main/resend-email";
+  String get _registerWallet => "${_getBaseUrl()}/auth/register/wallet";
+  String get _courseWQT => "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+
+  String _transactions(String address) {
+    if (currentNetworkIsTestnet) {
+      return  "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+    } else {
+      return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+    }
+  }
+
 
   String _walletAddressProfile(String address) =>
-      "$baseUrl/profile/wallet/$address";
+      "${_getBaseUrl()}/profile/wallet/$address";
 
   String _transactionsByToken({
     required String address,
     required String addressToken,
-  }) =>
-      "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+  }) {
+    if (currentNetworkIsTestnet) {
+      return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+    } else {
+      return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+    }
+  }
+
 
   String _transactionInfo({
     required String hashTx,

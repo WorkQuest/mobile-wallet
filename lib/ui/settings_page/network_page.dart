@@ -1,5 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/http/api.dart';
+import 'package:workquest_wallet_app/http/web_socket.dart';
+import 'package:workquest_wallet_app/page_router.dart';
+import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -19,10 +25,12 @@ class NetworkPage extends StatefulWidget {
 
 class _NetworkPageState extends State<NetworkPage> {
   late ConfigNameNetwork _currentNetwork;
+  late bool isTestnet;
 
   @override
   void initState() {
     _currentNetwork = AccountRepository().configName!;
+    isTestnet = Api().currentNetworkIsTestnet;
     super.initState();
   }
 
@@ -81,13 +89,48 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   String _getName(String name) {
-    return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
+    return '${name.substring(0, 1).toUpperCase()}${name.substring(1)}';
   }
 
   _onPressedChange(ConfigNameNetwork network) {
-    setState(() {
-      _currentNetwork = network;
-    });
-    AccountRepository().changeNetwork(_currentNetwork);
+    bool _showAlert = false;
+    if (isTestnet) {
+      _showAlert = network == ConfigNameNetwork.devnet;
+    } else {
+      _showAlert = network == ConfigNameNetwork.testnet;
+    }
+
+    if (_showAlert) {
+      _showAlertConfirmChangeNetwork(network);
+    } else {
+      setState(() {
+        _currentNetwork = network;
+      });
+      AccountRepository().changeNetwork(_currentNetwork);
+    }
+  }
+
+  _showAlertConfirmChangeNetwork(ConfigNameNetwork network) {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text('meta.warning'.tr()),
+      content: const Text('Do you really want to change the network?\nIf there is a change to this network, the '
+          'current '
+          'session will be over. You will need to re-enter the platform.'),
+      needCancel: true,
+      titleCancel: null,
+      titleOk: 'Confirm',
+      onTabCancel: null,
+      onTabOk: () => _pushToLogin(network),
+      colorCancel: AppColor.enabledButton,
+      colorOk: Colors.red,
+    );
+  }
+
+  _pushToLogin(ConfigNameNetwork network) async {
+    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
+    WebSocket().closeWebSocket();
+    AccountRepository().clearData();
+    AccountRepository().setNetwork(network.name);
   }
 }
