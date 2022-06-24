@@ -277,7 +277,7 @@ class _SwapPageState extends State<SwapPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0 + MediaQuery.of(context).padding.bottom),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
         child: DefaultButton(
           title: 'Send',
           onPressed: _onPressedSend,
