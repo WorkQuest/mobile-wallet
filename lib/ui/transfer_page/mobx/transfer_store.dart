@@ -28,8 +28,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   String fee = '';
 
   @computed
-  bool get statusButtonTransfer =>
-      typeCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
+  bool get statusButtonTransfer => typeCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -66,7 +65,6 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } catch (e) {
       onError(e.toString());
     }
-
   }
 
   @action
@@ -130,9 +128,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
 
   Future<double> _getBalanceToken(String addressToken) async {
     final _balance = await AccountRepository().getClient().getBalanceFromContract(
-      addressToken,
-      isUSDT: typeCoin == TokenSymbols.USDT,
-    );
+          addressToken,
+          isUSDT: typeCoin == TokenSymbols.USDT,
+        );
     return _balance;
   }
 }
