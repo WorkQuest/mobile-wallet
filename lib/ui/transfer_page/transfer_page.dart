@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -122,17 +123,27 @@ class _TransferPageState extends State<TransferPage> {
                   controller: _addressController,
                   hint: 'wallet.enterAddress'.tr(),
                   suffixIcon: null,
-                  inputFormatters: [
-                    MaskTextInputFormatter(
-                      mask: '0x########################################',
-                      filter: {"#": RegExpFields.addressRegExp},
-                      initialText: _addressController.text,
-                    )
-                  ],
                   validator: (value) {
-                    if (_addressController.text.length != 42) {
-                      return "errors.incorrectFormat".tr();
+                    if (value != null) {
+                      final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                      if (_isBech) {
+                        if (value.length != 41) {
+                          return "errors.incorrectFormat".tr();
+                        }
+                        if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+                          return "errors.incorrectFormat".tr();
+                        }
+                      } else {
+                        if (value.length != 42) {
+                          return "errors.incorrectFormat".tr();
+                        }
+                        if (!RegExpFields.addressRegExp.hasMatch(value)) {
+                          return "errors.incorrectFormat".tr();
+                        }
+                      }
                     }
+                    //0x1123123123123213123213123123213213213121
+                    //wq1sz72zjcgkrk5ze8cgzywa8n2jpdyp65l9m22cg
                     return null;
                   },
                 ),
@@ -189,6 +200,15 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 20,
               ),
+              LoginButton(
+                title: 'Test',
+                onTap: () {
+                  final _bech32 = AddressService().hexToBech32(AccountRepository().userAddress);
+                  print('bech32: $_bech32');
+                  final _hex = AddressService().bech32ToHex(_bech32);
+                  print('hex: $_hex');
+                },
+              ),
             ],
           ),
         ),
@@ -215,11 +235,20 @@ class _TransferPageState extends State<TransferPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }
       await store.getFee();
-
-      if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
-        AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
-        return;
+      final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
+      if (_isBech) {
+        if (store.addressTo.toLowerCase() ==
+            AddressService().hexToBech32(AccountRepository().userWallet!.address!.toLowerCase())) {
+          AlertDialogUtils.showInfoAlertDialog(context,
+              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+          return;
+        }
+      } else {
+        if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
+          AlertDialogUtils.showInfoAlertDialog(context,
+              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+          return;
+        }
       }
       if (double.parse(store.amount) == 0.0) {
         AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
@@ -230,7 +259,7 @@ class _TransferPageState extends State<TransferPage> {
         ConfirmTransferPage(
           fee: store.fee,
           typeCoin: store.typeCoin!,
-          addressTo: store.addressTo,
+          addressTo: _isBech ? AddressService().bech32ToHex(store.addressTo) : store.addressTo,
           amount: store.amount,
         ),
       );

@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/shimmer.dart';
@@ -344,7 +345,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
             height: 6,
           ),
           _ItemInfoFromTransaction(
-            info: address,
+            info: AddressService().hexToBech32(address),
             title: increase ? "From" : "To",
             isSelectable: true,
           ),

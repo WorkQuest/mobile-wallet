@@ -12,6 +12,7 @@ import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/list_transactions.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
@@ -59,7 +60,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userWallet?.address ?? '1234567890';
+    final address = AddressService().hexToBech32(AccountRepository().userWallet!.address!);
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;

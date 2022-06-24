@@ -19,9 +19,9 @@ abstract class AddressServiceI {
 
   Future<EthereumAddress> getPublicAddress(String privateKey);
 
-  Future<String> hexToBech32(String privateKey);
+  String hexToBech32(String privateKey);
 
-  Future<String> bech32ToHex(String privateKey);
+  String bech32ToHex(String privateKey);
 }
 
 class AddressService implements AddressServiceI {
@@ -92,25 +92,19 @@ class AddressService implements AddressServiceI {
   }
 
   @override
-  Future<String> hexToBech32(String privateKey) async {
-    final address = await getPublicAddress(privateKey);
-    print(address.hexNo0x);
-
-    final hex = HEX.decode(address.hexNo0x);
-    final bech32 = Bech32Encoder.encode('wq', Uint8List.fromList(hex));
-    print(bech32);
-    return bech32;
+  String hexToBech32(String address) {
+    final _address = EthereumAddress.fromHex(address);
+    final _hex = HEX.decode(_address.hexNo0x);
+    final _bech32 = Bech32Encoder.encode('wq', Uint8List.fromList(_hex));
+    return _bech32;
   }
 
   @override
-  Future<String> bech32ToHex(String privateKey) async {
-    final bech32 = await hexToBech32(privateKey);
-
-    final bechToHex = Bech32Encoder.decode(bech32);
+  String bech32ToHex(String addressBech32) {
+    final bechToHex = Bech32Encoder.decode(addressBech32);
     final result = HEX.encode(bechToHex.toList());
-    print(result);
 
-    return result;
+    return '0x$result';
   }
 }
 

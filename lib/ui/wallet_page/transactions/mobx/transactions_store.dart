@@ -81,7 +81,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   getTransactionsMore() async {
     final _type = _getTypeNetwork();
-    if (_type != ConfigNameNetwork.testnet) {
+    if (_type != ConfigNameNetwork.testnet && _type != ConfigNameNetwork.devnet ) {
       transactions.clear();
       onSuccess(true);
       return;

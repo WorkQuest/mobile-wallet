@@ -52,6 +52,7 @@ class RegExpFields {
   static final firstNameRegExp = RegExp(r'^[a-zA-Z]+$');
   static final passwordRegExp = RegExp(r'^[а-яА-Я]');
   static final addressRegExp = RegExp(r'[0-9a-fA-F]');
+  static final addressBech32RegExp = RegExp(r'[0-9a-zA-Z]');
 }
 
 class Configs {

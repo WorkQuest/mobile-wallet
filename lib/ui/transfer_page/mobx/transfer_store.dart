@@ -7,6 +7,7 @@ import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'transfer_store.g.dart';
@@ -75,6 +76,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
+      String _address = '';
+      final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
+      _address = _isBech ? AddressService().bech32ToHex(addressTo) : addressTo;
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(typeCoin!);
         final _degree = Web3Utils.getDegreeToken(typeCoin!);
@@ -87,7 +91,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             contract: _contract,
             function: _contract.abi.functions[7],
             parameters: [
-              EthereumAddress.fromHex(addressTo),
+              EthereumAddress.fromHex(_address),
               BigInt.from(double.tryParse(amount) ?? 0.0 * pow(10, _degree)),
             ],
             from: _from,
@@ -100,7 +104,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           EtherUnit.wei,
           BigInt.from(double.parse(amount) * pow(10, 18)),
         );
-        final _to = EthereumAddress.fromHex(addressTo);
+        final _to = EthereumAddress.fromHex(_address);
         final _estimateGas = await _client.getEstimateGas(
           Transaction(
             to: _to,

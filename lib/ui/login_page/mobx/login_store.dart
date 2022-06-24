@@ -29,6 +29,9 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       onLoading();
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic);
+      if (AccountRepository().configName == null) {
+        AccountRepository().setNetwork('testnet');
+      }
       AccountRepository().setWallet(wallet);
       AccountRepository().connectClient();
       final signature = await AccountRepository().client!.getSignature(wallet.privateKey!);
@@ -42,8 +45,9 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e) {
       AccountRepository().clearData();
       onError(e.message);
-    } catch (e) {
-      // print('cry$e$trace');
+    } catch (e, trace) {
+
+      print('cry$e$trace');
       AccountRepository().clearData();
       onError(e.toString());
     }
