@@ -77,8 +77,13 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       String _address = '';
-      final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
-      _address = _isBech ? AddressService().bech32ToHex(addressTo) : addressTo;
+      String _amount = amount.isEmpty ? '0.0' : amount;
+      try {
+        final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
+        _address = _isBech ? AddressService().bech32ToHex(addressTo) : addressTo;
+      } catch (e) {
+        _address = AccountRepository().userAddress;
+      }
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(typeCoin!);
         final _degree = Web3Utils.getDegreeToken(typeCoin!);
@@ -92,7 +97,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             function: _contract.abi.functions[7],
             parameters: [
               EthereumAddress.fromHex(_address),
-              BigInt.from(double.tryParse(amount) ?? 0.0 * pow(10, _degree)),
+              BigInt.from(double.tryParse(_amount) ?? 0.0 * pow(10, _degree)),
             ],
             from: _from,
           ),
@@ -102,7 +107,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
-          BigInt.from(double.parse(amount) * pow(10, 18)),
+          BigInt.from(double.parse(_amount) * pow(10, 18)),
         );
         final _to = EthereumAddress.fromHex(_address);
         final _estimateGas = await _client.getEstimateGas(
