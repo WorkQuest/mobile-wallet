@@ -49,20 +49,23 @@ class _TransferPageState extends State<TransferPage> {
 
   _initCoins() {
     final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-    _coins..clear()..addAll(_dataTokens
-        .map((coin) => _CoinItem(
-    coin.iconPath,
-    coin.symbolToken.name,
-    coin.symbolToken,
-    true,
-    )).toList());
+    _coins
+      ..clear()
+      ..addAll(_dataTokens
+          .map((coin) => _CoinItem(
+                coin.iconPath,
+                coin.symbolToken.name,
+                coin.symbolToken,
+                true,
+              ))
+          .toList());
+    store.setTitleSelectedCoin(_coins.first.typeCoin);
+    _currentCoin = _coins.first;
   }
 
   @override
   void initState() {
-    _initCoins();
     print('initState TransferPage');
-    store.getFee();
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
     });
@@ -211,9 +214,8 @@ class _TransferPageState extends State<TransferPage> {
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
         FocusManager.instance.primaryFocus?.unfocus();
       }
-      if (store.fee.isEmpty) {
-        await store.getFee();
-      }
+      await store.getFee();
+
       if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
             title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());

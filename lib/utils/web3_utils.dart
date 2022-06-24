@@ -15,7 +15,7 @@ class Web3Utils {
       final _gas = (_gasTx.getInWei.toDouble() * pow(10, -16) * 250);
       final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
       if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
-        throw FormatException('Not have enough WQT for the transaction');
+        throw const FormatException('Not have enough WQT for the transaction');
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
@@ -23,8 +23,16 @@ class Web3Utils {
         throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
       }
       if (_balanceWQT.getInWei < _gasTx.getInWei) {
-        throw FormatException('Not have enough WQT for the transaction');
+        throw const FormatException('Not have enough WQT for the transaction');
       }
+    }
+  }
+
+  static int getDegreeToken(TokenSymbols typeCoin) {
+    if (typeCoin == TokenSymbols.USDT) {
+      return 6;
+    } else {
+      return 18;
     }
   }
 

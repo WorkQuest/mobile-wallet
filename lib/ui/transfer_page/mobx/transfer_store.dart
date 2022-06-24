@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/contracts/erc20.dart';
+import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
@@ -48,8 +50,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       if (_isHaveAddressCoin) {
         final _balance = await _client.getBalance(AccountRepository().privateKey);
         final _balanceInWei = _balance.getInWei;
-        final _gasInWei = await _client.getGas();
-        amount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(18);
+        await getFee();
+        final _gas = BigInt.from(double.parse(fee) * pow(10, 18));
+        amount = ((_balanceInWei - _gas).toDouble() * pow(10, -18)).toStringAsFixed(18);
       } else {
         final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
         amount = _balance.toStringAsFixed(18);
@@ -68,10 +71,51 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   @action
   getFee() async {
     try {
-      final gas = await AccountRepository().client!.getGas();
-      fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
+      final _client = AccountRepository().getClient();
+      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+      final _isToken = typeCoin != _currentListTokens.first.symbolToken;
+      if (_isToken) {
+        String _addressToken = Web3Utils.getAddressToken(typeCoin!);
+        final _degree = Web3Utils.getDegreeToken(typeCoin!);
+        final _contract = Erc20(
+          address: EthereumAddress.fromHex(_addressToken),
+          client: _client.ethClient!,
+        ).self;
+        final _estimateGas = await _client.getEstimateGas(
+          Transaction.callContract(
+            contract: _contract,
+            function: _contract.abi.functions[7],
+            parameters: [
+              EthereumAddress.fromHex(addressTo),
+              BigInt.from(double.tryParse(amount) ?? 0.0 * pow(10, _degree)),
+            ],
+            from: _from,
+          ),
+        );
+        final _gas = await _client.getGas();
+        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+      } else {
+        final _value = EtherAmount.fromUnitAndValue(
+          EtherUnit.wei,
+          BigInt.from(double.parse(amount) * pow(10, 18)),
+        );
+        final _to = EthereumAddress.fromHex(addressTo);
+        final _estimateGas = await _client.getEstimateGas(
+          Transaction(
+            to: _to,
+            from: _from,
+            value: _value,
+          ),
+        );
+        final _gas = await _client.getGas();
+        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+      }
     } on SocketException catch (_) {
       onError("Lost connection to server");
+    } catch (e, trace) {
+      print('getFee: $e\n$trace');
+      onError(e.toString());
     }
   }
 

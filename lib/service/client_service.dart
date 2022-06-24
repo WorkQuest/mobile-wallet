@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/service/address_service.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 abstract class ClientServiceI {
   Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
@@ -30,10 +30,10 @@ abstract class ClientServiceI {
 
   Future<EtherAmount> getGas();
 
-  Future<String> getNetwork();
+  Future<BigInt> getEstimateGas(Transaction transaction);
 
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String addressTo,
     required String amount,
     required TokenSymbols coin,
@@ -66,43 +66,39 @@ class ClientService implements ClientServiceI {
 
   @override
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String addressTo,
     required String amount,
     required TokenSymbols coin,
   }) async {
     print('client sendTransaction');
-    addressTo = addressTo.toLowerCase();
     String? hash;
-    final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
-    final credentials = await getCredentials(privateKey);
-    final myAddress = await AddressService().getPublicAddress(privateKey);
-
-    if (coin == TokenSymbols.WQT) {
+    final _privateKey = AccountRepository().privateKey;
+    final _credentials = await getCredentials(_privateKey);
+    if (!isToken) {
+      final _value = EtherAmount.fromUnitAndValue(
+        EtherUnit.wei,
+        BigInt.from(double.parse(amount) * pow(10, 18)),
+      );
+      final _to = EthereumAddress.fromHex(addressTo);
+      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       hash = await ethClient!.sendTransaction(
-        credentials,
+        _credentials,
         Transaction(
-          to: EthereumAddress.fromHex(addressTo),
-          from: myAddress,
-          value: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei,
-            bigInt,
-          ),
+          to: _to,
+          from: _from,
+          value: _value,
         ),
-        chainId: 20220112,
+        chainId: 1991,
       );
     } else {
-      String addressToken = AccountRepository()
-          .getConfigNetwork()
-          .dataCoins
-          .firstWhere((element) => element.symbolToken == coin)
-          .addressToken!;
-      final degree = coin == TokenSymbols.USDT ? 6 : 18;
-      final contract = Erc20(address: EthereumAddress.fromHex(addressToken), client: ethClient!);
+      String _addressToken = Web3Utils.getAddressToken(coin);
+      final _degree = Web3Utils.getDegreeToken(coin);
+      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: ethClient!);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
-        BigInt.from(double.parse(amount) * pow(10, degree)),
-        credentials: credentials,
+        BigInt.from(double.parse(amount) * pow(10, _degree)),
+        credentials: _credentials,
       );
       print('${coin.toString()} hash - $hash');
     }
@@ -193,26 +189,14 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<String> getNetwork() async {
-    try {
-      final index = await ethClient!.getNetworkId();
-      switch (index) {
-        case 1:
-          return "Ethereum Mainnet";
-        case 2:
-          return "Morden Testnet (deprecated)";
-        case 3:
-          return "Ropsten Testnet";
-        case 4:
-          return "Rinkeby Testnet";
-        case 42:
-          return "Kovan Testnet";
-        default:
-          return "Unknown network";
-      }
-    } catch (e) {
-      return "Network could not be identified";
-    }
+  Future<BigInt> getEstimateGas(Transaction transaction) async {
+    return await ethClient!.estimateGas(
+        sender: transaction.from,
+        to: transaction.to,
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        data: transaction.data,
+        amountOfGas: transaction.gasPrice?.getInWei);
   }
 
   @override
