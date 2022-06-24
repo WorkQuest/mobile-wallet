@@ -6,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_bank_card.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
@@ -68,7 +69,7 @@ class _DepositPageState extends State<DepositPage> with SingleTickerProviderStat
 class _WalletAddress extends StatelessWidget {
   const _WalletAddress({Key? key}) : super(key: key);
 
-  String get address => AccountRepository().userWallet!.address!;
+  String get address => AddressService().hexToBech32(AccountRepository().userWallet!.address!);
 
   @override
   Widget build(BuildContext context) {
