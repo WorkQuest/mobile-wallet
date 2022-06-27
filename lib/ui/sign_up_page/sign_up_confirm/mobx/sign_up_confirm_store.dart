@@ -12,7 +12,6 @@ part 'sign_up_confirm_store.g.dart';
 class SignUpConfirmStore = SignUpConfirmStoreBase with _$SignUpConfirmStore;
 
 abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
-
   @observable
   TextEditingController code = TextEditingController();
 
@@ -65,7 +64,8 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
       if ((timerTime ?? "0") != "0") {
         secondsCodeAgain = int.parse(timerTime!);
       } else {
-        await Storage.write(StorageKeys.timeTimer.toString(), secondsCodeAgain.toString());
+        await Storage.write(
+            StorageKeys.timeTimer.toString(), secondsCodeAgain.toString());
       }
       timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (secondsCodeAgain == 0) {
@@ -73,7 +73,8 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
           secondsCodeAgain = 60;
         } else {
           secondsCodeAgain--;
-          Storage.write(StorageKeys.timeTimer.toString(), secondsCodeAgain.toString());
+          Storage.write(
+              StorageKeys.timeTimer.toString(), secondsCodeAgain.toString());
         }
       });
     } catch (e) {

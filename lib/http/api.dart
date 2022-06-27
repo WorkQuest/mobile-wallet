@@ -17,18 +17,20 @@ import '../model/txs_info_response.dart';
 
 class Api {
   String _baseUrl = 'https://testnet-app.workquest.co/api/v1';
-  
+
   String _getBaseUrl() {
-    ConfigNameNetwork _network = AccountRepository().configName ?? ConfigNameNetwork.binance;
+    ConfigNameNetwork _network =
+        AccountRepository().configName ?? ConfigNameNetwork.binance;
     if (_network == ConfigNameNetwork.testnet) {
       _baseUrl = 'https://testnet-app.workquest.co/api/v1';
-    } else if (_network == ConfigNameNetwork.devnet){
+    } else if (_network == ConfigNameNetwork.devnet) {
       _baseUrl = 'https://dev-app.workquest.co/api/v1';
     }
     return _baseUrl;
   }
 
-  bool get currentNetworkIsTestnet => _getBaseUrl() == 'https://testnet-app.workquest.co/api/v1';
+  bool get currentNetworkIsTestnet =>
+      _getBaseUrl() == 'https://testnet-app.workquest.co/api/v1';
 
   String get _register => "${_getBaseUrl()}/auth/register";
   String get _login => "${_getBaseUrl()}/auth/login/wallet";
@@ -36,16 +38,16 @@ class Api {
   String get _refreshTokens => "${_getBaseUrl()}/auth/refresh-tokens";
   String get _resendEmail => "${_getBaseUrl()}/auth/main/resend-email";
   String get _registerWallet => "${_getBaseUrl()}/auth/register/wallet";
-  String get _courseWQT => "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+  String get _courseWQT =>
+      "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
 
   String _transactions(String address) {
     if (currentNetworkIsTestnet) {
-      return  "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+      return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     } else {
       return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
     }
   }
-
 
   String _walletAddressProfile(String address) =>
       "${_getBaseUrl()}/profile/wallet/$address";
@@ -60,7 +62,6 @@ class Api {
       return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
   }
-
 
   String _transactionInfo({
     required String hashTx,
@@ -289,7 +290,6 @@ class Api {
     return null;
   }
 
-
   Future<TxInfoResponse?> getTransaction({
     required String hashTx,
   }) async {
@@ -322,10 +322,11 @@ class Api {
         );
         throw FormatException(message);
       }
-      
+
       final result = CourseTokenResponse.fromJson(response.data);
-      final _indexWQT = result.result!.symbols!.indexWhere((element) => element == 'WQT');
-      final _course= result.result!.prices![_indexWQT];
+      final _indexWQT =
+          result.result!.symbols!.indexWhere((element) => element == 'WQT');
+      final _course = result.result!.prices![_indexWQT];
       return double.parse(_course) * pow(10, -18);
     } on DioError catch (e) {
       await handleError(e);

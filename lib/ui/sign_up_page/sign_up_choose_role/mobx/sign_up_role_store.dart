@@ -6,7 +6,6 @@ part 'sign_up_role_store.g.dart';
 class SignUpRoleStore = SignUpRoleStoreBase with _$SignUpRoleStore;
 
 abstract class SignUpRoleStoreBase extends IStore<bool> with Store {
-
   @observable
   UserRole role = UserRole.worker;
 
@@ -35,6 +34,4 @@ abstract class SignUpRoleStoreBase extends IStore<bool> with Store {
   bool get canAgreeRole => privacyPolicy & termsConditions & amlCtfPolicy;
 }
 
-enum UserRole {
-  employer, worker
-}
+enum UserRole { employer, worker }

@@ -152,7 +152,9 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                                     store.confirm(widget.role);
                                   }
                                 : null),
-                        title: store.isSuccess ? 'meta.next'.tr() : 'meta.submit'.tr(),
+                        title: store.isSuccess
+                            ? 'meta.next'.tr()
+                            : 'meta.submit'.tr(),
                       ),
                     ),
                   ),
@@ -245,7 +247,9 @@ class _TimerWidget extends StatelessWidget {
             'Send again',
             style: TextStyle(
               fontSize: 14,
-              color: isActiveTimer ? AppColor.disabledText : AppColor.enabledButton,
+              color: isActiveTimer
+                  ? AppColor.disabledText
+                  : AppColor.enabledButton,
             ),
           ),
           onPressed: isActiveTimer ? null : startTimer,

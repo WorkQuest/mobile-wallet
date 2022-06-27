@@ -27,7 +27,8 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage>
+    with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -275,9 +276,7 @@ class _PasswordFieldState extends State<PasswordField> {
       builder: (context, child) {
         final sineValue = sin(4 * 2 * pi * widget.animationController!.value);
         return Transform.translate(
-          offset: widget.haveError
-              ? Offset(sineValue * 10, 0)
-              : Offset.zero,
+          offset: widget.haveError ? Offset(sineValue * 10, 0) : Offset.zero,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

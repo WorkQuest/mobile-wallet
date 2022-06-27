@@ -15,7 +15,8 @@ abstract class SplashStoreBase extends IStore<bool> with Store {
   sign() async {
     onLoading();
     try {
-      final refreshToken = await Storage.read(StorageKeys.refreshToken.toString());
+      final refreshToken =
+          await Storage.read(StorageKeys.refreshToken.toString());
       if (refreshToken == null || (AccountRepository().userWallet == null)) {
         isLoginPage = true;
         onSuccess(true);

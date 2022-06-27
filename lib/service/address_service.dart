@@ -49,7 +49,6 @@ class AddressService implements AddressServiceI {
     }
   }
 
-
   @override
   String getPrivateKey(String mnemonic) {
     try {

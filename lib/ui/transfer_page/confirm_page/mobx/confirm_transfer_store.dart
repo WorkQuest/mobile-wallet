@@ -16,13 +16,15 @@ class ConfirmTransferStore = ConfirmTransferStoreBase
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin) async {
+  sendTransaction(
+      String addressTo, String amount, TokenSymbols typeCoin) async {
     onLoading();
     try {
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens =
+          AccountRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       await AccountRepository().client!.sendTransaction(
-        isToken: _isToken,
+            isToken: _isToken,
             addressTo: addressTo,
             amount: amount,
             coin: typeCoin,
@@ -37,5 +39,4 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
       onError(e.message);
     }
   }
-
 }

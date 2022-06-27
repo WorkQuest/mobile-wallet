@@ -19,7 +19,8 @@ class AccountRepository {
   Wallet? userWallet;
   ClientService? client;
   ConfigNameNetwork? configName;
-  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
+  ValueNotifier<ConfigNameNetwork?> notifier =
+      ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
 
   String get userAddress => userWallet!.address!;
 
@@ -78,7 +79,9 @@ class AccountRepository {
     }
   }
 
-  bool get isOtherNetwork => configName != ConfigNameNetwork.testnet && configName != ConfigNameNetwork.devnet;
+  bool get isOtherNetwork =>
+      configName != ConfigNameNetwork.testnet &&
+      configName != ConfigNameNetwork.devnet;
 
   ConfigNameNetwork _getNetworkNameKey(String name) {
     switch (name) {

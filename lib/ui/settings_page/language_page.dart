@@ -84,7 +84,7 @@ class _LanguagePageState extends State<LanguagePage> {
       ),
     );
   }
-  
+
   Future _changeLanguage(Locale language) async {
     _currentLanguage = language;
     await context.setLocale(language);

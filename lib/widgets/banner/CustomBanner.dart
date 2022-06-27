@@ -17,10 +17,11 @@ class CustomBanner extends StatelessWidget {
     required this.child,
     this.text = '',
     this.location = BannerLocation.topEnd,
-    this.textStyle = const TextStyle(color: AppColor.enabledText, fontWeight: FontWeight.bold),
+    this.textStyle = const TextStyle(
+        color: AppColor.enabledText, fontWeight: FontWeight.bold),
     this.color = AppColor.blue,
     this.visible = true,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,9 +130,12 @@ class Banner extends StatelessWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(StringProperty('message', message, showName: false));
-    properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
+    properties.add(EnumProperty<TextDirection>('textDirection', textDirection,
+        defaultValue: null));
     properties.add(EnumProperty<BannerLocation>('location', location));
-    properties.add(EnumProperty<TextDirection>('layoutDirection', layoutDirection, defaultValue: null));
+    properties.add(EnumProperty<TextDirection>(
+        'layoutDirection', layoutDirection,
+        defaultValue: null));
     properties.add(ColorProperty('color', color, showName: false));
     textStyle?.debugFillProperties(properties, prefix: 'text ');
   }

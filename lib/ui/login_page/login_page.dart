@@ -133,10 +133,14 @@ class _ContentScreenState extends State<_ContentScreen> {
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
                 if (store.successData!) {
-                  PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                  PageRouter.pushNewReplacementRoute(
+                      context, const PinCodePage());
                 } else {
-                  final result =
-                      await PageRouter.pushNewRoute(context, const SignUpChooseRole(email: '',));
+                  final result = await PageRouter.pushNewRoute(
+                      context,
+                      const SignUpChooseRole(
+                        email: '',
+                      ));
                   if (result != null && result) {
                     AccountRepository().clearData();
                   }
@@ -181,7 +185,8 @@ class _ContentScreenState extends State<_ContentScreen> {
                   onPressed: store.isLoading
                       ? null
                       : () {
-                          PageRouter.pushNewRoute(context, const SignUpCreateProfile());
+                          PageRouter.pushNewRoute(
+                              context, const SignUpCreateProfile());
                         },
                   title: 'signIn.createProfile'.tr(),
                 ),
@@ -214,7 +219,8 @@ class _HeaderScreen extends StatelessWidget {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),

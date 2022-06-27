@@ -21,7 +21,8 @@ class WithdrawPage extends StatefulWidget {
   _WithdrawPageState createState() => _WithdrawPageState();
 }
 
-class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderStateMixin {
+class _WithdrawPageState extends State<WithdrawPage>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -176,7 +177,9 @@ class _WithdrawWalletAddressState extends State<_WithdrawWalletAddress> {
             child: DefaultButton(
               title: 'wallet.withdraw'.tr(),
               onPressed: () {
-                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
+                AlertDialogUtils.showInfoAlertDialog(context,
+                    title: 'meta.warning'.tr(),
+                    content: 'meta.serviceUnavailable'.tr());
               },
             ),
           ),

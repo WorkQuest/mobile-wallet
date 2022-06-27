@@ -65,21 +65,27 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
                 value: widget.store.privacyPolicy,
                 onChanged: (value) => widget.store.setPrivacyPolicy(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'privacy.title'.tr(), link: 'https://app.workquest.co/docs/privacy.pdf'),
+                title: textWithLink(
+                    textLink: 'privacy.title'.tr(),
+                    link: 'https://app.workquest.co/docs/privacy.pdf'),
               ),
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 value: widget.store.termsConditions,
                 onChanged: (value) => widget.store.setTermsConditions(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'privacy.termsLink'.tr(), link: 'https://app.workquest.co/docs/terms.pdf'),
+                title: textWithLink(
+                    textLink: 'privacy.termsLink'.tr(),
+                    link: 'https://app.workquest.co/docs/terms.pdf'),
               ),
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 value: widget.store.amlCtfPolicy,
                 onChanged: (value) => widget.store.setAmlCtfPolicy(value!),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: textWithLink(textLink: 'privacy.amlLink'.tr(), link: 'https://app.workquest.co/docs/aml.pdf'),
+                title: textWithLink(
+                    textLink: 'privacy.amlLink'.tr(),
+                    link: 'https://app.workquest.co/docs/aml.pdf'),
               ),
             ],
           ),
@@ -96,9 +102,7 @@ class _SignUpApproveRoleState extends State<SignUpApproveRole> {
             width: double.infinity,
             child: DefaultButton(
               title: 'meta.iAgree'.tr(),
-              onPressed: widget.store.canAgreeRole
-                  ? _onPressedAgree
-                  : null,
+              onPressed: widget.store.canAgreeRole ? _onPressedAgree : null,
             ),
           ),
         ),

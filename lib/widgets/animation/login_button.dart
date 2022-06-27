@@ -23,13 +23,15 @@ class LoginButton extends StatefulWidget {
   State<LoginButton> createState() => _LoginButtonState();
 }
 
-class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin {
+class _LoginButtonState extends State<LoginButton>
+    with TickerProviderStateMixin {
   late AnimationController _buttonController;
 
   @override
   void initState() {
     super.initState();
-    _buttonController = AnimationController(vsync: this, duration: _durationSize);
+    _buttonController =
+        AnimationController(vsync: this, duration: _durationSize);
   }
 
   @override
@@ -82,8 +84,9 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
                       widget.title,
                       style: TextStyle(
                         fontSize: 16,
-                        color:
-                            widget.onTap != null ? Colors.white : AppColor.disabledText,
+                        color: widget.onTap != null
+                            ? Colors.white
+                            : AppColor.disabledText,
                       ),
                     ),
                   ),

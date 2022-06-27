@@ -100,7 +100,8 @@ class MyHttpClient {
 
   void handleRefreshToken(DioError e) async {
     accessToken = null;
-    final refreshToken = await Storage.read(StorageKeys.refreshToken.toString());
+    final refreshToken =
+        await Storage.read(StorageKeys.refreshToken.toString());
     //TODO refresh Token
     // var response = await Api().authRequest.refreshTokens(refreshToken);
     // if (response != null) {

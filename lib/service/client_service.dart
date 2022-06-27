@@ -12,7 +12,8 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 abstract class ClientServiceI {
-  Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
+  Future<List<BalanceItem>> getBalanceFromList(
+      List<EtherUnit> units, String privateKey);
 
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
 
@@ -41,7 +42,6 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-
   Web3Client? ethClient;
 
   ClientService(ConfigNetwork config, {String? customRpc}) {
@@ -94,7 +94,8 @@ class ClientService implements ClientServiceI {
     } else {
       String _addressToken = Web3Utils.getAddressToken(coin);
       final _degree = Web3Utils.getDegreeToken(coin);
-      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: ethClient!);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(_addressToken), client: ethClient!);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, _degree)),
@@ -119,7 +120,8 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
+  Future<double> getBalanceFromContract(String address,
+      {bool otherNetwork = false, bool isUSDT = false}) async {
     try {
       address = address.toLowerCase();
       final contract =
@@ -133,7 +135,7 @@ class ClientService implements ClientServiceI {
       return balance.toDouble() * pow(10, -18);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
-     throw Exception("Error connection to network");
+      throw Exception("Error connection to network");
     }
   }
 
@@ -175,7 +177,8 @@ class ClientService implements ClientServiceI {
 
   @override
   Future<List<BalanceItem>> getAllBalance(String privateKey) async {
-    final list = await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
+    final list =
+        await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();

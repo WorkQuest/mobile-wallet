@@ -229,7 +229,8 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
 
   Future<void> _depositPressed() async {
     if (_formAmount.currentState!.validate()) {
-      final result = await PageRouter.pushNewRoute(context, const DepositInfoPage());
+      final result =
+          await PageRouter.pushNewRoute(context, const DepositInfoPage());
       if (result != null && result) {
         Navigator.pop(context);
       }

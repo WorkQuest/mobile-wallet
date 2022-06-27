@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workquest_wallet_app/constants.dart';
 
-
 class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
   final Function()? onPressed;
   final String? title;

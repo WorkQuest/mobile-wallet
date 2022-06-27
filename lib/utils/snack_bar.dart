@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SnackBarUtils {
-  static void show(BuildContext context, {
+  static void show(
+    BuildContext context, {
     required String title,
     Duration duration = const Duration(seconds: 1),
     Color backgroundColor = Colors.white,
@@ -29,7 +30,8 @@ class SnackBarUtils {
       );
   }
 
-  static void success(BuildContext context, {String? title, Duration? duration}) {
+  static void success(BuildContext context,
+      {String? title, Duration? duration}) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -56,7 +58,8 @@ class SnackBarUtils {
       );
   }
 
-  static void loading(BuildContext context, {String? title, Duration? duration}) {
+  static void loading(BuildContext context,
+      {String? title, Duration? duration}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: duration ?? const Duration(minutes: 3),
@@ -106,5 +109,3 @@ class SnackBarUtils {
       );
   }
 }
-
-

@@ -22,14 +22,16 @@ class AnimationColor extends StatefulWidget {
   _AnimationColorState createState() => _AnimationColorState();
 }
 
-class _AnimationColorState extends State<AnimationColor> with TickerProviderStateMixin {
+class _AnimationColorState extends State<AnimationColor>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _colorTween;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: widget.duration);
+    _animationController =
+        AnimationController(vsync: this, duration: widget.duration);
     _colorTween = ColorTween(begin: widget.startColor, end: widget.endColor)
         .animate(_animationController);
   }

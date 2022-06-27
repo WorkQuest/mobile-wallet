@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/ui/withdraw_page/states_bank_page/withdraw_add_bank_card.dart';
 import 'package:workquest_wallet_app/ui/withdraw_page/states_bank_page/withdraw_choose_bank_card.dart';
 
-
 class WithdrawBankCard extends StatefulWidget {
   const WithdrawBankCard({Key? key}) : super(key: key);
 

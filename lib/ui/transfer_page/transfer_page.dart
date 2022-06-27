@@ -125,7 +125,8 @@ class _TransferPageState extends State<TransferPage> {
                   suffixIcon: null,
                   validator: (value) {
                     if (value != null) {
-                      final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                      final _isBech =
+                          value.substring(0, 2).toLowerCase() == 'wq';
                       if (_isBech) {
                         if (value.length != 41) {
                           return "errors.incorrectFormat".tr();
@@ -187,7 +188,8 @@ class _TransferPageState extends State<TransferPage> {
                       } else {
                         final title = 'meta.error'.tr();
                         final content = 'crediting.chooseCoin'.tr();
-                        AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                        AlertDialogUtils.showInfoAlertDialog(context,
+                            title: title, content: content);
                       }
                     },
                   ),
@@ -195,7 +197,8 @@ class _TransferPageState extends State<TransferPage> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                 ],
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(
                 height: 20,
@@ -203,7 +206,8 @@ class _TransferPageState extends State<TransferPage> {
               LoginButton(
                 title: 'Test',
                 onTap: () {
-                  final _bech32 = AddressService().hexToBech32(AccountRepository().userAddress);
+                  final _bech32 = AddressService()
+                      .hexToBech32(AccountRepository().userAddress);
                   print('bech32: $_bech32');
                   final _hex = AddressService().bech32ToHex(_bech32);
                   print('hex: $_hex');
@@ -220,7 +224,8 @@ class _TransferPageState extends State<TransferPage> {
           child: Observer(
             builder: (_) => DefaultButton(
               title: 'wallet.transfer'.tr(),
-              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+              onPressed:
+                  store.statusButtonTransfer ? _pushConfirmTransferPage : null,
             ),
           ),
         ),
@@ -238,20 +243,25 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService().hexToBech32(AccountRepository().userWallet!.address!.toLowerCase())) {
+            AddressService().hexToBech32(
+                AccountRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
-        if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
+        if (store.addressTo.toLowerCase() ==
+            AccountRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await PageRouter.pushNewRoute(
@@ -259,7 +269,9 @@ class _TransferPageState extends State<TransferPage> {
         ConfirmTransferPage(
           fee: store.fee,
           typeCoin: store.typeCoin!,
-          addressTo: _isBech ? AddressService().bech32ToHex(store.addressTo) : store.addressTo,
+          addressTo: _isBech
+              ? AddressService().bech32ToHex(store.addressTo)
+              : store.addressTo,
           amount: store.amount,
         ),
       );
@@ -342,11 +354,14 @@ class _TransferPageState extends State<TransferPage> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Container(
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
                                                       colors: [
                                                         AppColor.enabledButton,
                                                         AppColor.blue,
@@ -368,7 +383,9 @@ class _TransferPageState extends State<TransferPage> {
                                                   coin.title,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                                                    color: coin.isEnable
+                                                        ? Colors.black
+                                                        : AppColor.disabledText,
                                                   ),
                                                 ),
                                               ],

@@ -39,15 +39,16 @@ class CustomMaterialPageRoute extends MaterialPageRoute {
   bool get hasScopedWillPopCallback {
     return false;
   }
+
   CustomMaterialPageRoute({
     required WidgetBuilder builder,
     RouteSettings? settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) : super(
-    builder: builder,
-    settings: settings,
-    maintainState: maintainState,
-    fullscreenDialog: fullscreenDialog,
-  );
+          builder: builder,
+          settings: settings,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+        );
 }

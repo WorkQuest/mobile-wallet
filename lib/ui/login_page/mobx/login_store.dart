@@ -13,7 +13,6 @@ part 'login_store.g.dart';
 class LoginStore = LoginStoreBase with _$LoginStore;
 
 abstract class LoginStoreBase extends IStore<bool> with Store {
-
   @observable
   String mnemonic = '';
 
@@ -34,7 +33,8 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       }
       AccountRepository().setWallet(wallet);
       AccountRepository().connectClient();
-      final signature = await AccountRepository().client!.getSignature(wallet.privateKey!);
+      final signature =
+          await AccountRepository().client!.getSignature(wallet.privateKey!);
       final result = await Api().login(signature, wallet.address!);
       await _saveToStorage(result!, wallet);
       if (result.data['result']['userStatus'] == 0) {
@@ -46,7 +46,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       AccountRepository().clearData();
       onError(e.message);
     } catch (e, trace) {
-
       print('cry$e$trace');
       AccountRepository().clearData();
       onError(e.toString());
@@ -54,8 +53,11 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
   }
 
   Future _saveToStorage(Response result, Wallet wallet) async {
-    await Storage.write(StorageKeys.refreshToken.toString(), result.data['result']['refresh']);
-    await Storage.write(StorageKeys.accessToken.toString(), result.data['result']['access']);
-    await Storage.write(StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
+    await Storage.write(
+        StorageKeys.refreshToken.toString(), result.data['result']['refresh']);
+    await Storage.write(
+        StorageKeys.accessToken.toString(), result.data['result']['access']);
+    await Storage.write(
+        StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
   }
 }

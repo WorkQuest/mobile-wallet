@@ -23,8 +23,10 @@ class _CardBank {
   String nameBank;
   String numberCard;
 
-  _CardBank(this.nameBank,
-      this.numberCard,);
+  _CardBank(
+    this.nameBank,
+    this.numberCard,
+  );
 }
 
 class WithdrawChooseBankCard extends StatefulWidget {
@@ -203,14 +205,17 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom),
+          padding: EdgeInsets.only(
+              bottom: 10 + MediaQuery.of(context).padding.bottom),
           child: SizedBox(
             width: double.infinity,
             child: DefaultButton(
               title: 'wallet.withdraw'.tr(),
               onPressed: () {
                 if (_formAmount.currentState!.validate()) {
-                  AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
+                  AlertDialogUtils.showInfoAlertDialog(context,
+                      title: 'meta.warning'.tr(),
+                      content: 'meta.serviceUnavailable'.tr());
                   widget.onTab!.call();
                 }
               },
@@ -245,7 +250,7 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
           ),
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Column(
               children: [
                 Container(
@@ -275,8 +280,7 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
                     ),
                     ..._cardsBanks
                         .map(
-                          (card) =>
-                          Column(
+                          (card) => Column(
                             children: [
                               GestureDetector(
                                 onTap: () {
@@ -297,7 +301,7 @@ class _WithdrawChooseBankCardState extends State<WithdrawChooseBankCard> {
                               ),
                             ],
                           ),
-                    )
+                        )
                         .toList(),
                   ],
                 ),

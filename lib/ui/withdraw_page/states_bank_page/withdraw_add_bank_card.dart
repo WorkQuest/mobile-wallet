@@ -232,7 +232,7 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                               ),
                             ],
                             validator: (value) {
-                              if (_dateController.text.length < 5){
+                              if (_dateController.text.length < 5) {
                                 return 'errors.incorrectFormat'.tr();
                               }
                               return null;
@@ -317,7 +317,8 @@ class _WithdrawAddBankCardState extends State<WithdrawAddBankCard> {
                 child: DefaultButton(
                   title: 'Withdraw',
                   onPressed: () async {
-                    final result = await PageRouter.pushNewRoute(context, WithdrawInfoPage());
+                    final result = await PageRouter.pushNewRoute(
+                        context, WithdrawInfoPage());
                     if (result != null && result) {
                       Navigator.pop(context);
                     }

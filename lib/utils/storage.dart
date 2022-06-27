@@ -4,7 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
 
 class Storage {
-  static FlutterSecureStorage get _secureStorage => const FlutterSecureStorage();
+  static FlutterSecureStorage get _secureStorage =>
+      const FlutterSecureStorage();
 
   static Future<void> write(String key, String value) async {
     await _secureStorage.write(key: key, value: value);
@@ -23,12 +24,21 @@ class Storage {
   }
 
   static Future<Wallet?> readWallet() async {
-    String? wallet = await _secureStorage.read(key: StorageKeys.wallet.toString());
+    String? wallet =
+        await _secureStorage.read(key: StorageKeys.wallet.toString());
     if (wallet == null || wallet.isEmpty) {
       return null;
     }
-    return  Wallet.fromJson(jsonDecode(wallet));
+    return Wallet.fromJson(jsonDecode(wallet));
   }
 }
 
-enum StorageKeys { refreshToken, accessToken, wallet, pinCode, email, timeTimer, configName }
+enum StorageKeys {
+  refreshToken,
+  accessToken,
+  wallet,
+  pinCode,
+  email,
+  timeTimer,
+  configName
+}

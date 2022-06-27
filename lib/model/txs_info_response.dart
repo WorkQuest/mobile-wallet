@@ -6,8 +6,7 @@ class TxInfoResponse {
 
   TxInfoResponse.fromJson(Map<String, dynamic> json) {
     ok = json['ok'];
-    result =
-    json['result'] != null ? Result.fromJson(json['result']) : null;
+    result = json['result'] != null ? Result.fromJson(json['result']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -58,39 +57,39 @@ class Result {
 
   Result(
       {this.hash,
-        this.input,
-        this.blockHash,
-        this.fromAddressHash,
-        this.toAddressHash,
-        this.createdContractAddressHash,
-        this.oldBlockHash,
-        this.cumulativeGasUsed,
-        this.error,
-        this.gas,
-        this.gasPrice,
-        this.gasUsed,
-        this.index,
-        this.nonce,
-        this.r,
-        this.s,
-        this.status,
-        this.v,
-        this.value,
-        this.insertedAt,
-        this.updatedAt,
-        this.blockNumber,
-        this.createdContractCodeIndexedAt,
-        this.earliestProcessingStart,
-        this.revertReason,
-        this.maxPriorityFeePerGas,
-        this.maxFeePerGas,
-        this.type,
-        this.fromAddress,
-        this.block,
-        this.toAddress,
-        this.createdContractAddress,
-        this.tokenTransfers,
-        this.logs});
+      this.input,
+      this.blockHash,
+      this.fromAddressHash,
+      this.toAddressHash,
+      this.createdContractAddressHash,
+      this.oldBlockHash,
+      this.cumulativeGasUsed,
+      this.error,
+      this.gas,
+      this.gasPrice,
+      this.gasUsed,
+      this.index,
+      this.nonce,
+      this.r,
+      this.s,
+      this.status,
+      this.v,
+      this.value,
+      this.insertedAt,
+      this.updatedAt,
+      this.blockNumber,
+      this.createdContractCodeIndexedAt,
+      this.earliestProcessingStart,
+      this.revertReason,
+      this.maxPriorityFeePerGas,
+      this.maxFeePerGas,
+      this.type,
+      this.fromAddress,
+      this.block,
+      this.toAddress,
+      this.createdContractAddress,
+      this.tokenTransfers,
+      this.logs});
 
   Result.fromJson(Map<String, dynamic> json) {
     hash = json['hash'];
@@ -175,8 +174,7 @@ class Result {
     data['inserted_at'] = insertedAt;
     data['updated_at'] = updatedAt;
     data['block_number'] = blockNumber;
-    data['created_contract_code_indexed_at'] =
-        createdContractCodeIndexedAt;
+    data['created_contract_code_indexed_at'] = createdContractCodeIndexedAt;
     data['earliest_processing_start'] = earliestProcessingStart;
     data['revert_reason'] = revertReason;
     data['max_priority_fee_per_gas'] = maxPriorityFeePerGas;
@@ -193,8 +191,7 @@ class Result {
     }
     data['createdContractAddress'] = createdContractAddress;
     if (tokenTransfers != null) {
-      data['tokenTransfers'] =
-          tokenTransfers!.map((v) => v.toJson()).toList();
+      data['tokenTransfers'] = tokenTransfers!.map((v) => v.toJson()).toList();
     }
     if (logs != null) {
       data['logs'] = logs!.map((v) => v.toJson()).toList();
@@ -235,19 +232,17 @@ class FromAddress {
 
   FromAddress(
       {this.hash,
-        this.contractCode,
-        this.fetchedCoinBalance,
-        this.fetchedCoinBalanceBlockNumber,
-        this.insertedAt,
-        this.updatedAt,
-        this.nonce,
-        this.decompiled,
-        this.verified});
+      this.contractCode,
+      this.fetchedCoinBalance,
+      this.fetchedCoinBalanceBlockNumber,
+      this.insertedAt,
+      this.updatedAt,
+      this.nonce,
+      this.decompiled,
+      this.verified});
 
   FromAddress.fromJson(Map<String, dynamic> json) {
-    hash = json['hash'] != null
-        ? FromAddressHash.fromJson(json['hash'])
-        : null;
+    hash = json['hash'] != null ? FromAddressHash.fromJson(json['hash']) : null;
     contractCode = json['contract_code'];
     fetchedCoinBalance = json['fetched_coin_balance'];
     fetchedCoinBalanceBlockNumber = json['fetched_coin_balance_block_number'];
@@ -265,8 +260,7 @@ class FromAddress {
     }
     data['contract_code'] = contractCode;
     data['fetched_coin_balance'] = fetchedCoinBalance;
-    data['fetched_coin_balance_block_number'] =
-        fetchedCoinBalanceBlockNumber;
+    data['fetched_coin_balance_block_number'] = fetchedCoinBalanceBlockNumber;
     data['inserted_at'] = insertedAt;
     data['updated_at'] = updatedAt;
     data['nonce'] = nonce;
@@ -296,21 +290,21 @@ class Block {
 
   Block(
       {this.hash,
-        this.minerHash,
-        this.nonce,
-        this.parentHash,
-        this.consensus,
-        this.difficulty,
-        this.gasLimit,
-        this.gasUsed,
-        this.number,
-        this.size,
-        this.timestamp,
-        this.totalDifficulty,
-        this.insertedAt,
-        this.updatedAt,
-        this.refetchNeeded,
-        this.baseFeePerGas});
+      this.minerHash,
+      this.nonce,
+      this.parentHash,
+      this.consensus,
+      this.difficulty,
+      this.gasLimit,
+      this.gasUsed,
+      this.number,
+      this.size,
+      this.timestamp,
+      this.totalDifficulty,
+      this.insertedAt,
+      this.updatedAt,
+      this.refetchNeeded,
+      this.baseFeePerGas});
 
   Block.fromJson(Map<String, dynamic> json) {
     hash = json['hash'];
@@ -370,19 +364,17 @@ class ToAddress {
 
   ToAddress(
       {this.hash,
-        this.contractCode,
-        this.fetchedCoinBalance,
-        this.fetchedCoinBalanceBlockNumber,
-        this.insertedAt,
-        this.updatedAt,
-        this.nonce,
-        this.decompiled,
-        this.verified});
+      this.contractCode,
+      this.fetchedCoinBalance,
+      this.fetchedCoinBalanceBlockNumber,
+      this.insertedAt,
+      this.updatedAt,
+      this.nonce,
+      this.decompiled,
+      this.verified});
 
   ToAddress.fromJson(Map<String, dynamic> json) {
-    hash = json['hash'] != null
-        ? FromAddressHash.fromJson(json['hash'])
-        : null;
+    hash = json['hash'] != null ? FromAddressHash.fromJson(json['hash']) : null;
     contractCode = json['contract_code'];
     fetchedCoinBalance = json['fetched_coin_balance'];
     fetchedCoinBalanceBlockNumber = json['fetched_coin_balance_block_number'];
@@ -400,8 +392,7 @@ class ToAddress {
     }
     data['contract_code'] = contractCode;
     data['fetched_coin_balance'] = fetchedCoinBalance;
-    data['fetched_coin_balance_block_number'] =
-        fetchedCoinBalanceBlockNumber;
+    data['fetched_coin_balance_block_number'] = fetchedCoinBalanceBlockNumber;
     data['inserted_at'] = insertedAt;
     data['updated_at'] = updatedAt;
     data['nonce'] = nonce;
@@ -444,18 +435,18 @@ class Logs {
 
   Logs(
       {this.data,
-        this.addressHash,
-        this.transactionHash,
-        this.blockHash,
-        this.index,
-        this.type,
-        this.firstTopic,
-        this.secondTopic,
-        this.thirdTopic,
-        this.fourthTopic,
-        this.insertedAt,
-        this.updatedAt,
-        this.blockNumber});
+      this.addressHash,
+      this.transactionHash,
+      this.blockHash,
+      this.index,
+      this.type,
+      this.firstTopic,
+      this.secondTopic,
+      this.thirdTopic,
+      this.fourthTopic,
+      this.insertedAt,
+      this.updatedAt,
+      this.blockNumber});
 
   Logs.fromJson(Map<String, dynamic> json) {
     data = json['data'];

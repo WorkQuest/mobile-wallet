@@ -122,7 +122,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 return SwapPage(
                   key: _keys[2],
                 );
-              }  else {
+              } else {
                 return SettingsPage(
                   key: _keys[3],
                   update: _update,
@@ -141,7 +141,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       return false;
     }
 
-    if (_exitAttempt + _doubleTapDuration > DateTime.now().millisecondsSinceEpoch) {
+    if (_exitAttempt + _doubleTapDuration >
+        DateTime.now().millisecondsSinceEpoch) {
       return true;
     } else {
       _exitAttempt = DateTime.now().millisecondsSinceEpoch;

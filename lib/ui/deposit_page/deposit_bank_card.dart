@@ -15,7 +15,8 @@ class DepositBankCard extends StatefulWidget {
   State<DepositBankCard> createState() => _DepositBankCardState();
 }
 
-class _DepositBankCardState extends State<DepositBankCard> with TickerProviderStateMixin {
+class _DepositBankCardState extends State<DepositBankCard>
+    with TickerProviderStateMixin {
   bool _addingBankCard = true;
   bool _firstShow = true;
 
@@ -29,7 +30,9 @@ class _DepositBankCardState extends State<DepositBankCard> with TickerProviderSt
   Widget build(BuildContext context) {
     return _NotBankCards(
       onTab: () {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: 'meta.serviceUnavailable'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.warning'.tr(),
+            content: 'meta.serviceUnavailable'.tr());
         setState(() {
           _addingBankCard = !_addingBankCard;
         });
@@ -54,8 +57,9 @@ class _DepositBankCardState extends State<DepositBankCard> with TickerProviderSt
           });
         },
       ),
-      crossFadeState:
-          _addingBankCard ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState: _addingBankCard
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
     );
   }
 }
@@ -104,7 +108,9 @@ class _NotBankCards extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(
-            right: 16.0, left: 16.0, bottom: MediaQuery.of(context).padding.bottom + 10),
+            right: 16.0,
+            left: 16.0,
+            bottom: MediaQuery.of(context).padding.bottom + 10),
         child: SizedBox(
           width: double.infinity,
           child: Padding(

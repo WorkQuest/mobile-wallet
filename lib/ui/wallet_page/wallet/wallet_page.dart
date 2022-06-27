@@ -60,7 +60,8 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AddressService().hexToBech32(AccountRepository().userWallet!.address!);
+    final address =
+        AddressService().hexToBech32(AccountRepository().userWallet!.address!);
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
@@ -98,8 +99,7 @@ class _WalletPageState extends State<WalletPage> {
                   padding: EdgeInsets.zero,
                   pressedOpacity: 0.2,
                   onPressed: () {
-                    Clipboard.setData(
-                        ClipboardData(text: address));
+                    Clipboard.setData(ClipboardData(text: address));
                     SnackBarUtils.success(
                       context,
                       title: 'wallet.copy'.tr(),
@@ -345,7 +345,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(balance.symbol.name, balance.amount!),
+                              _getCourseDollar(
+                                  balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -380,8 +381,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color:
-                              AppColor.enabledButton.withOpacity(0.1)),
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
                           color: isCurrency
                               ? AppColor.enabledButton
                               : Colors.transparent,

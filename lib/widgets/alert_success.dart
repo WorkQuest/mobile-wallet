@@ -31,7 +31,6 @@ class _AlertSuccessState extends State<AlertSuccess>
     _scaleController!.forward();
   }
 
-
   @override
   void dispose() {
     _scaleController!.dispose();

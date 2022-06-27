@@ -23,7 +23,8 @@ class WebSocket {
   init() async {
     // print('web socket init');
     shouldReconnectFlag = true;
-    channel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
+    channel =
+        IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     channel!.sink.add("""
     {
         "jsonrpc": "2.0",
@@ -71,7 +72,9 @@ class WebSocket {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       print('handleSubscription');
-      if (transaction.result!.events!['ethereum_tx.recipient']!.first.toString().toLowerCase() ==
+      if (transaction.result!.events!['ethereum_tx.recipient']!.first
+              .toString()
+              .toLowerCase() ==
           myAddress.toLowerCase()) {
         await Future.delayed(const Duration(seconds: 9));
         GetIt.I.get<WalletStore>().getCoins(isForce: false);
@@ -96,8 +99,10 @@ class WebSocket {
         //               .map((x) => TokenTransfer.fromJson(x.toJson())))),
         //     );
       } else {
-        final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-        if ((decode['topics'] as List<dynamic>).last.substring(26) == myAddress.substring(2)) {
+        final decode =
+            json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+        if ((decode['topics'] as List<dynamic>).last.substring(26) ==
+            myAddress.substring(2)) {
           await Future.delayed(const Duration(seconds: 9));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions();

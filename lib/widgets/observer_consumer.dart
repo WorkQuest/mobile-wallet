@@ -64,7 +64,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed: Navigator.of(context, rootNavigator: true).pop,
+                          onPressed:
+                              Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     )
@@ -74,7 +75,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed: Navigator.of(context, rootNavigator: true).pop,
+                          onPressed:
+                              Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     );

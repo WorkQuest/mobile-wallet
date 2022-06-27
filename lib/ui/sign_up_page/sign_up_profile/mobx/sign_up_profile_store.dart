@@ -35,8 +35,10 @@ abstract class SignUpProfileStoreBase extends IStore<bool> with Store {
         email.text,
         password.text,
       );
-      await Storage.write(StorageKeys.refreshToken.toString(), result!.data['result']['refresh']);
-      await Storage.write(StorageKeys.accessToken.toString(), result.data['result']['access']);
+      await Storage.write(StorageKeys.refreshToken.toString(),
+          result!.data['result']['refresh']);
+      await Storage.write(
+          StorageKeys.accessToken.toString(), result.data['result']['access']);
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

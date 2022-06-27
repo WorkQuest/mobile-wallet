@@ -54,8 +54,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             ),
             Expanded(child: Container()),
             Padding(
-              padding:
-                  EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -115,7 +115,8 @@ class _InformationWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
+          borderRadius: BorderRadius.circular(5.0),
+          color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,5 +181,4 @@ class _InformationWidget extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -32,9 +32,9 @@ void main() async {
       AccountRepository().setNetwork('testnet');
     } else {
       AccountRepository().setNetwork(configName);
-      await Storage.write(StorageKeys.configName.toString(), ConfigNameNetwork.testnet.name);
+      await Storage.write(
+          StorageKeys.configName.toString(), ConfigNameNetwork.testnet.name);
     }
-
   } catch (e) {
     AccountRepository().clearData();
   }
@@ -71,12 +71,14 @@ class MyApp extends StatelessWidget {
         final name = value?.name ?? ConfigNameNetwork.testnet.name;
         final visible = name != ConfigNameNetwork.testnet.name;
         return CustomBanner(
-          text: '${name.substring(0,1).toUpperCase()}${name.substring(1)}',
+          text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
           visible: false,
           color: visible ? AppColor.blue : Colors.transparent,
           textStyle: visible
-              ? const TextStyle(color:  AppColor.enabledText, fontWeight: FontWeight.bold)
-              : const TextStyle(color: Colors.transparent, fontWeight: FontWeight.bold),
+              ? const TextStyle(
+                  color: AppColor.enabledText, fontWeight: FontWeight.bold)
+              : const TextStyle(
+                  color: Colors.transparent, fontWeight: FontWeight.bold),
           child: child!,
         );
       },

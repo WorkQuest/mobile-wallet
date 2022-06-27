@@ -4,7 +4,6 @@ import 'package:workquest_wallet_app/constants.dart';
 const backgroundDisabledColor = Color(0xffE9EDF2);
 const disabledColor = Color(0xffAAB0B9);
 
-
 class CustomSwitch extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -20,7 +19,7 @@ class _CustomSwitchState extends State<CustomSwitch>
     with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
 
-  bool get isEnabled =>  _animationController!.value > 0.5;
+  bool get isEnabled => _animationController!.value > 0.5;
 
   @override
   void initState() {
@@ -55,9 +54,8 @@ class _CustomSwitchState extends State<CustomSwitch>
             height: 26.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24.0),
-              color: isEnabled
-                  ? AppColor.enabledButton
-                  : backgroundDisabledColor,
+              color:
+                  isEnabled ? AppColor.enabledButton : backgroundDisabledColor,
             ),
             child: Padding(
               padding: EdgeInsets.only(
@@ -70,7 +68,8 @@ class _CustomSwitchState extends State<CustomSwitch>
                 height: 18.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isEnabled ? Colors.white : AppColor.unselectedBottomIcon,
+                  color:
+                      isEnabled ? Colors.white : AppColor.unselectedBottomIcon,
                 ),
               ),
             ),

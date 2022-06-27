@@ -50,11 +50,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: _getTitleLanguage(context.locale),
                 imagePath: Images.settingsLanguageIcon,
                 onTab: () async {
-                  final result =
-                      await PageRouter.pushNewRoute(context, const LanguagePage());
+                  final result = await PageRouter.pushNewRoute(
+                      context, const LanguagePage());
                   if (result != null && result) {
                     await Future.delayed(const Duration(milliseconds: 200));
-                    SnackBarUtils.success(context, title: 'meta.languageChanged'.tr());
+                    SnackBarUtils.success(context,
+                        title: 'meta.languageChanged'.tr());
                     widget.update!.call();
                   }
                 },
@@ -78,7 +79,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () async {
-                    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
+                    await PageRouter.pushNewRemoveRoute(
+                        context, const LoginPage());
                     WebSocket().closeWebSocket();
                     AccountRepository().clearData();
                   },
@@ -107,8 +109,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   String _getCurrentNameNetwork() {
-    final name = AccountRepository().configName?.name ?? ConfigNameNetwork.testnet.name;
-    return '${name.substring(0,1).toUpperCase()}${name.substring(1)}';
+    final name =
+        AccountRepository().configName?.name ?? ConfigNameNetwork.testnet.name;
+    return '${name.substring(0, 1).toUpperCase()}${name.substring(1)}';
   }
 
   String _getTitleLanguage(Locale locale) {

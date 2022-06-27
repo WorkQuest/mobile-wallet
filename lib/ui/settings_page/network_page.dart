@@ -114,7 +114,8 @@ class _NetworkPageState extends State<NetworkPage> {
     AlertDialogUtils.showAlertDialog(
       context,
       title: Text('meta.warning'.tr()),
-      content: const Text('Do you really want to change the network?\nIf there is a change to this network, the '
+      content: const Text(
+          'Do you really want to change the network?\nIf there is a change to this network, the '
           'current '
           'session will be over. You will need to re-enter the platform.'),
       needCancel: true,

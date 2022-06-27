@@ -47,7 +47,8 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   setIsSaved(bool value) => isSaved = value;
 
   @computed
-  bool get statusGenerateButton => selectedFirstWord == firstWord && selectedSecondWord == secondWord;
+  bool get statusGenerateButton =>
+      selectedFirstWord == firstWord && selectedSecondWord == secondWord;
 
   @action
   selectFirstWord(String? value) => selectedFirstWord = value;
@@ -101,7 +102,8 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
     try {
       await Future.delayed(const Duration(seconds: 1));
       Wallet wallet = await Wallet.derive(mnemonic!);
-      final result = await Api().registerWallet(wallet.publicKey!, wallet.address!);
+      final result =
+          await Api().registerWallet(wallet.publicKey!, wallet.address!);
       if (!result!) {
         onError("Server error");
         return;
@@ -113,5 +115,4 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
       onError(e.toString());
     }
   }
-
 }

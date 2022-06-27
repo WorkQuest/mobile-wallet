@@ -100,7 +100,8 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -114,7 +115,8 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                         },
                         onSuccess: () async {
                           await AlertDialogUtils.showSuccessDialog(context);
-                          PageRouter.pushNewRemoveRoute(context, const LoginPage());
+                          PageRouter.pushNewRemoveRoute(
+                              context, const LoginPage());
                         },
                         child: Observer(
                           builder: (_) => LoginButton(
@@ -194,7 +196,8 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
               height: 20,
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: SizedBox(
                 width: double.infinity,
                 child: DefaultButton(

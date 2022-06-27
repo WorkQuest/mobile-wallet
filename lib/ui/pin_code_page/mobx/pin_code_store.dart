@@ -8,7 +8,6 @@ part 'pin_code_store.g.dart';
 class PinCodeStore = PinCodeStoreBase with _$PinCodeStore;
 
 abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
-
   @observable
   String pinCode = '';
 
@@ -52,9 +51,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
     final auth = LocalAuthentication();
     try {
       bool didAuthenticate = await auth.authenticate(
-        localizedReason: 'Login authorization',
-          biometricOnly: true
-      );
+          localizedReason: 'Login authorization', biometricOnly: true);
       if (didAuthenticate) {
         signIn(isBiometric: true);
       } else {
@@ -71,7 +68,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
   }
 
   @action
-  inputPin(int pin){
+  inputPin(int pin) {
     if (pinCode.length < 4) pinCode += pin.toString();
   }
 
@@ -91,7 +88,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
         onSuccess(StatePinCode.success);
         return;
       }
-      switch(statePin) {
+      switch (statePin) {
         case StatePinCode.create:
           newPinCode = pinCode;
           pinCode = '';
@@ -140,10 +137,10 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
           }
           break;
         case StatePinCode.toLogin:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
         case StatePinCode.success:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
       }
     } catch (e) {
@@ -153,5 +150,3 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
 }
 
 enum StatePinCode { create, repeat, check, toLogin, success }
-
-
