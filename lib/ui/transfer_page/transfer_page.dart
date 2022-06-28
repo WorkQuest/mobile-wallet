@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -39,34 +39,29 @@ class _TransferPageState extends State<TransferPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _key = GlobalKey<FormState>();
-  _CoinItem? _currentCoin;
 
   final String coinsPath = "assets/coins";
-  late final List<_CoinItem> _coins = [];
+  late final List<CoinItem> _coins = [];
 
-  TransferStore store = TransferStore();
-
-  bool get _selectedCoin => _currentCoin != null;
+  late TransferStore store;
 
   _initCoins() {
     final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
     _coins
       ..clear()
       ..addAll(_dataTokens
-          .map((coin) => _CoinItem(
+          .map((coin) => CoinItem(
                 coin.iconPath,
                 coin.symbolToken.name,
                 coin.symbolToken,
                 true,
               ))
           .toList());
-    store.setTitleSelectedCoin(_coins.first.typeCoin);
-    _currentCoin = _coins.first;
   }
 
   @override
   void initState() {
-    print('initState TransferPage');
+    store = GetIt.I.get<TransferStore>();
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
     });
@@ -85,135 +80,123 @@ class _TransferPageState extends State<TransferPage> {
         title: "wallet.transfer".tr(),
       ),
       body: LayoutWithScroll(
-        child: Padding(
-          padding: _padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
-                width: double.infinity,
-              ),
-              Text(
-                'wallet.chooseCoin'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SelectedItem(
-                title: _currentCoin?.title,
-                iconPath: _currentCoin?.iconPath,
-                isSelected: _selectedCoin,
-                onTap: _chooseCoin,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.recipientsAddress'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Form(
-                key: _key,
-                child: DefaultTextField(
-                  controller: _addressController,
-                  hint: 'wallet.enterAddress'.tr(),
-                  suffixIcon: null,
-                  validator: (value) {
-                    if (value != null) {
-                      final _isBech =
-                          value.substring(0, 2).toLowerCase() == 'wq';
-                      if (_isBech) {
-                        if (value.length != 41) {
-                          return "errors.incorrectFormat".tr();
-                        }
-                        if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
-                          return "errors.incorrectFormat".tr();
-                        }
-                      } else {
-                        if (value.length != 42) {
-                          return "errors.incorrectFormat".tr();
-                        }
-                        if (!RegExpFields.addressRegExp.hasMatch(value)) {
-                          return "errors.incorrectFormat".tr();
-                        }
-                      }
-                    }
-                    //0x1123123123123213123213123123213213213121
-                    //wq1sz72zjcgkrk5ze8cgzywa8n2jpdyp65l9m22cg
-                    return null;
-                  },
+        child: Observer(
+          builder: (_) => Padding(
+            padding: _padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
+                  width: double.infinity,
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.amount'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              DefaultTextField(
-                controller: _amountController,
-                hint: 'wallet.enterAmount'.tr(),
-                // keyboardType: TextInputType.number,
-                suffixIcon: ObserverListener(
-                  store: store,
-                  onFailure: () {
-                    print('onFailure');
-                    return false;
-                  },
-                  onSuccess: () {
-                    _amountController.text = store.amount;
-                  },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.only(right: 12.5),
-                    child: Text(
-                      'wallet.max'.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.enabledButton,
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (store.typeCoin != null) {
-                        store.getMaxAmount();
-                      } else {
-                        final title = 'meta.error'.tr();
-                        final content = 'crediting.chooseCoin'.tr();
-                        AlertDialogUtils.showInfoAlertDialog(context,
-                            title: title, content: content);
+                Text(
+                  'wallet.chooseCoin'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SelectedItem(
+                  title: store.currentCoin?.title,
+                  iconPath: store.currentCoin?.iconPath,
+                  isSelected: store.currentCoin != null,
+                  onTap: _chooseCoin,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.recipientsAddress'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Form(
+                  key: _key,
+                  child: DefaultTextField(
+                    controller: _addressController,
+                    hint: 'wallet.enterAddress'.tr(),
+                    suffixIcon: null,
+                    validator: (value) {
+                      if (value != null) {
+                        final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                        if (_isBech) {
+                          if (value.length != 41) {
+                            return "errors.incorrectFormat".tr();
+                          }
+                          if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+                            return "errors.incorrectFormat".tr();
+                          }
+                        } else {
+                          if (value.length != 42) {
+                            return "errors.incorrectFormat".tr();
+                          }
+                          if (!RegExpFields.addressRegExp.hasMatch(value)) {
+                            return "errors.incorrectFormat".tr();
+                          }
+                        }
                       }
+                      //0x1123123123123213123213123123213213213121
+                      //wq1sz72zjcgkrk5ze8cgzywa8n2jpdyp65l9m22cg
+                      return null;
                     },
                   ),
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                ],
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              LoginButton(
-                title: 'Test',
-                onTap: () {
-                  final _bech32 = AddressService()
-                      .hexToBech32(AccountRepository().userAddress);
-                  print('bech32: $_bech32');
-                  final _hex = AddressService().bech32ToHex(_bech32);
-                  print('hex: $_hex');
-                },
-              ),
-            ],
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.amount'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                DefaultTextField(
+                  controller: _amountController,
+                  hint: 'wallet.enterAmount'.tr(),
+                  // keyboardType: TextInputType.number,
+                  suffixIcon: ObserverListener(
+                    store: store,
+                    onFailure: () {
+                      return false;
+                    },
+                    onSuccess: () {
+                      _amountController.text = store.amount;
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.only(right: 12.5),
+                      child: Text(
+                        'wallet.max'.tr(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColor.enabledButton,
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (store.currentCoin != null) {
+                          store.getMaxAmount();
+                        } else {
+                          final title = 'meta.error'.tr();
+                          final content = 'crediting.chooseCoin'.tr();
+                          AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                        }
+                      },
+                    ),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                  ],
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -224,8 +207,7 @@ class _TransferPageState extends State<TransferPage> {
           child: Observer(
             builder: (_) => DefaultButton(
               title: 'wallet.transfer'.tr(),
-              onPressed:
-                  store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
             ),
           ),
         ),
@@ -243,46 +225,38 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService().hexToBech32(
-                AccountRepository().userWallet!.address!.toLowerCase())) {
+            AddressService().hexToBech32(AccountRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(),
-              content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
-        if (store.addressTo.toLowerCase() ==
-            AccountRepository().userWallet!.address!.toLowerCase()) {
+        if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(),
-              content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await PageRouter.pushNewRoute(
         context,
         ConfirmTransferPage(
           fee: store.fee,
-          typeCoin: store.typeCoin!,
-          addressTo: _isBech
-              ? AddressService().bech32ToHex(store.addressTo)
-              : store.addressTo,
+          typeCoin: store.currentCoin!.typeCoin,
+          addressTo: _isBech ? AddressService().bech32ToHex(store.addressTo) : store.addressTo,
           amount: store.amount,
         ),
       );
       if (result != null && result) {
         setState(() {
-          store.setTitleSelectedCoin(null);
+          store.setCoin(null);
           store.setAddressTo('');
           store.setAmount('');
           _amountController.clear();
           _addressController.clear();
-          _currentCoin = null;
         });
       }
     }
@@ -354,14 +328,11 @@ class _TransferPageState extends State<TransferPage> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Container(
-                                                  decoration:
-                                                      const BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     gradient: LinearGradient(
-                                                      begin:
-                                                          Alignment.topCenter,
-                                                      end: Alignment
-                                                          .bottomCenter,
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter,
                                                       colors: [
                                                         AppColor.enabledButton,
                                                         AppColor.blue,
@@ -383,9 +354,7 @@ class _TransferPageState extends State<TransferPage> {
                                                   coin.title,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: coin.isEnable
-                                                        ? Colors.black
-                                                        : AppColor.disabledText,
+                                                    color: coin.isEnable ? Colors.black : AppColor.disabledText,
                                                   ),
                                                 ),
                                               ],
@@ -416,23 +385,19 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 
-  void _selectCoin(_CoinItem coin) {
-    if (_currentCoin != null) {
-      store.setAmount('');
-      _amountController.clear();
-    }
-    setState(() {
-      _currentCoin = coin;
-    });
-    store.setTitleSelectedCoin(coin.typeCoin);
+  void _selectCoin(CoinItem coin) {
+    print('_selectCoin');
+    store.setAmount('');
+    _amountController.clear();
+    store.setCoin(coin);
   }
 }
 
-class _CoinItem {
+class CoinItem {
   String iconPath;
   String title;
   TokenSymbols typeCoin;
   bool isEnable;
 
-  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
+  CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }

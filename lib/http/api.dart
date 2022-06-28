@@ -16,50 +16,68 @@ import '../model/course_tokens_response.dart';
 import '../model/txs_info_response.dart';
 
 class Api {
-  String _baseUrl = 'https://testnet-app.workquest.co/api/v1';
 
-  String _getBaseUrl() {
-    ConfigNameNetwork _network =
-        AccountRepository().configName ?? ConfigNameNetwork.binance;
+  static final Api _instance = Api._internal();
+
+  factory Api() => _instance;
+
+  Api._internal();
+
+  String get _baseUrl {
     if (_network == ConfigNameNetwork.testnet) {
-      _baseUrl = 'https://testnet-app.workquest.co/api/v1';
+      return 'https://testnet-app.workquest.co/api/v1';
     } else if (_network == ConfigNameNetwork.devnet) {
-      _baseUrl = 'https://dev-app.workquest.co/api/v1';
+      return 'https://dev-app.workquest.co/api/v1';
+    } else if (_network == ConfigNameNetwork.mainnet) {
+      return 'https://app.workquest.co/api/v1';
     }
-    return _baseUrl;
+    return 'https://app.workquest.co/api/v1';
   }
 
-  bool get currentNetworkIsTestnet =>
-      _getBaseUrl() == 'https://testnet-app.workquest.co/api/v1';
+  ConfigNameNetwork get _network => AccountRepository().configName ?? ConfigNameNetwork.binance;
 
-  String get _register => "${_getBaseUrl()}/auth/register";
-  String get _login => "${_getBaseUrl()}/auth/login/wallet";
-  String get _confirmEmail => "${_getBaseUrl()}/auth/confirm-email";
-  String get _refreshTokens => "${_getBaseUrl()}/auth/refresh-tokens";
-  String get _resendEmail => "${_getBaseUrl()}/auth/main/resend-email";
-  String get _registerWallet => "${_getBaseUrl()}/auth/register/wallet";
+  ConfigNameNetwork getConfigApi() {
+    if (_baseUrl == 'https://testnet-app.workquest.co/api/v1') {
+      return ConfigNameNetwork.testnet;
+    } else if (_baseUrl == 'https://dev-app.workquest.co/api/v1') {
+      return ConfigNameNetwork.devnet;
+    } else {
+      return ConfigNameNetwork.mainnet;
+    }
+  }
+
+  String get _register => "$_baseUrl/auth/register";
+  String get _login => "$_baseUrl/auth/login/wallet";
+  String get _confirmEmail => "$_baseUrl/auth/confirm-email";
+  String get _refreshTokens => "$_baseUrl/auth/refresh-tokens";
+  String get _resendEmail => "$_baseUrl/auth/main/resend-email";
+  String get _registerWallet => "$_baseUrl/auth/register/wallet";
   String get _courseWQT =>
       "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
 
+  String _walletAddressProfile(String address) =>
+      "$_baseUrl/profile/wallet/$address";
+
   String _transactions(String address) {
-    if (currentNetworkIsTestnet) {
+    if (_network == ConfigNameNetwork.testnet) {
       return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
-    } else {
+    } else if (_network == ConfigNameNetwork.devnet) {
       return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+    } else  {
+      return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     }
   }
-
-  String _walletAddressProfile(String address) =>
-      "${_getBaseUrl()}/profile/wallet/$address";
 
   String _transactionsByToken({
     required String address,
     required String addressToken,
   }) {
-    if (currentNetworkIsTestnet) {
+    if (_network == ConfigNameNetwork.testnet) {
       return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
-    } else {
+    } else if (_network == ConfigNameNetwork.devnet) {
       return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+    } else  {
+      return "https://mainnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
   }
 
@@ -353,7 +371,6 @@ class Api {
   }
 
   Future<String> getTranslateMessage({int? code, String? message}) async {
-    print("getmessage is called");
     if (code == null) {
       return 'errors.notInternet'.tr();
     }

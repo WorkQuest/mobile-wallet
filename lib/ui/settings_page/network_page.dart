@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
@@ -94,6 +96,7 @@ class _NetworkPageState extends State<NetworkPage> {
 
   _onPressedChange(ConfigNameNetwork network) {
     bool _showAlert = false;
+    print('_apiNetwork: $_apiNetwork');
     if (_apiNetwork == ConfigNameNetwork.devnet) {
       _showAlert = (network == ConfigNameNetwork.testnet || network == ConfigNameNetwork.mainnet);
     } else if (_apiNetwork == ConfigNameNetwork.testnet) {
@@ -131,6 +134,7 @@ class _NetworkPageState extends State<NetworkPage> {
     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
     AccountRepository().clearData();
+    GetIt.I.get<TransferStore>().setCoin(null);
     AccountRepository().setNetwork(network.name);
   }
 }

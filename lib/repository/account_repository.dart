@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
 
@@ -19,8 +20,7 @@ class AccountRepository {
   Wallet? userWallet;
   ClientService? client;
   ConfigNameNetwork? configName;
-  ValueNotifier<ConfigNameNetwork?> notifier =
-      ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
+  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
 
   String get userAddress => userWallet!.address!;
 
@@ -48,6 +48,7 @@ class AccountRepository {
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
+    GetIt.I.get<TransferStore>().setCoin(null);
   }
 
   setWallet(Wallet wallet) {
@@ -81,10 +82,13 @@ class AccountRepository {
 
   bool get isOtherNetwork =>
       configName != ConfigNameNetwork.testnet &&
-      configName != ConfigNameNetwork.devnet;
+      configName != ConfigNameNetwork.devnet &&
+      configName != ConfigNameNetwork.mainnet;
 
   ConfigNameNetwork _getNetworkNameKey(String name) {
     switch (name) {
+      case 'mainnet':
+        return ConfigNameNetwork.mainnet;
       case 'devnet':
         return ConfigNameNetwork.devnet;
       case 'testnet':

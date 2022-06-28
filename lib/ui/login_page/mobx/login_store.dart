@@ -29,7 +29,7 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic);
       if (AccountRepository().configName == null) {
-        AccountRepository().setNetwork('testnet');
+        AccountRepository().setNetwork('mainnet');
       }
       AccountRepository().setWallet(wallet);
       AccountRepository().connectClient();

@@ -58,6 +58,37 @@ class RegExpFields {
 
 class Configs {
   static final configsNetwork = {
+    ConfigNameNetwork.mainnet: ConfigNetwork(
+      rpc: 'https://mainnet-gate.workquest.co/',
+      wss: 'wss://mainnet-gate-01.workquest.co/tendermint-rpc/websocket',
+      urlExplorer: '',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WUSD,
+          addressToken: '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa',
+          iconPath: 'assets/svg/wusd_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wETH,
+          addressToken: '0x8E52341384F5286f4c76cE1072Aba887Be8E4EB9',
+          iconPath: 'assets/svg/weth_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wBNB,
+          addressToken: '0xD7ca5F803807b03D49606D4f8e66551170b1d689',
+          iconPath: 'assets/svg/wbnb_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0xD93d2cF0e0179112469188F61ceb948F2Dbe4824',
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
     ConfigNameNetwork.devnet: ConfigNetwork(
       rpc: 'https://dev-node-ams3.workquest.co/',
       wss: 'wss://wss-dev-node-ams3.workquest.co/tendermint-rpc/websocket',
@@ -203,6 +234,6 @@ class DataCoins {
   });
 }
 
-enum ConfigNameNetwork { devnet, testnet, rinkeby, binance, polygon }
+enum ConfigNameNetwork { mainnet, devnet, testnet, rinkeby, binance, polygon }
 
 enum TokenSymbols { WUSD, WQT, wBNB, wETH, USDT, BNB, ETH, MATIC }

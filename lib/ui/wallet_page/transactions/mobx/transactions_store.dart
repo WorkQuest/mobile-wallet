@@ -29,11 +29,11 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   String get myAddress => AccountRepository().userWallet!.address!;
 
+  ConfigNameNetwork get _typeNetwork => AccountRepository().configName!;
+
   @action
   getTransactions() async {
-    final _type = _getTypeNetwork();
-    if (_type != ConfigNameNetwork.testnet &&
-        _type != ConfigNameNetwork.devnet) {
+    if (_isOtherNetwork) {
       transactions.clear();
       onSuccess(true);
       return;
@@ -80,9 +80,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   @action
   getTransactionsMore() async {
-    final _type = _getTypeNetwork();
-    if (_type != ConfigNameNetwork.testnet &&
-        _type != ConfigNameNetwork.devnet) {
+    if (_isOtherNetwork) {
       transactions.clear();
       onSuccess(true);
       return;
@@ -109,8 +107,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         canMoreLoading = false;
       }
       result.map((tran) {
-        final index =
-            transactions.indexWhere((element) => element.hash == tran.hash);
+        final index = transactions.indexWhere((element) => element.hash == tran.hash);
         if (index == -1) {
           transactions.add(tran);
         }
@@ -126,17 +123,13 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
-      if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.WUSD)) {
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD)) {
         tran.coin = TokenSymbols.WUSD;
-      } else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.wETH)) {
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wETH)) {
         tran.coin = TokenSymbols.wETH;
-      } else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.wBNB)) {
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wBNB)) {
         tran.coin = TokenSymbols.wBNB;
-      } else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.USDT)) {
+      } else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.USDT)) {
         tran.coin = TokenSymbols.USDT;
       } else {
         tran.coin = TokenSymbols.WQT;
@@ -144,5 +137,12 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }).toList();
   }
 
-  ConfigNameNetwork _getTypeNetwork() => AccountRepository().configName!;
+  bool get _isOtherNetwork {
+    if (_typeNetwork != ConfigNameNetwork.testnet &&
+        _typeNetwork != ConfigNameNetwork.devnet &&
+        _typeNetwork != ConfigNameNetwork.mainnet) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -17,22 +17,6 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
-  late final _$typeCoinAtom =
-      Atom(name: 'TransferStoreBase.typeCoin', context: context);
-
-  @override
-  TokenSymbols? get typeCoin {
-    _$typeCoinAtom.reportRead();
-    return super.typeCoin;
-  }
-
-  @override
-  set typeCoin(TokenSymbols? value) {
-    _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
-      super.typeCoin = value;
-    });
-  }
-
   late final _$addressToAtom =
       Atom(name: 'TransferStoreBase.addressTo', context: context);
 
@@ -80,6 +64,22 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
+  late final _$currentCoinAtom =
+      Atom(name: 'TransferStoreBase.currentCoin', context: context);
+
+  @override
+  CoinItem? get currentCoin {
+    _$currentCoinAtom.reportRead();
+    return super.currentCoin;
+  }
+
+  @override
+  set currentCoin(CoinItem? value) {
+    _$currentCoinAtom.reportWrite(value, super.currentCoin, () {
+      super.currentCoin = value;
+    });
+  }
+
   late final _$getMaxAmountAsyncAction =
       AsyncAction('TransferStoreBase.getMaxAmount', context: context);
 
@@ -122,11 +122,11 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
-  dynamic setTitleSelectedCoin(TokenSymbols? value) {
+  dynamic setCoin(CoinItem? value) {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
-        name: 'TransferStoreBase.setTitleSelectedCoin');
+        name: 'TransferStoreBase.setCoin');
     try {
-      return super.setTitleSelectedCoin(value);
+      return super.setCoin(value);
     } finally {
       _$TransferStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -135,10 +135,10 @@ mixin _$TransferStore on TransferStoreBase, Store {
   @override
   String toString() {
     return '''
-typeCoin: ${typeCoin},
 addressTo: ${addressTo},
 amount: ${amount},
 fee: ${fee},
+currentCoin: ${currentCoin},
 statusButtonTransfer: ${statusButtonTransfer}
     ''';
   }

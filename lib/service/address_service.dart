@@ -112,7 +112,7 @@ class Bech32Encoder {
   /// given human readable part
   static String encode(String humanReadablePart, Uint8List data) {
     final List<int> converted = _convertBits(data, 8, 5);
-    final bech32Codec = Bech32Codec();
+    const bech32Codec = Bech32Codec();
     final bech32Data = Bech32(humanReadablePart, converted as Uint8List);
     return bech32Codec.encode(bech32Data);
   }
@@ -155,7 +155,7 @@ class Bech32Encoder {
   }
 
   static Uint8List decode(String data) {
-    final bech32Codec = Bech32Codec();
+    const bech32Codec = Bech32Codec();
     final bech32Data = bech32Codec.decode(data);
     final list = _convertBits(bech32Data.data, 5, 8);
     return Uint8List.fromList(list);
