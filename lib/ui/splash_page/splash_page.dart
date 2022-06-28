@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
@@ -43,21 +44,12 @@ class _SplashPageState extends State<SplashPage> {
           if (store.errorMessage == 'Unconfirmed user') {
             AlertDialogUtils.showAlertDialog(
               context,
-              title: const Text("Warning"),
+              title: Text("meta.warning".tr()),
               content: Text(store.errorMessage!),
               needCancel: false,
-              titleCancel: "Confirm",
-              titleOk: "Login Page",
-              onTabCancel: () async {
-                // await PageRouter.pushNewReplacementRoute(context, const LoginPage());
-                // final email = await Storage.read(StorageKeys.email.toString());
-                // PageRouter.pushNewRoute(
-                //     context,
-                //     SignUpConfirm(
-                //       email: email ?? '',
-                //       nextPage: const PinCodePage(),
-                //     ));
-              },
+              titleCancel: "meta.confirm".tr(),
+              titleOk: "settings.loginPage".tr(),
+              onTabCancel: () async {},
               onTabOk: () {
                 AccountRepository().clearData();
                 PageRouter.pushNewReplacementRoute(context, const LoginPage());
@@ -69,11 +61,11 @@ class _SplashPageState extends State<SplashPage> {
           }
           AlertDialogUtils.showAlertDialog(
             context,
-            title: const Text("Warning"),
+            title: Text("meta.warning".tr()),
             content: Text(store.errorMessage!),
             needCancel: true,
-            titleCancel: "Login Page",
-            titleOk: "Retry",
+            titleCancel: "settings.loginPage".tr(),
+            titleOk: "meta.retry".tr(),
             onTabCancel: () =>
                 PageRouter.pushNewReplacementRoute(context, const LoginPage()),
             onTabOk: () => store.sign(),

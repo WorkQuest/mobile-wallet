@@ -42,7 +42,7 @@ class _DepositPageState extends State<DepositPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBar(
-        title: 'wallet'.tr(gender: 'deposit'),
+        title: 'wallet.deposit'.tr(),
       ),
       body: Column(
         children: [

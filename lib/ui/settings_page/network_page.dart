@@ -25,12 +25,12 @@ class NetworkPage extends StatefulWidget {
 
 class _NetworkPageState extends State<NetworkPage> {
   late ConfigNameNetwork _currentNetwork;
-  late bool isTestnet;
+  late ConfigNameNetwork _apiNetwork;
 
   @override
   void initState() {
     _currentNetwork = AccountRepository().configName!;
-    isTestnet = Api().currentNetworkIsTestnet;
+    _apiNetwork = Api().getConfigApi();
     super.initState();
   }
 
@@ -38,8 +38,8 @@ class _NetworkPageState extends State<NetworkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Network',
+      appBar: DefaultAppBar(
+        title: 'wallet.network'.tr(),
       ),
       body: LayoutWithScroll(
         child: Padding(
@@ -94,10 +94,12 @@ class _NetworkPageState extends State<NetworkPage> {
 
   _onPressedChange(ConfigNameNetwork network) {
     bool _showAlert = false;
-    if (isTestnet) {
-      _showAlert = network == ConfigNameNetwork.devnet;
-    } else {
-      _showAlert = network == ConfigNameNetwork.testnet;
+    if (_apiNetwork == ConfigNameNetwork.devnet) {
+      _showAlert = (network == ConfigNameNetwork.testnet || network == ConfigNameNetwork.mainnet);
+    } else if (_apiNetwork == ConfigNameNetwork.testnet) {
+      _showAlert = (network == ConfigNameNetwork.devnet || network == ConfigNameNetwork.mainnet);
+    } else if (_apiNetwork == ConfigNameNetwork.mainnet) {
+      _showAlert = (network == ConfigNameNetwork.testnet || network == ConfigNameNetwork.devnet);
     }
 
     if (_showAlert) {
@@ -114,13 +116,10 @@ class _NetworkPageState extends State<NetworkPage> {
     AlertDialogUtils.showAlertDialog(
       context,
       title: Text('meta.warning'.tr()),
-      content: const Text(
-          'Do you really want to change the network?\nIf there is a change to this network, the '
-          'current '
-          'session will be over. You will need to re-enter the platform.'),
+      content: Text('wallet.changeNetworkInfo'.tr()),
       needCancel: true,
       titleCancel: null,
-      titleOk: 'Confirm',
+      titleOk: 'meta.confirm'.tr(),
       onTabCancel: null,
       onTabOk: () => _pushToLogin(network),
       colorCancel: AppColor.enabledButton,

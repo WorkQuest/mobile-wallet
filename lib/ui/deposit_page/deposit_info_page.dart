@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -12,8 +13,8 @@ class DepositInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Deposit info',
+      appBar: DefaultAppBar(
+        title: 'deposit.info'.tr(),
       ),
       body: Padding(
         padding: _padding,
@@ -27,49 +28,49 @@ class DepositInfoPage extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Wallet address',
+                    'wallet.cryptoWallet'.tr(),
                     style: TextStyle(fontSize: 16),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
-                  Text(
+                  const Text(
                     '83479B2E7809F7D7C0A9184EEDA74CCF122ABF3147CB4572BDEBD252F8E352A8',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColor.subtitleText,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Text(
-                    'Amount',
-                    style: TextStyle(fontSize: 16),
+                    'wallet.amount'.tr(),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
-                  Text(
+                  const Text(
                     '15 WUSD',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColor.subtitleText,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Text(
-                    'Total fee',
-                    style: TextStyle(fontSize: 16),
+                    'deposit.totalFee'.tr(),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
-                  Text(
+                  const Text(
                     '\$ 0,15',
                     style: TextStyle(
                       fontSize: 14,
@@ -88,7 +89,7 @@ class DepositInfoPage extends StatelessWidget {
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).padding.bottom),
                 child: DefaultButton(
-                  title: 'Confirm',
+                  title: 'meta.confirm'.tr(),
                   onPressed: () {
                     Navigator.pop(context, true);
                   },

@@ -401,17 +401,17 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
-                    'Failed to get balance',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    'errors.failedToGetBalance'.tr(),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
-                    'Swipe to update',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    'errors.swipeUpdate'.tr(),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

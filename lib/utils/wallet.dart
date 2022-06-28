@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 
@@ -23,7 +24,7 @@ class Wallet extends Equatable {
   static Future<Wallet> derive(String mnemonic) async {
     mnemonic = mnemonic.trim();
     if (!AddressService().validateMnemonic(mnemonic)) {
-      throw const FormatException("Invalid mnemonic");
+      throw FormatException("errors.invalidMnemonic".tr());
     }
 
     final privateKey = AddressService().getPrivateKey(mnemonic);

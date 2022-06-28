@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
@@ -8,28 +9,22 @@ import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 class Web3Utils {
   static checkPossibilityTx(TokenSymbols typeCoin, double amount) async {
     final _client = AccountRepository().getClient();
-    final _balanceWQT =
-        await _client.getBalance(AccountRepository().privateKey);
+    final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
     final _gasTx = await _client.getGas();
 
     if (typeCoin == TokenSymbols.WQT) {
       final _gas = (_gasTx.getInWei.toDouble() * pow(10, -16) * 250);
-      final _balanceWQTInWei =
-          (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() *
-                  pow(10, -18))
-              .toDouble();
+      final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
       if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
-        throw const FormatException('Not have enough WQT for the transaction');
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
-      final _balanceToken =
-          await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken) {
-        throw FormatException(
-            'Not have enough ${getTitleToken(typeCoin)} for the transaction');
+        throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       if (_balanceWQT.getInWei < _gasTx.getInWei) {
-        throw const FormatException('Not have enough WQT for the transaction');
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     }
   }
@@ -45,9 +40,7 @@ class Web3Utils {
   static String getAddressToken(TokenSymbols typeCoin) {
     try {
       final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      return _dataTokens
-          .firstWhere((element) => element.symbolToken == typeCoin)
-          .addressToken!;
+      return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
     } catch (e) {
       return '';
     }

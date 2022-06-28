@@ -120,7 +120,7 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                   DefaultTextField(
                     controller: store.code,
                     enableDispose: false,
-                    hint: "Code",
+                    hint: "meta.code".tr(),
                     suffixIcon: null,
                     keyboardType: TextInputType.text,
                     inputFormatters: [
@@ -162,21 +162,6 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                     height: 40,
                   ),
                   Expanded(child: Container()),
-                  // RichText(
-                  //   textDirection: TextDirection.ltr,
-                  //   text: TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text: 'pinCode.not_get_code'.tr(),
-                  //         style: const TextStyle(fontSize: 16.0, color: Colors.black),
-                  //       ),
-                  //       TextSpan(
-                  //         text: ' ${'pinCode.change_email'.tr()}',
-                  //         style: const TextStyle(fontSize: 16.0, color: Colors.blue),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   const SizedBox(
                     height: 40,
                   ),
@@ -195,17 +180,17 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
       builder: (context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text("Wallet"),
-          content: const Text("Choose a way to add a wallet"),
+          title: Text("wallet.wallet".tr()),
+          content: Text("wallet.chooseWay".tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 PageRouter.pushNewRoute(context, const ImportWalletPage());
               },
-              child: const Text(
-                "Import Wallet",
-                style: TextStyle(color: AppColor.enabledButton),
+              child: Text(
+                "wallet.importWallet".tr(),
+                style: const TextStyle(color: AppColor.enabledButton),
               ),
             ),
             TextButton(
@@ -213,9 +198,9 @@ class _SignUpConfirmState extends State<SignUpConfirm> {
                 Navigator.pop(context);
                 PageRouter.pushNewRoute(context, const SignUpPage());
               },
-              child: const Text(
-                "Create Wallet",
-                style: TextStyle(color: AppColor.enabledButton),
+              child: Text(
+                "wallet.createWallet".tr(),
+                style: const TextStyle(color: AppColor.enabledButton),
               ),
             ),
           ],
@@ -244,7 +229,7 @@ class _TimerWidget extends StatelessWidget {
         CupertinoButton(
           padding: EdgeInsets.zero,
           child: Text(
-            'Send again',
+            'restore.sendAgain'.tr(),
             style: TextStyle(
               fontSize: 14,
               color: isActiveTimer

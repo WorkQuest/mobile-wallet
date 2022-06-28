@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SnackBarUtils {
@@ -43,7 +44,7 @@ class SnackBarUtils {
             children: [
               Flexible(
                 child: Text(
-                  title ?? 'Success',
+                  title ?? 'meta.success'.tr(),
                   style: const TextStyle(fontSize: 14, color: Colors.black),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -68,7 +69,7 @@ class SnackBarUtils {
         content: Row(
           children: [
             Text(
-              title ?? 'Loading',
+              title ?? 'meta.loading'.tr(),
               style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
             const Spacer(),
@@ -95,7 +96,7 @@ class SnackBarUtils {
           content: Row(
             children: [
               Text(
-                title ?? 'Error',
+                title ?? 'meta.error'.tr(),
                 style: const TextStyle(fontSize: 14, color: Colors.black),
               ),
               const Spacer(),

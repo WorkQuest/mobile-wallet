@@ -66,9 +66,9 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Choose card',
-                style: TextStyle(fontSize: 16),
+              Text(
+                'wallet.chooseCard'.tr(),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(
                 height: 5,
@@ -123,9 +123,9 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Amount',
-                style: TextStyle(
+              Text(
+                'wallet.amount'.tr(),
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
@@ -177,9 +177,9 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Total fee',
-                style: TextStyle(fontSize: 16),
+              Text(
+                'deposit.totalFee'.tr(),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(
                 height: 5,
@@ -193,17 +193,17 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Processing time',
-                style: TextStyle(fontSize: 16),
+              Text(
+                'wallet.time'.tr(),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(
                 height: 5,
               ),
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: InfoElement(
-                  line: '5 min',
+                  line: '5 ${'deposit.min'.tr()}',
                 ),
               ),
               const SizedBox(
@@ -278,9 +278,9 @@ class _DepositChooseBankCardState extends State<DepositChooseBankCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Choose bank card',
-                      style: TextStyle(
+                    Text(
+                      'deposit.choose_bank_card'.tr(),
+                      style: const TextStyle(
                         fontSize: 18,
                         color: Colors.black,
                         fontWeight: FontWeight.w500,

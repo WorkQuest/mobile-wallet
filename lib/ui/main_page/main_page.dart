@@ -91,7 +91,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     width: 20,
                     height: 16,
                   ),
-                  label: 'Swap'.tr(),
+                  label: 'wallet.swap'.tr(),
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
@@ -148,7 +148,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       _exitAttempt = DateTime.now().millisecondsSinceEpoch;
       SnackBarUtils.show(
         context,
-        title: 'Press back to exit',
+        title: 'meta.press_back'.tr(),
         backgroundColor: Colors.black,
         textColor: Colors.white,
       );

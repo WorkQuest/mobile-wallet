@@ -50,7 +50,9 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 15,
                 ),
                 Text(
-                  'Choose the ${store.indexFirstWord}th and ${store.indexSecondWord}th words of your mnemonic',
+                  'signUp.chooseWords'.tr(
+                    namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                  ),
                   style: const TextStyle(
                     fontSize: 24,
                     color: Colors.black,
@@ -61,7 +63,11 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 30,
                 ),
                 Text(
-                  '${store.indexFirstWord}th word',
+                  'signUp.thWord'.tr(
+                    namedArgs: {
+                      'index': '${store.indexFirstWord}',
+                    },
+                  ),
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -80,7 +86,11 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 30,
                 ),
                 Text(
-                  '${store.indexSecondWord}th word',
+                  'signUp.thWord'.tr(
+                    namedArgs: {
+                      'index': '${store.indexSecondWord}',
+                    },
+                  ),
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -100,8 +110,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -115,8 +124,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                         },
                         onSuccess: () async {
                           await AlertDialogUtils.showSuccessDialog(context);
-                          PageRouter.pushNewRemoveRoute(
-                              context, const LoginPage());
+                          PageRouter.pushNewRemoveRoute(context, const LoginPage());
                         },
                         child: Observer(
                           builder: (_) => LoginButton(
@@ -196,8 +204,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
               height: 20,
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: SizedBox(
                 width: double.infinity,
                 child: DefaultButton(

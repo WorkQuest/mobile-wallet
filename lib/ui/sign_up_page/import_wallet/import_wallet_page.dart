@@ -33,8 +33,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: const DefaultAppBar(
-          title: "Import Wallet",
+        appBar: DefaultAppBar(
+          title: "wallet.importWallet".tr(),
         ),
         body: SafeArea(
           child: Padding(
@@ -45,8 +45,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Mnemonic",
+                Text(
+                  "wallet.mnemonic".tr(),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -54,7 +54,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                 ),
                 DefaultTextField(
                   controller: _mnemonicController,
-                  hint: "Enter mnemonic",
+                  hint: "wallet.enterMnemonicPhrase".tr(),
                   isPassword: true,
                   onChanged: store.setMnemonic,
                   validator: (value) {
@@ -99,7 +99,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                             store.openWallet();
                           }
                         },
-                        title: "Import",
+                        title: "meta.import".tr(),
                       ),
                     ],
                   ),

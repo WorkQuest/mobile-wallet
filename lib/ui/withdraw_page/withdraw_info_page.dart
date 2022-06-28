@@ -45,9 +45,9 @@ class _WithdrawInfoPageState extends State<WithdrawInfoPage> {
                   const SizedBox(
                     width: double.infinity,
                   ),
-                  const Text(
-                    'Wallet address',
-                    style: TextStyle(
+                  Text(
+                    'wallet.cryptoWallet'.tr(),
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
@@ -81,9 +81,9 @@ class _WithdrawInfoPageState extends State<WithdrawInfoPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Amount',
-                    style: TextStyle(
+                  Text(
+                    'wallet.amount'.tr(),
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
@@ -101,9 +101,9 @@ class _WithdrawInfoPageState extends State<WithdrawInfoPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Total fee',
-                    style: TextStyle(
+                  Text(
+                    'deposit.totalFee'.tr(),
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
@@ -130,7 +130,7 @@ class _WithdrawInfoPageState extends State<WithdrawInfoPage> {
               child: SizedBox(
                 width: double.infinity,
                 child: DefaultButton(
-                  title: 'Confirm',
+                  title: 'meta.confirm'.tr(),
                   onPressed: () {
                     Navigator.pop(context, true);
                   },

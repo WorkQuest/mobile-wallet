@@ -25,12 +25,6 @@ const _divider = SizedBox(
 const _spaceDivider = SizedBox(
   height: 15,
 );
-const _minimumError =
-    'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
-    'USDT/USDC';
-const _maximumError =
-    'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
-    'USDT/USDC.';
 
 class SwapPage extends StatefulWidget {
   const SwapPage({Key? key}) : super(key: key);
@@ -49,7 +43,12 @@ class _SwapPageState extends State<SwapPage> {
   void initState() {
     store = SwapStore();
     store.setNetwork(SwapNetworks.ethereum);
-    _showLoading(start: true, message: 'Connecting to server...');
+    _showLoading(
+      start: true,
+      message: 'swap.connecting'.tr(
+        namedArgs: {'object': 'server'},
+      ),
+    );
     _amountController = TextEditingController();
     _amountController.addListener(() {
       store.setAmount(double.tryParse(_amountController.text) ?? 0.0);
@@ -67,8 +66,8 @@ class _SwapPageState extends State<SwapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const MainAppBar(
-        title: 'Buying WQT',
+      appBar: MainAppBar(
+        title: 'swap.buying'.tr(),
       ),
       body: ObserverListener(
         store: store,
@@ -94,8 +93,7 @@ class _SwapPageState extends State<SwapPage> {
               return Future.delayed(const Duration(seconds: 1));
             },
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               child: Padding(
                 padding: _padding,
                 child: Form(
@@ -105,9 +103,9 @@ class _SwapPageState extends State<SwapPage> {
                     children: [
                       Row(
                         children: [
-                          const Text(
-                            'Choose network',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          Text(
+                            'swap.choose'.tr(namedArgs: {'object': 'network'}),
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           const Spacer(),
                           if (!store.isConnect && store.errorMessage != null)
@@ -115,14 +113,16 @@ class _SwapPageState extends State<SwapPage> {
                               height: 18,
                               child: CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                child: const Text(
-                                  'Retry',
-                                  style:
-                                      TextStyle(color: AppColor.enabledButton),
+                                child: Text(
+                                  'meta.retry'.tr(),
+                                  style: const TextStyle(color: AppColor.enabledButton),
                                 ),
                                 onPressed: () {
                                   _showLoading(
-                                      message: 'Connecting to network...');
+                                    message: 'swap.connecting'.tr(
+                                      namedArgs: {'object': 'network'},
+                                    ),
+                                  );
                                   store.setNetwork(store.network!);
                                 },
                               ),
@@ -137,9 +137,9 @@ class _SwapPageState extends State<SwapPage> {
                         onTap: _onPressedSelectNetwork,
                       ),
                       _spaceDivider,
-                      const Text(
-                        'Choose token',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      Text(
+                        'swap.choose'.tr(namedArgs: {'object': 'token'}),
+                        style: const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                       _divider,
                       SelectedItem(
@@ -152,9 +152,8 @@ class _SwapPageState extends State<SwapPage> {
                       Row(
                         children: [
                           Text(
-                            'Amount (Balance: ${store.maxAmount ?? 0.0})',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
+                            'swap.amountBalance'.tr(namedArgs: {'maxAmount': '${store.maxAmount ?? 0.0}'}),
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           const SizedBox(
                             width: 4,
@@ -164,9 +163,9 @@ class _SwapPageState extends State<SwapPage> {
                               height: 18,
                               child: CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                child: const Text(
-                                  'Update',
-                                  style: TextStyle(
+                                child: Text(
+                                  'meta.update'.tr(),
+                                  style: const TextStyle(
                                     color: AppColor.enabledButton,
                                   ),
                                 ),
@@ -181,7 +180,7 @@ class _SwapPageState extends State<SwapPage> {
                       DefaultTextField(
                         enableDispose: false,
                         controller: _amountController,
-                        hint: 'Amount',
+                        hint: 'wallet.amount'.tr(),
                         enabled: store.isConnect,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
@@ -191,14 +190,14 @@ class _SwapPageState extends State<SwapPage> {
                           try {
                             final val = double.parse(value);
                             if (val < 5.0) {
-                              return _minimumError;
+                              return 'swap.minimum'.tr();
                             }
                             if (val > 100.0) {
-                              return _maximumError;
+                              return 'swap.maximum'.tr();
                             }
                             if (store.maxAmount != null) {
                               if (store.maxAmount! < val) {
-                                return 'Higher max amount';
+                                return 'errors.higherMaxAmount'.tr();
                               }
                             }
                           } catch (e) {
@@ -206,11 +205,9 @@ class _SwapPageState extends State<SwapPage> {
                           }
                           return null;
                         },
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,18}')),
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                         ],
                         suffixIcon: CupertinoButton(
                           padding: const EdgeInsets.only(right: 12.5),
@@ -227,34 +224,31 @@ class _SwapPageState extends State<SwapPage> {
                               return;
                             }
                             _amountController.text = store.maxAmount.toString();
-                            _addressToController.text = AddressService()
-                                .hexToBech32(
-                                    AccountRepository().userWallet!.address!);
+                            _addressToController.text =
+                                AddressService().hexToBech32(AccountRepository().userWallet!.address!);
                           },
                         ),
                       ),
                       _spaceDivider,
-                      const Text(
-                        'Address wallet to',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      Text(
+                        'swap.addressWalletTo'.tr(),
+                        style: const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                       _divider,
                       DefaultTextField(
                         enableDispose: false,
                         controller: _addressToController,
-                        hint: 'Address to',
+                        hint: 'swap.addressTo'.tr(),
                         enabled: store.isConnect,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value != null) {
-                            final _isBech =
-                                value.substring(0, 2).toLowerCase() == 'wq';
+                            final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
                             if (_isBech) {
                               if (value.length != 41) {
                                 return "errors.incorrectFormat".tr();
                               }
-                              if (!RegExpFields.addressBech32RegExp
-                                  .hasMatch(value)) {
+                              if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
                                 return "errors.incorrectFormat".tr();
                               }
                             } else {
@@ -272,7 +266,7 @@ class _SwapPageState extends State<SwapPage> {
                       _spaceDivider,
                       Row(
                         children: [
-                          const Text('Amount of WQT ≈ '),
+                          Text('swap.amountOfWQT'.tr()),
                           const SizedBox(
                             width: 2,
                           ),
@@ -282,8 +276,7 @@ class _SwapPageState extends State<SwapPage> {
                               width: 10,
                               child: CircularProgressIndicator.adaptive(),
                             ),
-                          if (store.isSuccessCourse)
-                            Text(store.convertWQT.toString()),
+                          if (store.isSuccessCourse) Text(store.convertWQT.toString()),
                         ],
                       ),
                       const SizedBox(
@@ -300,7 +293,7 @@ class _SwapPageState extends State<SwapPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
         child: DefaultButton(
-          title: 'Send',
+          title: 'meta.send'.tr(),
           onPressed: _onPressedSend,
         ),
       ),
@@ -310,8 +303,7 @@ class _SwapPageState extends State<SwapPage> {
   _showLoading({bool start = false, String? message}) {
     if (start) {
       Future.delayed(const Duration(milliseconds: 150)).then(
-        (value) =>
-            AlertDialogUtils.showLoadingDialog(context, message: message),
+        (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
       );
     } else {
       AlertDialogUtils.showLoadingDialog(context, message: message);
@@ -320,12 +312,9 @@ class _SwapPageState extends State<SwapPage> {
 
   _onPressedSend() {
     if (_formKey.currentState!.validate()) {
-      _showLoading(message: 'Buying WQT');
-      final _isBech =
-          _addressToController.text.substring(0, 2).toLowerCase() == 'wq';
-      store.createSwap(_isBech
-          ? AddressService().bech32ToHex(_addressToController.text)
-          : _addressToController.text);
+      _showLoading(message: 'swap.buying'.tr());
+      final _isBech = _addressToController.text.substring(0, 2).toLowerCase() == 'wq';
+      store.createSwap(_isBech ? AddressService().bech32ToHex(_addressToController.text) : _addressToController.text);
     }
   }
 
@@ -335,12 +324,15 @@ class _SwapPageState extends State<SwapPage> {
       child: _ListBottomWidget(
         onTap: (value) {
           store.setNetwork(value);
-          _showLoading(message: 'Connecting to server...');
+          _showLoading(
+            message: 'swap.connecting'.tr(
+              namedArgs: {'object': 'server'},
+            ),
+          );
         },
-        title: 'Choose network',
+        title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
-          _ModelItem(
-              iconPath: Images.wethCoinIcon, item: SwapNetworks.ethereum),
+          _ModelItem(iconPath: Images.wethCoinIcon, item: SwapNetworks.ethereum),
           _ModelItem(iconPath: Images.wbnbCoinIcon, item: SwapNetworks.binance),
           _ModelItem(iconPath: Images.wqtCoinIcon, item: SwapNetworks.matic),
         ],
@@ -353,10 +345,9 @@ class _SwapPageState extends State<SwapPage> {
       context,
       child: _ListBottomWidget(
         onTap: (value) => store.setToken(value),
-        title: 'Choose token',
+        title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
-          _ModelItem(
-              item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
+          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
         ],
       ),
     );

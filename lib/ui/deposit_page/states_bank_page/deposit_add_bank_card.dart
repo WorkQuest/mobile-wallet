@@ -80,9 +80,9 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
               const SizedBox(
                 height: 20,
               ),
-              const Text(
-                'Number of card',
-                style: TextStyle(fontSize: 16),
+              Text(
+                'deposit.numberCard'.tr(),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(
                 height: 5,
@@ -101,7 +101,7 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                   ],
                   validator: (value) {
                     if (_numberCardController.text.length < 19) {
-                      return "Incomplete card number";
+                      return 'errors.incompleteCardNumber'.tr();
                     }
                     return null;
                   },
@@ -111,9 +111,9 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Cardholder name',
-                style: TextStyle(fontSize: 16),
+              Text(
+                'deposit.cardHolder'.tr(),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(
                 height: 5,
@@ -132,7 +132,7 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                   ],
                   validator: (value) {
                     if (_nameCardHolderController.text.length < 19) {
-                      return "Incomplete card number";
+                      return "errors.incompleteCardNumber".tr();
                     }
                     return null;
                   },
@@ -149,9 +149,9 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Date',
-                          style: TextStyle(fontSize: 16),
+                        Text(
+                          'deposit.date'.tr(),
+                          style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(
                           height: 5,
@@ -170,7 +170,7 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                             ],
                             validator: (value) {
                               if (_dateCardController.text.length < 5) {
-                                return "Incomplete date format";
+                                return "errors.incompleteDateFormat".tr();
                               }
                               return null;
                             },
@@ -232,7 +232,7 @@ class _DepositAddBankCardState extends State<DepositAddBankCard> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: DefaultButton(
-                    title: 'Add card',
+                    title: 'wallet.addCard'.tr(),
                     onPressed: _statusButton
                         ? () {
                             if (_formNumberCardKey.currentState!.validate() &&

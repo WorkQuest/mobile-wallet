@@ -65,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 width: double.infinity,
               ),
               _SettingsItem(
-                title: 'Network',
+                title: 'wallet.network'.tr(),
                 subtitle: _getCurrentNameNetwork(),
                 imagePath: Images.settingsNetworkIcon,
                 onTab: () async {
@@ -82,7 +82,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     await PageRouter.pushNewRemoveRoute(
                         context, const LoginPage());
                     WebSocket().closeWebSocket();
+                    final network = AccountRepository().configName!;
                     AccountRepository().clearData();
+                    AccountRepository().setNetwork(network.name);
                   },
                   child: Container(
                     height: 43,
