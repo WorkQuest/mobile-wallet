@@ -29,6 +29,13 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   }
 
   @action
+  clearData() {
+    coins.clear();
+    index = 0;
+    type = TokenSymbols.WQT;
+  }
+
+  @action
   getCoins({bool isForce = true}) async {
     if (isForce) {
       onLoading();

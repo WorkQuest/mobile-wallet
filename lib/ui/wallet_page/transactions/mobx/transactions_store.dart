@@ -32,6 +32,14 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   ConfigNameNetwork get _typeNetwork => AccountRepository().configName!;
 
   @action
+  clearData() {
+    transactions.clear();
+    isMoreLoading = false;
+    canMoreLoading = true;
+    type = TokenSymbols.WQT;
+  }
+
+  @action
   getTransactions() async {
     if (_isOtherNetwork) {
       transactions.clear();
@@ -145,4 +153,5 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }
     return false;
   }
+
 }

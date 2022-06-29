@@ -32,6 +32,14 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   bool get statusButtonTransfer => currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
+  clearData() {
+    addressTo = '';
+    amount = '';
+    fee = '';
+    currentCoin = null;
+  }
+
+  @action
   setAddressTo(String value) => addressTo = value;
 
   @action

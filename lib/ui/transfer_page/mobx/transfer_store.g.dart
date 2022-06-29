@@ -100,6 +100,17 @@ mixin _$TransferStore on TransferStoreBase, Store {
       ActionController(name: 'TransferStoreBase', context: context);
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$TransferStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setAddressTo(String value) {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.setAddressTo');

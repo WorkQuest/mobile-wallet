@@ -48,6 +48,17 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
   @observable
   int secondsCodeAgain = 60;
 
+  @action
+  clearData(){
+    code.clear();
+    canConfirm = false;
+    if (timer != null) {
+      timer!.cancel();
+    }
+    timer = null;
+    secondsCodeAgain = 60;
+  }
+
   Future<void> initTime(String email) async {
     final time = await Storage.read(StorageKeys.timeTimer.toString());
     if ((time ?? "0") != "0") {
@@ -89,4 +100,5 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
     }
     secondsCodeAgain = 60;
   }
+
 }

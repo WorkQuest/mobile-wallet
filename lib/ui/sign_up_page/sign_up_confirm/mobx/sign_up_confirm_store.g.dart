@@ -93,6 +93,17 @@ mixin _$SignUpConfirmStore on SignUpConfirmStoreBase, Store {
       ActionController(name: 'SignUpConfirmStoreBase', context: context);
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$SignUpConfirmStoreBaseActionController.startAction(
+        name: 'SignUpConfirmStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$SignUpConfirmStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic stopTimer() {
     final _$actionInfo = _$SignUpConfirmStoreBaseActionController.startAction(
         name: 'SignUpConfirmStoreBase.stopTimer');

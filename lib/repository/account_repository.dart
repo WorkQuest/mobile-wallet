@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/mobx/sign_up_confirm_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
@@ -60,6 +61,10 @@ class AccountRepository {
     configName = null;
     notifier.value = null;
     _disconnectWeb3Client();
+    GetIt.I.get<TransactionsStore>().clearData();
+    GetIt.I.get<SignUpConfirmStore>().clearData();
+    GetIt.I.get<WalletStore>().clearData();
+    GetIt.I.get<TransferStore>().clearData();
     Storage.deleteAllFromSecureStorage();
   }
 
