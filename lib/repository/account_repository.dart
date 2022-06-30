@@ -3,9 +3,11 @@ import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/mobx/sign_up_confirm_store.dart';
+import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/wallet.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 import '../constants.dart';
 import '../ui/wallet_page/transactions/mobx/transactions_store.dart';
@@ -19,9 +21,12 @@ class AccountRepository {
   AccountRepository._internal();
 
   Wallet? userWallet;
+
   ClientService? client;
-  ConfigNameNetwork? configName;
-  ValueNotifier<ConfigNameNetwork?> notifier = ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
+
+  ValueNotifier<NetworkName?> networkName  = ValueNotifier<NetworkName?>(null);
+
+  ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
@@ -32,24 +37,26 @@ class AccountRepository {
   }
 
   connectClient() {
-    final config = Configs.configsNetwork[configName];
+    final config = Configs.configsNetwork[networkName.value!];
     client = ClientService(config!);
   }
 
-  setNetwork(String name) {
-    final configName = _getNetworkNameKey(name);
-    this.configName = configName;
-    notifier.value = configName;
+  setNetwork(NetworkName networkName) {
+    this.networkName.value = networkName;
+    final _network = Web3Utils.getNetwork(networkName);
+    notifierNetwork.value = _network;
   }
 
-  changeNetwork(ConfigNameNetwork configName) {
-    _saveNetwork(configName);
+  changeNetwork(NetworkName networkName) {
+    _saveNetwork(networkName);
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
     GetIt.I.get<TransferStore>().setCoin(null);
+    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(networkName);
+    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork, showing: false);
   }
 
   setWallet(Wallet wallet) {
@@ -58,8 +65,8 @@ class AccountRepository {
 
   clearData() {
     userWallet = null;
-    configName = null;
-    notifier.value = null;
+    networkName.value = null;
+    notifierNetwork.value = Network.mainnet;
     _disconnectWeb3Client();
     GetIt.I.get<TransactionsStore>().clearData();
     GetIt.I.get<SignUpConfirmStore>().clearData();
@@ -69,13 +76,12 @@ class AccountRepository {
   }
 
   ConfigNetwork getConfigNetwork() {
-    return Configs.configsNetwork[configName]!;
+    return Configs.configsNetwork[networkName.value!]!;
   }
 
-  _saveNetwork(ConfigNameNetwork configName) {
-    this.configName = configName;
-    notifier.value = configName;
-    Storage.write(StorageKeys.configName.toString(), configName.name);
+  _saveNetwork(NetworkName networkName) {
+    this.networkName.value = networkName;
+    Storage.write(StorageKeys.networkName.toString(), networkName.name);
   }
 
   _disconnectWeb3Client() {
@@ -86,28 +92,9 @@ class AccountRepository {
   }
 
   bool get isOtherNetwork =>
-      configName != ConfigNameNetwork.testnet &&
-      configName != ConfigNameNetwork.devnet &&
-      configName != ConfigNameNetwork.mainnet;
+      networkName.value != NetworkName.workNetTestnet &&
+      networkName.value != NetworkName.workNetMainnet;
 
-  ConfigNameNetwork _getNetworkNameKey(String name) {
-    switch (name) {
-      case 'mainnet':
-        return ConfigNameNetwork.mainnet;
-      case 'devnet':
-        return ConfigNameNetwork.devnet;
-      case 'testnet':
-        return ConfigNameNetwork.testnet;
-      case 'rinkeby':
-        return ConfigNameNetwork.rinkeby;
-      case 'polygon':
-        return ConfigNameNetwork.polygon;
-      case 'binance':
-        return ConfigNameNetwork.binance;
-      default:
-        throw Exception('Unknown name network');
-    }
-  }
 }
 
 class BalanceItem {

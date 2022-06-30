@@ -9,6 +9,7 @@ class SelectedItem extends StatelessWidget {
   final bool isSelected;
   final String? iconPath;
   final String? title;
+  final bool isCoin;
 
   const SelectedItem({
     Key? key,
@@ -16,6 +17,7 @@ class SelectedItem extends StatelessWidget {
     required this.iconPath,
     required this.isSelected,
     required this.onTap,
+    this.isCoin = true,
   }) : super(key: key);
 
   @override
@@ -57,7 +59,7 @@ class SelectedItem extends StatelessWidget {
                 ),
               ),
             Text(
-              isSelected ? title! : 'wallet.enterCoin'.tr(),
+              isSelected ? title! : (isCoin ? 'wallet.enterCoin'.tr() : 'swap.choose'.tr(namedArgs: {'object': 'network'})),
               style: TextStyle(
                 fontSize: 16,
                 color: isSelected ? Colors.black : AppColor.disabledText,

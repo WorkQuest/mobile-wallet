@@ -17,7 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../utils/snack_bar.dart';
 import 'language_page.dart';
-import 'network_page.dart';
+import 'network_page/network_page.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -52,12 +52,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: _getTitleLanguage(context.locale),
                 imagePath: Images.settingsLanguageIcon,
                 onTab: () async {
-                  final result = await PageRouter.pushNewRoute(
-                      context, const LanguagePage());
+                  final result = await PageRouter.pushNewRoute(context, const LanguagePage());
                   if (result != null && result) {
                     await Future.delayed(const Duration(milliseconds: 200));
-                    SnackBarUtils.success(context,
-                        title: 'meta.languageChanged'.tr());
+                    SnackBarUtils.success(context, title: 'meta.languageChanged'.tr());
                     widget.update!.call();
                   }
                 },
@@ -68,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               _SettingsItem(
                 title: 'wallet.network'.tr(),
-                subtitle: _getCurrentNameNetwork(),
+                subtitle: _getCurrentNetworkName(),
                 imagePath: Images.settingsNetworkIcon,
                 onTab: () async {
                   await PageRouter.pushNewRoute(context, const NetworkPage());
@@ -77,17 +75,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               Expanded(child: Container()),
               Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
+                padding: const EdgeInsets.only(bottom: 30.0),
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () async {
-                    await PageRouter.pushNewRemoveRoute(
-                        context, const LoginPage());
+                    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
                     WebSocket().closeWebSocket();
-                    final network = AccountRepository().configName!;
                     GetIt.I.get<TransferStore>().setCoin(null);
                     AccountRepository().clearData();
-                    AccountRepository().setNetwork(network.name);
                   },
                   child: Container(
                     height: 43,
@@ -113,10 +108,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  String _getCurrentNameNetwork() {
-    final name =
-        AccountRepository().configName?.name ?? ConfigNameNetwork.testnet.name;
-    return '${name.substring(0, 1).toUpperCase()}${name.substring(1)}';
+  String _getCurrentNetworkName() {
+    final _name = (AccountRepository().notifierNetwork.value).name;
+    return '${_name.substring(0, 1).toUpperCase()}${_name.substring(1)}';
   }
 
   String _getTitleLanguage(Locale locale) {

@@ -201,7 +201,7 @@ class _TransferPageState extends State<TransferPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0, left: 10.0, right: 10.0),
+        padding: const EdgeInsets.only(bottom: 30.0, left: 16.0, right: 16.0),
         child: SizedBox(
           width: double.infinity,
           child: Observer(

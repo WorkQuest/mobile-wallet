@@ -7,10 +7,12 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/mobx/sign_up_confirm_store.dart';
 import 'package:workquest_wallet_app/ui/splash_page/splash_page.dart';
+import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/banner/CustomBanner.dart';
 
 BuildContext? globalContext;
@@ -23,19 +25,20 @@ void main() async {
   GetIt.I.registerSingleton<SignUpConfirmStore>(SignUpConfirmStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
   GetIt.I.registerSingleton<TransferStore>(TransferStore());
-
+  GetIt.I.registerSingleton<SwapStore>(SwapStore());
   try {
     final wallet = await Storage.readWallet();
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-    final configName = await Storage.read(StorageKeys.configName.toString());
-    if (configName == null) {
-      AccountRepository().setNetwork('mainnet');
+    final _networkNameStorage = await Storage.read(StorageKeys.networkName.toString());
+    if (_networkNameStorage == null) {
+      AccountRepository().setNetwork(NetworkName.workNetMainnet);
+      await Storage.write(StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
     } else {
-      AccountRepository().setNetwork(configName);
-      await Storage.write(
-          StorageKeys.configName.toString(), ConfigNameNetwork.mainnet.name);
+      final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
+      AccountRepository().setNetwork(_networkName);
+      await Storage.write(StorageKeys.networkName.toString(), _networkName.name);
     }
   } catch (e) {
     AccountRepository().clearData();
@@ -67,20 +70,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     globalContext = context;
-    return ValueListenableBuilder<ConfigNameNetwork?>(
-      valueListenable: AccountRepository().notifier,
+    return ValueListenableBuilder<Network?>(
+      valueListenable: AccountRepository().notifierNetwork,
       builder: (_, value, child) {
-        final name = value?.name ?? ConfigNameNetwork.mainnet.name;
-        final visible = name != ConfigNameNetwork.mainnet.name;
+        final name = value?.name ?? Network.mainnet.name;
+        final visible = name != Network.mainnet.name;
         return CustomBanner(
           text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
           visible: false,
           color: visible ? AppColor.blue : Colors.transparent,
           textStyle: visible
-              ? const TextStyle(
-                  color: AppColor.enabledText, fontWeight: FontWeight.bold)
-              : const TextStyle(
-                  color: Colors.transparent, fontWeight: FontWeight.bold),
+              ? const TextStyle(color: AppColor.enabledText, fontWeight: FontWeight.bold)
+              : const TextStyle(color: Colors.transparent, fontWeight: FontWeight.bold),
           child: child!,
         );
       },

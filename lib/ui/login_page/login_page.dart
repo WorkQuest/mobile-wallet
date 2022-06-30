@@ -236,13 +236,18 @@ class _HeaderScreenState extends State<_HeaderScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30.0),
-            child: DropDownAdaptiveWidget(
-              value: AccountRepository().configName ?? ConfigNameNetwork.devnet,
+            child: DropDownAdaptiveWidget<Network>(
+              items: Network.values,
+              value: AccountRepository().notifierNetwork.value,
               onChanged: (value) {
                 setState(() {
-                  AccountRepository().setNetwork(value!.name);
-                  Storage.write(StorageKeys.configName.toString(), value.name);
+                  final _networkName =
+                  (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                  AccountRepository().setNetwork(_networkName);
+                  Storage.write(StorageKeys.network.toString(), (value as Network).name);
+                  Storage.write(StorageKeys.networkName.toString(), _networkName.name);
                 });
+                return value;
               },
             ),
           ),

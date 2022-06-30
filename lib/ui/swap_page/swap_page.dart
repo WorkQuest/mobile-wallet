@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -41,14 +42,7 @@ class _SwapPageState extends State<SwapPage> {
 
   @override
   void initState() {
-    store = SwapStore();
-    store.setNetwork(SwapNetworks.ethereum);
-    _showLoading(
-      start: true,
-      message: 'swap.connecting'.tr(
-        namedArgs: {'object': 'server'},
-      ),
-    );
+    store = GetIt.I.get<SwapStore>();
     _amountController = TextEditingController();
     _amountController.addListener(() {
       store.setAmount(double.tryParse(_amountController.text) ?? 0.0);
@@ -72,13 +66,16 @@ class _SwapPageState extends State<SwapPage> {
       body: ObserverListener(
         store: store,
         onSuccess: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (store.successData!) {
+          if (store.successData == SuccessStatus.showing) {
+            Navigator.of(context, rootNavigator: true).pop('dialog');
             AlertDialogUtils.showSuccessDialog(context);
           }
         },
         onFailure: () {
-          Navigator.of(context, rootNavigator: true).pop();
+          if (store.successData == SuccessStatus.showing) {
+            Navigator.of(context, rootNavigator: true).pop('dialog');
+            return false;
+          }
           return false;
         },
         child: Observer(
@@ -108,6 +105,8 @@ class _SwapPageState extends State<SwapPage> {
                             style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           const Spacer(),
+                          if (store.isLoading)
+                            const CircularProgressIndicator.adaptive(),
                           if (!store.isConnect && store.errorMessage != null)
                             SizedBox(
                               height: 18,
@@ -131,10 +130,11 @@ class _SwapPageState extends State<SwapPage> {
                       ),
                       _divider,
                       SelectedItem(
-                        title: _getTitleNetwork(store.network!),
-                        iconPath: _getIconPathNetwork(store.network!),
-                        isSelected: true,
+                        title: _getTitleNetwork(store.network),
+                        iconPath: _getIconPathNetwork(store.network),
+                        isSelected: store.network != null,
                         onTap: _onPressedSelectNetwork,
+                        isCoin: false,
                       ),
                       _spaceDivider,
                       Text(
@@ -291,7 +291,7 @@ class _SwapPageState extends State<SwapPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
         child: DefaultButton(
           title: 'meta.send'.tr(),
           onPressed: _onPressedSend,
@@ -332,9 +332,9 @@ class _SwapPageState extends State<SwapPage> {
         },
         title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
-          _ModelItem(iconPath: Images.wethCoinIcon, item: SwapNetworks.ethereum),
-          _ModelItem(iconPath: Images.wbnbCoinIcon, item: SwapNetworks.binance),
-          _ModelItem(iconPath: Images.wqtCoinIcon, item: SwapNetworks.matic),
+          _ModelItem(iconPath: Images.wethCoinIcon, item: SwapNetworks.ETH),
+          _ModelItem(iconPath: Images.wbnbCoinIcon, item: SwapNetworks.BSC),
+          _ModelItem(iconPath: Images.wqtCoinIcon, item: SwapNetworks.POLYGON),
         ],
       ),
     );
@@ -353,15 +353,8 @@ class _SwapPageState extends State<SwapPage> {
     );
   }
 
-  _getTitleNetwork(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return 'Ethereum Main Network';
-      case SwapNetworks.binance:
-        return 'Binance Smart Chain';
-      case SwapNetworks.matic:
-        return 'Matic Network';
-    }
+  _getTitleNetwork(SwapNetworks? network) {
+    return network?.name ?? 'swap.choose'.tr(namedArgs: {'object': 'network'});
   }
 
   _getTitleToken(SwapToken token) {
@@ -373,14 +366,16 @@ class _SwapPageState extends State<SwapPage> {
     }
   }
 
-  _getIconPathNetwork(SwapNetworks network) {
+  _getIconPathNetwork(SwapNetworks? network) {
     switch (network) {
-      case SwapNetworks.ethereum:
+      case SwapNetworks.ETH:
         return Images.wethCoinIcon;
-      case SwapNetworks.binance:
+      case SwapNetworks.BSC:
         return Images.wbnbCoinIcon;
-      case SwapNetworks.matic:
+      case SwapNetworks.POLYGON:
         return Images.wqtCoinIcon;
+      default:
+        return '';
     }
   }
 }
@@ -531,11 +526,11 @@ class _ListBottomWidget extends StatelessWidget {
       return value.name.toUpperCase();
     } else if (value is SwapNetworks) {
       switch (value) {
-        case SwapNetworks.ethereum:
+        case SwapNetworks.ETH:
           return 'Ethereum Main Network';
-        case SwapNetworks.binance:
+        case SwapNetworks.BSC:
           return 'Binance Smart Chain';
-        case SwapNetworks.matic:
+        case SwapNetworks.POLYGON:
           return 'Matic Network';
       }
     }

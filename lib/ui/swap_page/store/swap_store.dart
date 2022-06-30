@@ -10,16 +10,17 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/client_service.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'swap_store.g.dart';
 
-enum SwapNetworks { ethereum, binance, matic }
+enum SwapNetworks { ETH, BSC, POLYGON }
 
 enum SwapToken { tusdt, usdc }
 
 class SwapStore = SwapStoreBase with _$SwapStore;
 
-abstract class SwapStoreBase extends IStore<bool> with Store {
+abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
   ClientService? service;
 
   double? courseWQT;
@@ -49,17 +50,21 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   bool isSuccessCourse = false;
 
   @action
-  setNetwork(SwapNetworks value) async {
+  setNetwork(SwapNetworks? value, {bool showing = true}) async {
     try {
       onLoading();
       network = value;
       maxAmount = null;
+      if (value == null) {
+        isLoading = false;
+        return;
+      }
       await _connectRpc();
       isConnect = true;
-      onSuccess(false);
+      onSuccess(showing ? SuccessStatus.showing : SuccessStatus.notShowing);
     } catch (e) {
       isConnect = false;
-      onError(e.toString());
+      onError(e.toString(), showing ? SuccessStatus.showing : SuccessStatus.notShowing);
     }
   }
 
@@ -71,8 +76,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async {
-    maxAmount = await service!
-        .getBalanceFromContract(_getTokenUSDT(network!), otherNetwork: true);
+    maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!), otherNetwork: true);
   }
 
   @action
@@ -87,7 +91,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       convertWQT = (amount / courseWQT!) * (1 - 0.01);
       isSuccessCourse = true;
     } catch (e) {
-      onError(e.toString());
+      onError(e.toString(), SuccessStatus.showing);
     }
     isLoadingCourse = false;
   }
@@ -99,8 +103,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       Web3Client _client = service!.ethClient!;
       final _address = AccountRepository().userWallet!.address!;
       final _privateKey = AccountRepository().userWallet!.privateKey!;
-      final _nonce =
-          await _client.getTransactionCount(EthereumAddress.fromHex(_address));
+      final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
       final _cred = await service!.getCredentials(_privateKey);
       final _gas = await service!.getGas();
       final _chainId = await service!.ethClient!.getChainId();
@@ -142,17 +145,17 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         final result = await _client.getTransactionReceipt(_hashTx);
         if (result != null) {
           getMaxBalance();
-          onSuccess(true);
+          onSuccess(SuccessStatus.showing);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
         _attempts++;
       }
       getMaxBalance();
-      onError('Waiting time has expired');
+      onError('Waiting time has expired', SuccessStatus.showing);
     } catch (e, trace) {
       print('createSwap | e: $e\ntrace: $trace');
-      onError(e.toString());
+      onError(e.toString(), SuccessStatus.showing);
     }
   }
 
@@ -163,23 +166,23 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       service = null;
     }
     service = ClientService(
-      Configs.configsNetwork[ConfigNameNetwork.testnet]!,
-      customRpc: _getRpcNetwork(network!),
+      Configs.configsNetwork[NetworkName.workNetMainnet]!,
+      customRpc: Web3Utils.getRpcNetworkForSwap(network!),
     );
     await Future.delayed(const Duration(seconds: 2));
     await getMaxBalance();
   }
 
   _approve() async {
-    final contract = Erc20(
-        address: EthereumAddress.fromHex(_getTokenUSDT(network!)),
-        client: service!.ethClient!);
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)), client: service!.ethClient!);
 
     print('address: ${AccountRepository().userWallet!.address!}');
-    final _cred = await service!
-        .getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
     print('address: ${_cred.address}');
-    final _spender = EthereumAddress.fromHex(_getAddressContract(network!));
+    final _spender = EthereumAddress.fromHex(
+      Web3Utils.getAddressContractForSwap(network!),
+    );
     final _gas = await service!.getGas();
     await contract.approve(_spender, BigInt.from(amount * pow(10, 6)),
         credentials: _cred,
@@ -191,45 +194,11 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   Future<DeployedContract> _getContract() async {
-    final _abiJson =
-        await rootBundle.loadString("assets/contracts/WQBridge.json");
+    final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
     final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(
-      _getAddressContract(network!),
-    );
+    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     return DeployedContract(_contractAbi, _contractAddress);
   }
-
-  String _getAddressContract(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return '0x9870a749Ae5CdbC4F96E3D0C067eB212779a8FA1';
-      case SwapNetworks.binance:
-        return '0x833d71EF0b51Aa9Fb69b1f986381132628ED10F3';
-      case SwapNetworks.matic:
-        return '0xE2e7518080a0097492087E652E8dEB1f6b96B62b';
-    }
-  }
-
-  String _getRpcNetwork(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
-      case SwapNetworks.binance:
-        return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
-      case SwapNetworks.matic:
-        return 'https://rpc-mumbai.matic.today';
-    }
-  }
-
-  String _getTokenUSDT(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return '0xD92E713d051C37EbB2561803a3b5FBAbc4962431';
-      case SwapNetworks.binance:
-        return '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A';
-      case SwapNetworks.matic:
-        return '0x631E327EA88C37D4238B5c559A715332266e7Ec1';
-    }
-  }
 }
+
+enum SuccessStatus { showing, notShowing }

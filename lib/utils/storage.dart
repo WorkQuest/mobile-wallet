@@ -40,5 +40,6 @@ enum StorageKeys {
   pinCode,
   email,
   timeTimer,
-  configName
+  networkName,
+  network
 }

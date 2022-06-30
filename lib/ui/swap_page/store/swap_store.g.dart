@@ -140,8 +140,9 @@ mixin _$SwapStore on SwapStoreBase, Store {
       AsyncAction('SwapStoreBase.setNetwork', context: context);
 
   @override
-  Future setNetwork(SwapNetworks value) {
-    return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
+  Future setNetwork(SwapNetworks? value, {bool showing = true}) {
+    return _$setNetworkAsyncAction
+        .run(() => super.setNetwork(value, showing: showing));
   }
 
   late final _$getMaxBalanceAsyncAction =

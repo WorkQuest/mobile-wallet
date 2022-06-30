@@ -16,7 +16,6 @@ import '../model/course_tokens_response.dart';
 import '../model/txs_info_response.dart';
 
 class Api {
-
   static final Api _instance = Api._internal();
 
   factory Api() => _instance;
@@ -24,46 +23,43 @@ class Api {
   Api._internal();
 
   String get _baseUrl {
-    if (_network == ConfigNameNetwork.testnet) {
+    if (_network == Network.testnet) {
       return 'https://testnet-app.workquest.co/api/v1';
-    } else if (_network == ConfigNameNetwork.devnet) {
-      return 'https://dev-app.workquest.co/api/v1';
-    } else if (_network == ConfigNameNetwork.mainnet) {
+    } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api/v1';
     }
     return 'https://app.workquest.co/api/v1';
   }
 
-  ConfigNameNetwork get _network => AccountRepository().configName ?? ConfigNameNetwork.binance;
-
-  ConfigNameNetwork getConfigApi() {
-    if (_baseUrl == 'https://testnet-app.workquest.co/api/v1') {
-      return ConfigNameNetwork.testnet;
-    } else if (_baseUrl == 'https://dev-app.workquest.co/api/v1') {
-      return ConfigNameNetwork.devnet;
-    } else {
-      return ConfigNameNetwork.mainnet;
-    }
-  }
+  Network get _network => AccountRepository().notifierNetwork.value;
 
   String get _register => "$_baseUrl/auth/register";
-  String get _login => "$_baseUrl/auth/login/wallet";
-  String get _confirmEmail => "$_baseUrl/auth/confirm-email";
-  String get _refreshTokens => "$_baseUrl/auth/refresh-tokens";
-  String get _resendEmail => "$_baseUrl/auth/main/resend-email";
-  String get _registerWallet => "$_baseUrl/auth/register/wallet";
-  String get _courseWQT =>
-      "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
 
-  String _walletAddressProfile(String address) =>
-      "$_baseUrl/profile/wallet/$address";
+  String get _login => "$_baseUrl/auth/login/wallet";
+
+  String get _confirmEmail => "$_baseUrl/auth/confirm-email";
+
+  String get _refreshTokens => "$_baseUrl/auth/refresh-tokens";
+
+  String get _resendEmail => "$_baseUrl/auth/main/resend-email";
+
+  String get _registerWallet => "$_baseUrl/auth/register/wallet";
+
+  String get _courseWQT {
+    if (_network == Network.testnet) {
+
+    } else {
+
+    }
+    return "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+  }
+
+  String _walletAddressProfile(String address) => "$_baseUrl/profile/wallet/$address";
 
   String _transactions(String address) {
-    if (_network == ConfigNameNetwork.testnet) {
+    if (_network == Network.testnet) {
       return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
-    } else if (_network == ConfigNameNetwork.devnet) {
-      return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
-    } else  {
+    } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     }
   }
@@ -72,11 +68,9 @@ class Api {
     required String address,
     required String addressToken,
   }) {
-    if (_network == ConfigNameNetwork.testnet) {
+    if (_network == Network.testnet) {
       return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
-    } else if (_network == ConfigNameNetwork.devnet) {
-      return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
-    } else  {
+    } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
   }
@@ -88,10 +82,14 @@ class Api {
 
   final _dio = MyHttpClient().dio;
 
-  Future<Response?> login(String signature, String address) async {
+  Future<Response?> login(String signature, String address, {bool? isMain}) async {
     try {
       final response = await _dio.post(
-        _login,
+        isMain == null
+            ? _login
+            : (isMain
+                ? 'https://app.workquest.co/api/v1/auth/login/wallet'
+                : 'https://testnet-app.workquest.co/api/v1/auth/login/wallet'),
         data: {
           "signature": signature,
           "address": address,
@@ -259,11 +257,9 @@ class Api {
     return null;
   }
 
-  Future<List<Tx>?> getTransactions(String address,
-      {int limit = 10, int offset = 0}) async {
+  Future<List<Tx>?> getTransactions(String address, {int limit = 10, int offset = 0}) async {
     try {
-      final response = await _dio
-          .get('${_transactions(address)}?limit=$limit&offset=$offset');
+      final response = await _dio.get('${_transactions(address)}?limit=$limit&offset=$offset');
 
       if (response.statusCode != 200) {
         final message = await getTranslateMessage(
@@ -300,8 +296,7 @@ class Api {
         throw FormatException(message);
       }
 
-      return List<Tx>.from(
-          response.data['result']['txs'].map((x) => Tx.fromJson(x)));
+      return List<Tx>.from(response.data['result']['txs'].map((x) => Tx.fromJson(x)));
     } on DioError catch (e) {
       await handleError(e);
     }
@@ -342,8 +337,7 @@ class Api {
       }
 
       final result = CourseTokenResponse.fromJson(response.data);
-      final _indexWQT =
-          result.result!.symbols!.indexWhere((element) => element == 'WQT');
+      final _indexWQT = result.result!.symbols!.indexWhere((element) => element == 'WQT');
       final _course = result.result!.prices![_indexWQT];
       return double.parse(_course) * pow(10, -18);
     } on DioError catch (e) {
@@ -377,8 +371,7 @@ class Api {
     try {
       String fileString;
       print("language string ${EasyLocalization.of(globalContext!)!.locale}");
-      if (EasyLocalization.of(globalContext!)!.locale ==
-          const Locale("ru", "RU")) {
+      if (EasyLocalization.of(globalContext!)!.locale == const Locale("ru", "RU")) {
         fileString = await rootBundle.loadString('assets/lang/ru-RU.json');
       } else {
         fileString = await rootBundle.loadString('assets/lang/en-US.json');

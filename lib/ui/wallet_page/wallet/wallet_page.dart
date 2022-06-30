@@ -19,7 +19,9 @@ import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactio
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/ui/withdraw_page/withdraw_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
+import 'package:workquest_wallet_app/widgets/dropdown_adaptive_widget.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/shimmer.dart';
 
@@ -41,6 +43,28 @@ class _WalletPageState extends State<WalletPage> {
       backgroundColor: Colors.white,
       appBar: MainAppBar(
         title: 'wallet.wallet'.tr(),
+        actions: [
+          ValueListenableBuilder<NetworkName?>(
+            valueListenable: AccountRepository().networkName,
+            builder: (_, value, child) {
+              final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+              return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                value: _networkName,
+                onChanged: (value) {
+                  final _newNetwork =
+                      Web3Utils.getNetworkNameFromSwitchNetworkName(value as SwitchNetworkNames, AccountRepository().notifierNetwork
+                          .value);
+                  AccountRepository().changeNetwork(_newNetwork);
+
+                  return value;
+                },
+                items: SwitchNetworkNames.values,
+                colorText: Colors.black,
+                haveIcon: true,
+              );
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: _padding,
@@ -52,16 +76,12 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return Platform.isAndroid
         ? RefreshIndicator(
-            displacement: 20,
-            triggerMode: RefreshIndicatorTriggerMode.anywhere,
-            onRefresh: _onRefresh,
-            child: layout())
+            displacement: 20, triggerMode: RefreshIndicatorTriggerMode.anywhere, onRefresh: _onRefresh, child: layout())
         : layout();
   }
 
   Widget layout() {
-    final address =
-        AddressService().hexToBech32(AccountRepository().userWallet!.address!);
+    final address = AddressService().hexToBech32(AccountRepository().userWallet!.address!);
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
@@ -110,9 +130,7 @@ class _WalletPageState extends State<WalletPage> {
                     height: 34,
                     width: 34,
                     padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        color: AppColor.disabledButton),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
                     child: SvgPicture.asset(
                       Images.walletCopyIcon,
                       color: AppColor.enabledButton,
@@ -140,10 +158,7 @@ class _WalletPageState extends State<WalletPage> {
               titlePadding: const EdgeInsets.only(bottom: 12.0),
               title: Text(
                 'wallet.table.trx'.tr(),
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -217,8 +232,7 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                           padding: EdgeInsets.zero,
                           pressedOpacity: 0.2,
                           onPressed: () {
-                            PageRouter.pushNewRoute(
-                                context, const WithdrawPage());
+                            PageRouter.pushNewRoute(context, const WithdrawPage());
                           },
                           child: Container(
                             height: 43,
@@ -247,8 +261,7 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                         child: DefaultButton(
                           title: 'wallet'.tr(gender: 'deposit'),
                           onPressed: () {
-                            PageRouter.pushNewRoute(
-                                context, const DepositPage());
+                            PageRouter.pushNewRoute(context, const DepositPage());
                           },
                         ),
                       )
@@ -345,8 +358,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(
-                                  balance.symbol.name, balance.amount!),
+                              _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -378,14 +390,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
                     );

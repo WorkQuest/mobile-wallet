@@ -2,46 +2,89 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:workquest_wallet_app/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 
 const _styleTextItem = TextStyle(color: Colors.black);
 
-class DropDownAdaptiveWidget extends StatefulWidget {
-  final ConfigNameNetwork value;
-  final Function(ConfigNameNetwork? network)? onChanged;
+class DropDownAdaptiveWidget<T> extends StatefulWidget {
+  final T value;
+  final List<T> items;
+  final dynamic Function(dynamic value) onChanged;
+  final Color colorText;
+  final bool haveIcon;
 
   const DropDownAdaptiveWidget({
     Key? key,
     required this.value,
     required this.onChanged,
+    required this.items,
+    this.colorText = Colors.white,
+    this.haveIcon = false,
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState createState() => _DropDownAdaptiveWidgetState();
+  _DropDownAdaptiveWidgetState<T> createState() => _DropDownAdaptiveWidgetState<T>();
 }
 
-class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
+class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      width: 120,
+    final _isWorkNet = _getTitleItem(widget.value.toString()) == 'WORKNET';
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 50,
+        maxHeight: 50,
+        minWidth: 150,
+        maxWidth: 200,
+      ),
       child: Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.centerRight,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              if (widget.haveIcon)
+                if (_isWorkNet)
+                  GradientIcon(
+                    icon: SvgPicture.asset(
+                      _getPathIcons(
+                        _getTitleItem(
+                          widget.value.toString(),
+                        ),
+                      ),
+                      width: 35,
+                      height: 35,
+                    ),
+                    size: 35,
+                  )
+                else
+                  SvgPicture.asset(
+                    _getPathIcons(
+                      _getTitleItem(
+                        widget.value.toString(),
+                      ),
+                    ),
+                    width: 35,
+                    height: 35,
+                  ),
+              const SizedBox(
+                width: 16,
+              ),
               Text(
-                _getTitleItem(widget.value.name),
-                style: const TextStyle(
+                _getTitleItem(widget.value.toString()),
+                style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white,
+                  color: widget.colorText,
                 ),
               ),
-              const Spacer(),
-              const Icon(
+              const SizedBox(
+                width: 32,
+              ),
+              Icon(
                 Icons.arrow_drop_down,
-                color: Colors.white,
+                color: widget.colorText,
               ),
             ],
           ),
@@ -50,38 +93,22 @@ class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
               child: Opacity(
                 opacity: 0.0,
                 child: DropdownCard(
-                  child: DropdownButton<ConfigNameNetwork>(
+                  child: DropdownButton<T>(
                     style: const TextStyle(fontSize: 16, color: Colors.white),
                     iconEnabledColor: Colors.white,
                     value: widget.value,
                     isDense: true,
-                    items: [
-                      DropdownMenuItem<ConfigNameNetwork>(
-                        value: ConfigNameNetwork.mainnet,
-                        onTap: () {},
-                        child: Text(
-                          _getTitleItem(ConfigNameNetwork.mainnet.name),
-                          style: _styleTextItem,
-                        ),
-                      ),
-                      DropdownMenuItem<ConfigNameNetwork>(
-                        value: ConfigNameNetwork.testnet,
-                        onTap: () {},
-                        child: Text(
-                          _getTitleItem(ConfigNameNetwork.testnet.name),
-                          style: _styleTextItem,
-                        ),
-                      ),
-                      DropdownMenuItem<ConfigNameNetwork>(
-                        value: ConfigNameNetwork.devnet,
-                        onTap: () {},
-                        child: Text(
-                          _getTitleItem(ConfigNameNetwork.devnet.name),
-                          style: _styleTextItem,
-                        ),
-                      ),
-                    ],
-                    onChanged: widget.onChanged,
+                    items: widget.items
+                        .map((e) => DropdownMenuItem<T>(
+                              value: e,
+                              onTap: () {},
+                              child: Text(
+                                _getTitleItem(e.toString()),
+                                style: _styleTextItem,
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) => widget.onChanged(value),
                   ),
                 ),
               ),
@@ -90,11 +117,7 @@ class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
             Positioned.fill(
               child: InkWell(
                 onTap: () {
-                  final children = [
-                    ConfigNameNetwork.mainnet,
-                    ConfigNameNetwork.testnet,
-                    ConfigNameNetwork.devnet,
-                  ];
+                  final List<T> children = widget.items as List<T>;
                   showModalBottomSheet(
                     context: context,
                     shape: const RoundedRectangleBorder(
@@ -104,7 +127,7 @@ class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      var changedEmployment = widget.value;
+                      T changedEmployment = widget.value;
                       return Container(
                         height: 150.0 + MediaQuery.of(context).padding.bottom,
                         padding: EdgeInsets.only(
@@ -122,15 +145,14 @@ class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
                                 onSelectedItemChanged: (int index) {
                                   changedEmployment = children[index];
                                 },
-                                children: children
-                                    .map((e) => Center(child: Text(_getTitleItem(e.name))))
-                                    .toList(),
+                                children:
+                                    children.map((e) => Center(child: Text(_getTitleItem(e.toString())))).toList(),
                               ),
                             ),
                             CupertinoButton(
                               child: const Text("OK"),
                               onPressed: () {
-                                widget.onChanged!.call(changedEmployment);
+                                widget.onChanged(changedEmployment);
                                 Navigator.pop(context);
                               },
                             ),
@@ -148,8 +170,21 @@ class _DropDownAdaptiveWidgetState extends State<DropDownAdaptiveWidget> {
     );
   }
 
+  String _getPathIcons(String value) {
+    if (value == 'WORKNET') {
+      return 'assets/svg/wq_logo.svg';
+    } else if (value == 'ETH') {
+      return 'assets/svg/eth_logo.svg';
+    } else if (value == 'BSC') {
+      return 'assets/svg/bsc_logo.svg';
+    } else {
+      return 'assets/svg/polygon_logo.svg';
+    }
+  }
+
   String _getTitleItem(String value) {
-    return '${value.substring(0, 1).toUpperCase()}${value.substring(1)}';
+    final _result = value.split('.').last;
+    return '${_result.substring(0, 1).toUpperCase()}${_result.substring(1)}';
   }
 }
 

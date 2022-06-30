@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
+  final List<Widget>? actions;
 
   const MainAppBar({
     Key? key,
     required this.title,
+    this.actions,
   }) : super(key: key);
 
   @override
@@ -25,6 +27,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
+      actions: actions,
     );
   }
 

@@ -29,7 +29,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   String get myAddress => AccountRepository().userWallet!.address!;
 
-  ConfigNameNetwork get _typeNetwork => AccountRepository().configName!;
+  NetworkName get _typeNetwork => AccountRepository().networkName.value!;
 
   @action
   clearData() {
@@ -146,9 +146,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   }
 
   bool get _isOtherNetwork {
-    if (_typeNetwork != ConfigNameNetwork.testnet &&
-        _typeNetwork != ConfigNameNetwork.devnet &&
-        _typeNetwork != ConfigNameNetwork.mainnet) {
+    if (_typeNetwork != NetworkName.workNetTestnet &&
+        _typeNetwork != NetworkName.workNetMainnet) {
       return true;
     }
     return false;
