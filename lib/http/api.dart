@@ -24,7 +24,7 @@ class Api {
 
   String get _baseUrl {
     if (_network == Network.testnet) {
-      return 'https://testnet-app.workquest.co/api/v1';
+      return 'https://dev-app.workquest.co/api/v1';
     } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api/v1';
     }
@@ -89,7 +89,7 @@ class Api {
             ? _login
             : (isMain
                 ? 'https://app.workquest.co/api/v1/auth/login/wallet'
-                : 'https://testnet-app.workquest.co/api/v1/auth/login/wallet'),
+                : 'https://dev-app.workquest.co/api/v1/auth/login/wallet'),
         data: {
           "signature": signature,
           "address": address,
