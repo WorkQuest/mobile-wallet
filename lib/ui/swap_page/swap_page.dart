@@ -61,8 +61,8 @@ class _SwapPageState extends State<SwapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: MainAppBar(
-        title: 'swap.buying'.tr(),
+      appBar: const MainAppBar(
+        title: 'Swap',
       ),
       body: ObserverListener(
         store: store,
@@ -106,8 +106,7 @@ class _SwapPageState extends State<SwapPage> {
                             style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           const Spacer(),
-                          if (store.isLoading)
-                            const CircularProgressIndicator.adaptive(),
+                          if (store.isLoading) const CircularProgressIndicator.adaptive(),
                           if (!store.isConnect && store.errorMessage != null)
                             SizedBox(
                               height: 18,
@@ -252,8 +251,10 @@ class _SwapPageState extends State<SwapPage> {
                                 qRCornerColor: Colors.blue,
                                 qRScannerColor: Colors.white,
                                 flashlightEnable: true,
-                                scanAreaScale: 0.7 /// value 0.0 to 1.0
-                            );
+                                scanAreaScale: 0.7
+
+                                /// value 0.0 to 1.0
+                                );
                             print('qrResult: $qrResult');
                             if (qrResult != null) {
                               _addressToController.text = qrResult;
@@ -290,6 +291,33 @@ class _SwapPageState extends State<SwapPage> {
                       Row(
                         children: [
                           Text('swap.amountOfWQT'.tr()),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColor.enabledButton,
+                                  AppColor.blue,
+                                ],
+                              ),
+                            ),
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: SvgPicture.asset(
+                                'assets/svg/wqt_coin_icon.svg',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          const Text('≈'),
                           const SizedBox(
                             width: 2,
                           ),

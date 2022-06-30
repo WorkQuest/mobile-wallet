@@ -54,10 +54,10 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                           widget.value.toString(),
                         ),
                       ),
-                      width: 35,
-                      height: 35,
+                      width: 24,
+                      height: 24,
                     ),
-                    size: 35,
+                    size: 24,
                   )
                 else
                   SvgPicture.asset(
@@ -66,8 +66,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                         widget.value.toString(),
                       ),
                     ),
-                    width: 35,
-                    height: 35,
+                    width: 24,
+                    height: 24,
                   ),
               const SizedBox(
                 width: 16,

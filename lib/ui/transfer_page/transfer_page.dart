@@ -40,7 +40,6 @@ class _TransferPageState extends State<TransferPage> {
   final TextEditingController _amountController = TextEditingController();
   final _key = GlobalKey<FormState>();
 
-  final String coinsPath = "assets/coins";
   late final List<CoinItem> _coins = [];
 
   late TransferStore store;

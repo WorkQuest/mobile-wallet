@@ -75,7 +75,7 @@
     "return": "Return",
     "copied": "Copied",
     "error": "Error",
-    "serviceUnavailable": "Service temporarily unavailable",
+    "serviceUnavailable": "Coming soon",
     "languageChanged": "Language has been successfully changed",
     "press_back": "Press back to exit"
   },
@@ -182,7 +182,7 @@
     "withdraw": "Withdraw",
     "transfer": "Transfer",
     "addCardProposal": "Add your own card for easy withdrawal",
-    "addCard": "Add card",
+    "addCard": "Add now",
     "addCartToContinue": "You have to add your card to continue",
     "copy": "Wallet address copied to clipboard",
     "recipientsAddress": "Recipient's address",
@@ -378,7 +378,7 @@
     "amountBalance": "Amount (Balance: {maxAmount})",
     "addressWalletTo": "Address wallet to",
     "addressTo": "Address to",
-    "amountOfWQT": "Amount of WQT ≈"
+    "amountOfWQT": "Amount of WQT"
   },
   "lang": {
     "english": "English",

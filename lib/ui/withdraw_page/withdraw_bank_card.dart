@@ -21,13 +21,6 @@ class _WithdrawBankCardState extends State<WithdrawBankCard>
 
   @override
   Widget build(BuildContext context) {
-    return WithdrawChooseBankCard(
-      onTab: () {
-        setState(() {
-          _addingBankCard = !_addingBankCard;
-        });
-      },
-    );
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
       firstChild: WithdrawChooseBankCard(
