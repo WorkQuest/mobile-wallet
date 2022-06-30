@@ -31,14 +31,17 @@ void main() async {
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-    final _networkNameStorage = await Storage.read(StorageKeys.networkName.toString());
+    final _networkNameStorage =
+        await Storage.read(StorageKeys.networkName.toString());
     if (_networkNameStorage == null) {
       AccountRepository().setNetwork(NetworkName.workNetMainnet);
-      await Storage.write(StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
+      await Storage.write(
+          StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
       AccountRepository().setNetwork(_networkName);
-      await Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+      await Storage.write(
+          StorageKeys.networkName.toString(), _networkName.name);
     }
   } catch (e) {
     AccountRepository().clearData();
@@ -80,8 +83,10 @@ class MyApp extends StatelessWidget {
           visible: false,
           color: visible ? AppColor.blue : Colors.transparent,
           textStyle: visible
-              ? const TextStyle(color: AppColor.enabledText, fontWeight: FontWeight.bold)
-              : const TextStyle(color: Colors.transparent, fontWeight: FontWeight.bold),
+              ? const TextStyle(
+                  color: AppColor.enabledText, fontWeight: FontWeight.bold)
+              : const TextStyle(
+                  color: Colors.transparent, fontWeight: FontWeight.bold),
           child: child!,
         );
       },

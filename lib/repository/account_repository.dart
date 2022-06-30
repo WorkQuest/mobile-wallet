@@ -24,9 +24,10 @@ class AccountRepository {
 
   ClientService? client;
 
-  ValueNotifier<NetworkName?> networkName  = ValueNotifier<NetworkName?>(null);
+  ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
 
-  ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
+  ValueNotifier<Network> notifierNetwork =
+      ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
@@ -96,7 +97,6 @@ class AccountRepository {
   bool get isOtherNetwork =>
       networkName.value != NetworkName.workNetTestnet &&
       networkName.value != NetworkName.workNetMainnet;
-
 }
 
 class BalanceItem {

@@ -32,9 +32,10 @@ abstract class SignUpProfileStoreBase extends IStore<bool> with Store {
       onLoading();
       await Future.delayed(const Duration(seconds: 1));
       if (AccountRepository().networkName.value == null) {
-        final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
+        final _networkName =
+            AccountRepository().notifierNetwork.value == Network.mainnet
+                ? NetworkName.workNetMainnet
+                : NetworkName.workNetTestnet;
         AccountRepository().setNetwork(_networkName);
       }
       final result = await Api().register(

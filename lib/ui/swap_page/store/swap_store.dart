@@ -82,7 +82,8 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
       onSuccess(showing ? SuccessStatus.showing : SuccessStatus.notShowing);
     } catch (e) {
       isConnect = false;
-      onError(e.toString(), showing ? SuccessStatus.showing : SuccessStatus.notShowing);
+      onError(e.toString(),
+          showing ? SuccessStatus.showing : SuccessStatus.notShowing);
     }
   }
 
@@ -94,7 +95,9 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
 
   @action
   getMaxBalance() async {
-    maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!), otherNetwork: true);
+    maxAmount = await service!.getBalanceFromContract(
+        Web3Utils.getTokenUSDTForSwap(network!),
+        otherNetwork: true);
   }
 
   @action
@@ -121,7 +124,8 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
       Web3Client _client = service!.ethClient!;
       final _address = AccountRepository().userWallet!.address!;
       final _privateKey = AccountRepository().userWallet!.privateKey!;
-      final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
+      final _nonce =
+          await _client.getTransactionCount(EthereumAddress.fromHex(_address));
       final _cred = await service!.getCredentials(_privateKey);
       final _gas = await service!.getGas();
       final _chainId = await service!.ethClient!.getChainId();
@@ -192,11 +196,14 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
   }
 
   _approve() async {
-    final contract =
-        Erc20(address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)), client: service!.ethClient!);
+    final contract = Erc20(
+        address:
+            EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
+        client: service!.ethClient!);
 
     print('address: ${AccountRepository().userWallet!.address!}');
-    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _cred = await service!
+        .getCredentials(AccountRepository().userWallet!.privateKey!);
     print('address: ${_cred.address}');
     final _spender = EthereumAddress.fromHex(
       Web3Utils.getAddressContractForSwap(network!),
@@ -212,9 +219,11 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
   }
 
   Future<DeployedContract> _getContract() async {
-    final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
+    final _abiJson =
+        await rootBundle.loadString("assets/contracts/WQBridge.json");
     final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+    final _contractAddress =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     return DeployedContract(_contractAbi, _contractAddress);
   }
 }

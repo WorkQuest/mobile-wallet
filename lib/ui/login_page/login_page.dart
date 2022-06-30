@@ -135,7 +135,8 @@ class _ContentScreenState extends State<_ContentScreen> {
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
                 if (store.successData!) {
-                  PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                  PageRouter.pushNewReplacementRoute(
+                      context, const PinCodePage());
                 } else {
                   final result = await PageRouter.pushNewRoute(
                       context,
@@ -186,7 +187,8 @@ class _ContentScreenState extends State<_ContentScreen> {
                   onPressed: store.isLoading
                       ? null
                       : () {
-                          PageRouter.pushNewRoute(context, const SignUpCreateProfile());
+                          PageRouter.pushNewRoute(
+                              context, const SignUpCreateProfile());
                         },
                   title: 'signIn.createProfile'.tr(),
                 ),
@@ -224,7 +226,8 @@ class _HeaderScreenState extends State<_HeaderScreen> {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),
@@ -241,11 +244,14 @@ class _HeaderScreenState extends State<_HeaderScreen> {
               value: AccountRepository().notifierNetwork.value,
               onChanged: (value) {
                 setState(() {
-                  final _networkName =
-                  (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                  final _networkName = (value as Network) == Network.mainnet
+                      ? NetworkName.workNetMainnet
+                      : NetworkName.workNetTestnet;
                   AccountRepository().setNetwork(_networkName);
-                  Storage.write(StorageKeys.network.toString(), (value as Network).name);
-                  Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+                  Storage.write(
+                      StorageKeys.network.toString(), (value as Network).name);
+                  Storage.write(
+                      StorageKeys.networkName.toString(), _networkName.name);
                 });
                 return value;
               },

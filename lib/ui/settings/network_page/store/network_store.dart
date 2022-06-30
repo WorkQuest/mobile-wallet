@@ -16,16 +16,18 @@ abstract class _NetworkStoreBase extends IStore<bool> with Store {
   @action
   setNetwork(Network value) => network = value;
 
-
   @action
   changeNetwork(Network newNetwork) async {
     try {
       onLoading();
       final _wallet = AccountRepository().userWallet!;
-      final signature = await AccountRepository().client!.getSignature(_wallet.privateKey!);
-      await Api().login(signature, AccountRepository().userAddress, isMain: newNetwork == Network.mainnet);
+      final signature =
+          await AccountRepository().client!.getSignature(_wallet.privateKey!);
+      await Api().login(signature, AccountRepository().userAddress,
+          isMain: newNetwork == Network.mainnet);
       print('oldNetworkName: ${AccountRepository().networkName.value!}');
-      final _newNetworkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
+      final _newNetworkName =
+          Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
       print('newNetworkName: $_newNetworkName');
       AccountRepository().notifierNetwork.value = newNetwork;
       AccountRepository().changeNetwork(_newNetworkName);
@@ -37,5 +39,4 @@ abstract class _NetworkStoreBase extends IStore<bool> with Store {
       onError(e.toString());
     }
   }
-
 }

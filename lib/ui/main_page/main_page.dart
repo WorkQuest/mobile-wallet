@@ -118,14 +118,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ValueListenableBuilder<NetworkName?>(
                 valueListenable: AccountRepository().networkName,
                 builder: (_, value, child) {
-                  final _title = Web3Utils.getTitleOtherNetwork(value ?? NetworkName.workNetMainnet);
+                  final _title = Web3Utils.getTitleOtherNetwork(
+                      value ?? NetworkName.workNetMainnet);
                   if (_title == null) {
                     return const SizedBox.shrink();
                   }
                   return Container(
                     height: 22,
                     width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 50.0 + MediaQuery.of(context).padding.bottom),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 50.0 + MediaQuery.of(context).padding.bottom),
                     decoration: const BoxDecoration(
                         color: AppColor.enabledButton,
                         gradient: LinearGradient(
@@ -157,7 +159,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       return false;
     }
 
-    if (_exitAttempt + _doubleTapDuration > DateTime.now().millisecondsSinceEpoch) {
+    if (_exitAttempt + _doubleTapDuration >
+        DateTime.now().millisecondsSinceEpoch) {
       return true;
     } else {
       _exitAttempt = DateTime.now().millisecondsSinceEpoch;

@@ -49,7 +49,7 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
   int secondsCodeAgain = 60;
 
   @action
-  clearData(){
+  clearData() {
     code.clear();
     canConfirm = false;
     if (timer != null) {
@@ -100,5 +100,4 @@ abstract class SignUpConfirmStoreBase extends IStore<bool> with Store {
     }
     secondsCodeAgain = 60;
   }
-
 }

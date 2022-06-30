@@ -47,14 +47,12 @@ class Api {
 
   String get _courseWQT {
     if (_network == Network.testnet) {
-
-    } else {
-
-    }
+    } else {}
     return "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
   }
 
-  String _walletAddressProfile(String address) => "$_baseUrl/profile/wallet/$address";
+  String _walletAddressProfile(String address) =>
+      "$_baseUrl/profile/wallet/$address";
 
   String _transactions(String address) {
     if (_network == Network.testnet) {
@@ -82,7 +80,8 @@ class Api {
 
   final _dio = MyHttpClient().dio;
 
-  Future<Response?> login(String signature, String address, {bool? isMain}) async {
+  Future<Response?> login(String signature, String address,
+      {bool? isMain}) async {
     try {
       final response = await _dio.post(
         isMain == null
@@ -257,9 +256,11 @@ class Api {
     return null;
   }
 
-  Future<List<Tx>?> getTransactions(String address, {int limit = 10, int offset = 0}) async {
+  Future<List<Tx>?> getTransactions(String address,
+      {int limit = 10, int offset = 0}) async {
     try {
-      final response = await _dio.get('${_transactions(address)}?limit=$limit&offset=$offset');
+      final response = await _dio
+          .get('${_transactions(address)}?limit=$limit&offset=$offset');
 
       if (response.statusCode != 200) {
         final message = await getTranslateMessage(
@@ -296,7 +297,8 @@ class Api {
         throw FormatException(message);
       }
 
-      return List<Tx>.from(response.data['result']['txs'].map((x) => Tx.fromJson(x)));
+      return List<Tx>.from(
+          response.data['result']['txs'].map((x) => Tx.fromJson(x)));
     } on DioError catch (e) {
       await handleError(e);
     }
@@ -337,7 +339,8 @@ class Api {
       }
 
       final result = CourseTokenResponse.fromJson(response.data);
-      final _indexWQT = result.result!.symbols!.indexWhere((element) => element == 'WQT');
+      final _indexWQT =
+          result.result!.symbols!.indexWhere((element) => element == 'WQT');
       final _course = result.result!.prices![_indexWQT];
       return double.parse(_course) * pow(10, -18);
     } on DioError catch (e) {
@@ -371,7 +374,8 @@ class Api {
     try {
       String fileString;
       print("language string ${EasyLocalization.of(globalContext!)!.locale}");
-      if (EasyLocalization.of(globalContext!)!.locale == const Locale("ru", "RU")) {
+      if (EasyLocalization.of(globalContext!)!.locale ==
+          const Locale("ru", "RU")) {
         fileString = await rootBundle.loadString('assets/lang/ru-RU.json');
       } else {
         fileString = await rootBundle.loadString('assets/lang/en-US.json');

@@ -41,8 +41,8 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       onLoading();
     }
     try {
-      final _tokens =
-          Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
+      final _tokens = Configs
+          .configsNetwork[AccountRepository().networkName.value]!.dataCoins;
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       if (isForce) {
         coins.clear();

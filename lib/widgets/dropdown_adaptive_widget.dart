@@ -24,7 +24,8 @@ class DropDownAdaptiveWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState<T> createState() => _DropDownAdaptiveWidgetState<T>();
+  _DropDownAdaptiveWidgetState<T> createState() =>
+      _DropDownAdaptiveWidgetState<T>();
 }
 
 class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
@@ -103,7 +104,9 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                               value: e,
                               onTap: () {},
                               child: Text(
-                                widget.haveIcon ? _getName(_getTitleItem(e.toString())) : _getTitleItem(e.toString()),
+                                widget.haveIcon
+                                    ? _getName(_getTitleItem(e.toString()))
+                                    : _getTitleItem(e.toString()),
                                 style: _styleTextItem,
                               ),
                             ))
@@ -148,7 +151,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                                 children: children
                                     .map((e) => Center(
                                         child: Text(widget.haveIcon
-                                            ? _getName(_getTitleItem(e.toString()))
+                                            ? _getName(
+                                                _getTitleItem(e.toString()))
                                             : _getTitleItem(e.toString()))))
                                     .toList(),
                               ),

@@ -1,13 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/settings/network_page/store/network_store.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
@@ -55,7 +53,9 @@ class _NetworkPageState extends State<NetworkPage> {
           if (_store.errorMessage != 'User not found') {
             return false;
           }
-          _showAlertConfirmChangeNetwork(_store.network == Network.mainnet ? Network.testnet : Network.mainnet);
+          _showAlertConfirmChangeNetwork(_store.network == Network.mainnet
+              ? Network.testnet
+              : Network.mainnet);
           return true;
         },
         child: Observer(
@@ -139,6 +139,5 @@ class _NetworkPageState extends State<NetworkPage> {
     WebSocket().closeWebSocket();
     AccountRepository().clearData();
     AccountRepository().notifierNetwork.value = network;
-    GetIt.I.get<TransferStore>().setCoin(null);
   }
 }

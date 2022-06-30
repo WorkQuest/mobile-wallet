@@ -9,19 +9,25 @@ import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 class Web3Utils {
   static checkPossibilityTx(TokenSymbols typeCoin, double amount) async {
     final _client = AccountRepository().getClient();
-    final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
+    final _balanceWQT =
+        await _client.getBalance(AccountRepository().privateKey);
     final _gasTx = await _client.getGas();
 
     if (typeCoin == TokenSymbols.WQT) {
       final _gas = (_gasTx.getInWei.toDouble() * pow(10, -16) * 250);
-      final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
+      final _balanceWQTInWei =
+          (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() *
+                  pow(10, -18))
+              .toDouble();
       if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      final _balanceToken =
+          await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken) {
-        throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
+        throw FormatException('errors.notHaveEnoughTxToken'
+            .tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       if (_balanceWQT.getInWei < _gasTx.getInWei) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
@@ -32,7 +38,8 @@ class Web3Utils {
   static int getDegreeToken(TokenSymbols typeCoin) {
     if (typeCoin == TokenSymbols.USDT) {
       final _value = AccountRepository().networkName.value;
-      final _isBSC = _value == NetworkName.bscTestnet || _value == NetworkName.bscMainnet;
+      final _isBSC =
+          _value == NetworkName.bscTestnet || _value == NetworkName.bscMainnet;
       return _isBSC ? 18 : 6;
     } else {
       return 18;
@@ -41,9 +48,7 @@ class Web3Utils {
 
   static String getAddressToken(TokenSymbols typeCoin) {
     try {
-      final _dataTokens = AccountRepository()
-          .getConfigNetwork()
-          .dataCoins;
+      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
       return _dataTokens
           .firstWhere((element) => element.symbolToken == typeCoin)
           .addressToken!;
@@ -135,16 +140,25 @@ class Web3Utils {
     }
   }
 
-  static NetworkName getNetworkNameFromSwitchNetworkName(SwitchNetworkNames name, Network network) {
+  static NetworkName getNetworkNameFromSwitchNetworkName(
+      SwitchNetworkNames name, Network network) {
     switch (name) {
       case SwitchNetworkNames.WORKNET:
-        return network == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+        return network == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
       case SwitchNetworkNames.ETH:
-        return network == Network.mainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
+        return network == Network.mainnet
+            ? NetworkName.ethereumMainnet
+            : NetworkName.ethereumTestnet;
       case SwitchNetworkNames.BSC:
-        return network == Network.mainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
+        return network == Network.mainnet
+            ? NetworkName.bscMainnet
+            : NetworkName.bscTestnet;
       case SwitchNetworkNames.POLYGON:
-        return network == Network.mainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
+        return network == Network.mainnet
+            ? NetworkName.polygonMainnet
+            : NetworkName.polygonTestnet;
     }
   }
 
@@ -257,6 +271,4 @@ class Web3Utils {
       return 'USDT';
     }
   }
-
-
 }
