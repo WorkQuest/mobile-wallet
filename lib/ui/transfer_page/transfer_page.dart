@@ -127,6 +127,7 @@ class _TransferPageState extends State<TransferPage> {
                             barColor: Colors.black,
                             titleColor: Colors.white,
                             qRCornerColor: Colors.blue,
+                            qRScannerColor: Colors.white,
                             flashlightEnable: true,
                             scanAreaScale: 0.7 /// value 0.0 to 1.0
                         );
