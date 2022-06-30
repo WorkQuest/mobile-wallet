@@ -50,11 +50,29 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
   bool isSuccessCourse = false;
 
   @action
+  clearData() {
+    if (service != null) {
+      service?.ethClient?.dispose();
+    }
+    service = null;
+    courseWQT = null;
+    network = null;
+    amount = 0.0;
+    maxAmount = null;
+    isConnect = false;
+    convertWQT = null;
+    isLoadingCourse = false;
+    isSuccessCourse = false;
+  }
+
+  @action
   setNetwork(SwapNetworks? value, {bool showing = true}) async {
     try {
       onLoading();
       network = value;
       maxAmount = null;
+      convertWQT = null;
+      isSuccessCourse = false;
       if (value == null) {
         isLoading = false;
         return;

@@ -174,6 +174,17 @@ mixin _$SwapStore on SwapStoreBase, Store {
       ActionController(name: 'SwapStoreBase', context: context);
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$SwapStoreBaseActionController.startAction(
+        name: 'SwapStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$SwapStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setToken(SwapToken value) {
     final _$actionInfo = _$SwapStoreBaseActionController.startAction(
         name: 'SwapStoreBase.setToken');

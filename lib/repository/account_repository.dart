@@ -38,6 +38,7 @@ class AccountRepository {
 
   connectClient() {
     final config = Configs.configsNetwork[networkName.value!];
+    print('connectClient | ${networkName.value}');
     client = ClientService(config!);
   }
 
@@ -72,6 +73,7 @@ class AccountRepository {
     GetIt.I.get<SignUpConfirmStore>().clearData();
     GetIt.I.get<WalletStore>().clearData();
     GetIt.I.get<TransferStore>().clearData();
+    GetIt.I.get<SwapStore>().clearData();
     Storage.deleteAllFromSecureStorage();
   }
 
