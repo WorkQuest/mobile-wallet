@@ -146,7 +146,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     height: 20,
                     width: double.infinity,
                     margin: EdgeInsets.symmetric(vertical: 50.0 + MediaQuery.of(context).padding.bottom),
-                    color: AppColor.enabledButton,
+                    decoration: const BoxDecoration(
+                        color: AppColor.enabledButton,
+                        gradient: LinearGradient(
+                      colors: <Color>[
+                        AppColor.enabledButton,
+                        Color(0xFF00AA5B),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )),
                     alignment: Alignment.center,
                     child: Text(
                       _title,
