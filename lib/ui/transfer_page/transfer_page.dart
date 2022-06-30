@@ -19,6 +19,7 @@ import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 import 'package:workquest_wallet_app/widgets/selected_item.dart';
+import 'package:majascan/majascan.dart';
 
 import '../../page_router.dart';
 import '../../utils/bottom_sheet.dart';
@@ -118,7 +119,28 @@ class _TransferPageState extends State<TransferPage> {
                   child: DefaultTextField(
                     controller: _addressController,
                     hint: 'wallet.enterAddress'.tr(),
-                    suffixIcon: null,
+                    suffixIcon: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        String? qrResult = await MajaScan.startScan(
+                            title: "QRcode scanner",
+                            barColor: Colors.black,
+                            titleColor: Colors.white,
+                            qRCornerColor: Colors.blue,
+                            flashlightEnable: true,
+                            scanAreaScale: 0.7 /// value 0.0 to 1.0
+                        );
+                        print('qrResult: $qrResult');
+                        if (qrResult != null) {
+                          _addressController.text = qrResult;
+                          store.setAddressTo(qrResult);
+                        }
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svg/scan_qr.svg',
+                        color: AppColor.enabledButton,
+                      ),
+                    ),
                     validator: (value) {
                       if (value != null) {
                         final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
@@ -138,8 +160,6 @@ class _TransferPageState extends State<TransferPage> {
                           }
                         }
                       }
-                      //0x1123123123123213123213123123213213213121
-                      //wq1sz72zjcgkrk5ze8cgzywa8n2jpdyp65l9m22cg
                       return null;
                     },
                   ),

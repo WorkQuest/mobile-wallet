@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:majascan/majascan.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -241,6 +242,27 @@ class _SwapPageState extends State<SwapPage> {
                         hint: 'swap.addressTo'.tr(),
                         enabled: store.isConnect,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        suffixIcon: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            String? qrResult = await MajaScan.startScan(
+                                title: "QRcode scanner",
+                                barColor: Colors.black,
+                                titleColor: Colors.white,
+                                qRCornerColor: Colors.blue,
+                                flashlightEnable: true,
+                                scanAreaScale: 0.7 /// value 0.0 to 1.0
+                            );
+                            print('qrResult: $qrResult');
+                            if (qrResult != null) {
+                              _addressToController.text = qrResult;
+                            }
+                          },
+                          child: SvgPicture.asset(
+                            'assets/svg/scan_qr.svg',
+                            color: AppColor.enabledButton,
+                          ),
+                        ),
                         validator: (value) {
                           if (value != null) {
                             final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
