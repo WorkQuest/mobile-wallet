@@ -103,7 +103,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                               value: e,
                               onTap: () {},
                               child: Text(
-                                _getTitleItem(e.toString()),
+                                widget.haveIcon ? _getName(_getTitleItem(e.toString())) : _getTitleItem(e.toString()),
                                 style: _styleTextItem,
                               ),
                             ))
@@ -145,8 +145,12 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                                 onSelectedItemChanged: (int index) {
                                   changedEmployment = children[index];
                                 },
-                                children:
-                                    children.map((e) => Center(child: Text(_getTitleItem(e.toString())))).toList(),
+                                children: children
+                                    .map((e) => Center(
+                                        child: Text(widget.haveIcon
+                                            ? _getName(_getTitleItem(e.toString()))
+                                            : _getTitleItem(e.toString()))))
+                                    .toList(),
                               ),
                             ),
                             CupertinoButton(
@@ -185,6 +189,18 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
   String _getTitleItem(String value) {
     final _result = value.split('.').last;
     return '${_result.substring(0, 1).toUpperCase()}${_result.substring(1)}';
+  }
+
+  String _getName(String value) {
+    if (value == 'WORKNET') {
+      return 'WORKNET';
+    } else if (value == 'ETH') {
+      return 'Ethereum';
+    } else if (value == 'BSC') {
+      return 'Binance Smart Chain';
+    } else {
+      return 'POLYGON';
+    }
   }
 }
 

@@ -234,9 +234,9 @@ class Web3Utils {
       case NetworkName.ethereumTestnet:
         return 'Ethereum';
       case NetworkName.bscMainnet:
-        return 'BSC';
+        return 'Binance Smart Chain';
       case NetworkName.bscTestnet:
-        return 'BSC';
+        return 'Binance Smart Chain';
       case NetworkName.polygonMainnet:
         return 'Polygon';
       case NetworkName.polygonTestnet:

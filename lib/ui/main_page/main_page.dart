@@ -123,7 +123,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     return const SizedBox.shrink();
                   }
                   return Container(
-                    height: 20,
+                    height: 22,
                     width: double.infinity,
                     margin: EdgeInsets.symmetric(vertical: 50.0 + MediaQuery.of(context).padding.bottom),
                     decoration: const BoxDecoration(
