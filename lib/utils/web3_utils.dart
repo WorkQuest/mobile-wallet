@@ -31,7 +31,9 @@ class Web3Utils {
 
   static int getDegreeToken(TokenSymbols typeCoin) {
     if (typeCoin == TokenSymbols.USDT) {
-      return 6;
+      final _value = AccountRepository().networkName.value;
+      final _isBSC = _value == NetworkName.bscTestnet || _value == NetworkName.bscMainnet;
+      return _isBSC ? 18 : 6;
     } else {
       return 18;
     }
