@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/settings/settings_page.dart';
-import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
@@ -15,7 +14,6 @@ import '../../constants.dart';
 import '../swap_page/swap_page.dart';
 
 final _keys = [
-  GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
   GlobalKey<NavigatorState>(),
@@ -82,20 +80,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         width: 20,
                         height: 16,
                       ),
-                      label: 'wallet.transfer'.tr(),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: SvgPicture.asset(
-                        Images.transferIconBar,
-                        width: 20,
-                        height: 16,
-                      ),
-                      activeIcon: SvgPicture.asset(
-                        Images.transferIconBar,
-                        color: AppColor.enabledButton,
-                        width: 20,
-                        height: 16,
-                      ),
                       label: 'wallet.swap'.tr(),
                     ),
                     BottomNavigationBarItem(
@@ -120,16 +104,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       key: _keys[0],
                     );
                   } else if (index == 1) {
-                    return TransferPage(
-                      key: _keys[1],
-                    );
-                  } else if (index == 2) {
                     return SwapPage(
-                      key: _keys[2],
+                      key: _keys[1],
                     );
                   } else {
                     return SettingsPage(
-                      key: _keys[3],
+                      key: _keys[2],
                       update: _update,
                     );
                   }
@@ -149,13 +129,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     decoration: const BoxDecoration(
                         color: AppColor.enabledButton,
                         gradient: LinearGradient(
-                      colors: <Color>[
-                        AppColor.enabledButton,
-                        Color(0xFF00AA5B),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )),
+                          colors: <Color>[
+                            AppColor.enabledButton,
+                            Color(0xFF00AA5B),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )),
                     alignment: Alignment.center,
                     child: Text(
                       _title,

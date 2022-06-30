@@ -16,7 +16,6 @@ import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
-import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 import 'package:workquest_wallet_app/widgets/selected_item.dart';
 import 'package:majascan/majascan.dart';
@@ -77,9 +76,9 @@ class _TransferPageState extends State<TransferPage> {
     _initCoins();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: MainAppBar(
-        title: "wallet.transfer".tr(),
-      ),
+      // appBar: DefaultAppBar(
+      //   title: 'wallet.withdraw'.tr(),
+      // ),
       body: LayoutWithScroll(
         child: Observer(
           builder: (_) => Padding(
@@ -222,7 +221,7 @@ class _TransferPageState extends State<TransferPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 30.0, left: 16.0, right: 16.0),
+        padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
         child: SizedBox(
           width: double.infinity,
           child: Observer(

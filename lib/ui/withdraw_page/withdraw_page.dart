@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
 import 'package:workquest_wallet_app/ui/withdraw_page/withdraw_bank_card.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -56,7 +57,7 @@ class _WithdrawPageState extends State<WithdrawPage>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: const [_WithdrawWalletAddress(), WithdrawBankCard()],
+                children: const [TransferPage(), WithdrawBankCard()],
               ),
             ),
           ],
