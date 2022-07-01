@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/settings/settings_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -27,13 +29,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
-  final controller = CupertinoTabController();
+  late CupertinoTabController _controller;
   final int _doubleTapDuration = 2000;
   int _exitAttempt = 0;
 
   @override
   void initState() {
     super.initState();
+    _controller = Provider.of<NotifyPage>(context, listen: false).controller;
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
   }
@@ -49,7 +52,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             alignment: Alignment.bottomCenter,
             children: [
               CupertinoTabScaffold(
-                controller: controller,
+                controller: _controller,
                 tabBar: CupertinoTabBar(
                   backgroundColor: Colors.white,
                   items: [
@@ -100,8 +103,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 tabBuilder: (context, index) {
                   if (index == 0) {
-                    return WalletPage(
-                      key: _keys[0],
+                    return ChangeNotifierProvider(
+                      create: (context) => Provider.of<NotifyPage>(context, listen: false),
+                      child: WalletPage(
+                        key: _keys[0],
+                      ),
                     );
                   } else if (index == 1) {
                     return SwapPage(
@@ -154,8 +160,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Future<bool> _onBackPressed(BuildContext context) async {
-    if (Navigator.of(_keys[controller.index].currentContext!).canPop()) {
-      Navigator.of(_keys[controller.index].currentContext!).pop();
+    if (Navigator.of(_keys[_controller.index].currentContext!).canPop()) {
+      Navigator.of(_keys[_controller.index].currentContext!).pop();
       return false;
     }
 

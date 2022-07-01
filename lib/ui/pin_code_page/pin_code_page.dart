@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
+import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/mobx/pin_code_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_color.dart';
@@ -77,7 +79,10 @@ class _PinCodePageState extends State<PinCodePage>
           AccountRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
-          PageRouter.pushNewRemoveRoute(context, const MainPage());
+          PageRouter.pushNewRemoveRoute(context, ChangeNotifierProvider(
+            create: (context) => NotifyPage(),
+            child: const MainPage(),
+          ),);
         }
       },
       store: store,

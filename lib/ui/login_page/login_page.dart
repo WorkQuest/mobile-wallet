@@ -10,9 +10,11 @@ import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_choose_role/sign_up_choose_role.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
+import 'package:workquest_wallet_app/widgets/dropdown_adaptive_widget.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
@@ -86,8 +88,23 @@ class _ContentScreenState extends State<_ContentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(
-          height: 50,
+        Align(
+          alignment: Alignment.centerRight,
+          child: DropDownAdaptiveWidget<Network>(
+            colorText: Colors.black,
+            items: Network.values,
+            value: AccountRepository().notifierNetwork.value,
+            onChanged: (value) {
+              setState(() {
+                final _networkName =
+                (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                AccountRepository().setNetwork(_networkName);
+                Storage.write(StorageKeys.network.toString(), (value).name);
+                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+              });
+              return value;
+            },
+          ),
         ),
         const Text(
           'wallet',
@@ -133,8 +150,7 @@ class _ContentScreenState extends State<_ContentScreen> {
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
                 if (store.successData!) {
-                  PageRouter.pushNewReplacementRoute(
-                      context, const PinCodePage());
+                  PageRouter.pushNewReplacementRoute(context, const PinCodePage());
                 } else {
                   final result = await PageRouter.pushNewRoute(
                       context,
@@ -185,8 +201,7 @@ class _ContentScreenState extends State<_ContentScreen> {
                   onPressed: store.isLoading
                       ? null
                       : () {
-                          PageRouter.pushNewRoute(
-                              context, const SignUpCreateProfile());
+                          PageRouter.pushNewRoute(context, const SignUpCreateProfile());
                         },
                   title: 'signIn.createProfile'.tr(),
                 ),
@@ -224,8 +239,7 @@ class _HeaderScreenState extends State<_HeaderScreen> {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),
