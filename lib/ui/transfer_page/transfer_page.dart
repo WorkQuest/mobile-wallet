@@ -127,11 +127,7 @@ class _TransferPageState extends State<TransferPage> {
                             qRCornerColor: Colors.blue,
                             qRScannerColor: Colors.white,
                             flashlightEnable: true,
-                            scanAreaScale: 0.7
-
-                            /// value 0.0 to 1.0
-                            );
-                        print('qrResult: $qrResult');
+                            scanAreaScale: 0.7);
                         if (qrResult != null) {
                           _addressController.text = qrResult;
                           store.setAddressTo(qrResult);
@@ -428,7 +424,6 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   void _selectCoin(CoinItem coin) {
-    print('_selectCoin');
     store.setAmount('');
     _amountController.clear();
     store.setCoin(coin);

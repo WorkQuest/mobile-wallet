@@ -71,7 +71,6 @@ class WebSocket {
   void handleSubscription(dynamic jsonResponse) async {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
-      print('handleSubscription');
       if (transaction.result!.events!['ethereum_tx.recipient']!.first
               .toString()
               .toLowerCase() ==

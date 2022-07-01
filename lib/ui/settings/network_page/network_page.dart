@@ -139,7 +139,8 @@ class _NetworkPageState extends State<NetworkPage> {
   _pushToLogin(Network network) async {
     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
-    final _networkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
+    final _networkName =
+        Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
     AccountRepository().clearData();
     AccountRepository().notifierNetwork.value = network;
     Storage.write(StorageKeys.networkName.name, _networkName.name);

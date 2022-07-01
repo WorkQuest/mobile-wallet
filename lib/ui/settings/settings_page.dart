@@ -106,8 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _onPressedLogout() async {
-    await PageRouter.pushNewRemoveRoute(
-        context, const LoginPage());
+    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
     GetIt.I.get<TransferStore>().setCoin(null);
     AccountRepository().clearData();

@@ -25,10 +25,8 @@ abstract class _NetworkStoreBase extends IStore<bool> with Store {
           await AccountRepository().client!.getSignature(_wallet.privateKey!);
       await Api().login(signature, AccountRepository().userAddress,
           isMain: newNetwork == Network.mainnet);
-      print('oldNetworkName: ${AccountRepository().networkName.value!}');
       final _newNetworkName =
           Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
-      print('newNetworkName: $_newNetworkName');
       AccountRepository().notifierNetwork.value = newNetwork;
       AccountRepository().changeNetwork(_newNetworkName);
       network = newNetwork;

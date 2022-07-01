@@ -176,7 +176,7 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
       getMaxBalance();
       onError('Waiting time has expired', SuccessStatus.showing);
     } catch (e, trace) {
-      print('createSwap | e: $e\ntrace: $trace');
+      // print('createSwap | e: $e\ntrace: $trace');
       onError(e.toString(), SuccessStatus.showing);
     }
   }
@@ -201,10 +201,8 @@ abstract class SwapStoreBase extends IStore<SuccessStatus> with Store {
             EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
         client: service!.ethClient!);
 
-    print('address: ${AccountRepository().userWallet!.address!}');
     final _cred = await service!
         .getCredentials(AccountRepository().userWallet!.privateKey!);
-    print('address: ${_cred.address}');
     final _spender = EthereumAddress.fromHex(
       Web3Utils.getAddressContractForSwap(network!),
     );

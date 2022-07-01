@@ -39,7 +39,6 @@ class AccountRepository {
 
   connectClient() {
     final config = Configs.configsNetwork[networkName.value!];
-    print('connectClient | ${networkName.value}');
     client = ClientService(config!);
   }
 

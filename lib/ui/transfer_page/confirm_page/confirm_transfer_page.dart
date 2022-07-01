@@ -37,7 +37,6 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('addressTo: ${widget.addressTo}');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: DefaultAppBar(
@@ -58,7 +57,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             ),
             Expanded(child: Container()),
             Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -80,7 +80,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                       builder: (_) => LoginButton(
                         onTap: () {
                           AlertDialogUtils.showLoadingDialog(context);
-                          store.sendTransaction(widget.addressTo, widget.amount, widget.typeCoin);
+                          store.sendTransaction(
+                              widget.addressTo, widget.amount, widget.typeCoin);
                         },
                         title: 'meta.confirm'.tr(),
                         enabled: store.isLoading,
@@ -113,11 +114,12 @@ class _InformationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('bech32: ${AddressService().hexToBech32(addressTo)}');
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -185,8 +187,8 @@ class _InformationWidget extends StatelessWidget {
   }
 
   String _getTitleCoinFee() {
-    final _network =
-        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network = Web3Utils.getSwapNetworksFromNetworkName(
+        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -200,8 +202,8 @@ class _InformationWidget extends StatelessWidget {
   }
 
   String _getAddress() {
-    final _network =
-    Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network = Web3Utils.getSwapNetworksFromNetworkName(
+        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     if (_network == null) {
       return AddressService().hexToBech32(addressTo);
     } else {

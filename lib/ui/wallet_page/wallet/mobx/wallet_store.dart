@@ -25,7 +25,6 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   @action
   setIndex(int value) {
     index = value;
-    print('index - $index');
   }
 
   @action

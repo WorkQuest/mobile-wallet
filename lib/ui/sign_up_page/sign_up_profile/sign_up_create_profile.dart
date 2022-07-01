@@ -127,7 +127,6 @@ class _SignUpCreateProfileState extends State<SignUpCreateProfile> {
                       return "errors.incorrectFormat".tr();
                     }
                     if (!RegExpFields.emailRegExp.hasMatch(store.email.text)) {
-                      print('tester');
                       return "errors.incorrectFormat".tr();
                     }
                     return null;

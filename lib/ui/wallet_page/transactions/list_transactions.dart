@@ -150,7 +150,6 @@ class ListTransactions extends StatelessWidget {
   _onPressedGoToExplorer() {
     final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer +
         AccountRepository().userAddress;
-    print('url: $_urlExplorer');
     launch(_urlExplorer);
   }
 }

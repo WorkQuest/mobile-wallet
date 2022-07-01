@@ -160,7 +160,6 @@ class TxResultResult {
         //     : List<Event>.from(json["events"].map((x) => Event.fromJson(x))),
       );
     } catch (e, trace) {
-      print('TxResultResult e - $e\ntrace - $trace');
       return TxResultResult();
     }
   }

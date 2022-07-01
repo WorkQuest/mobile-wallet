@@ -78,10 +78,10 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
       onSuccess(true);
     } on FormatException catch (e, trace) {
-      print('$e\n$trace');
+      // print('$e\n$trace');
       onError(e.message);
     } catch (e) {
-      print('$e');
+      // print('$e');
       onError(e.toString());
     }
   }
@@ -125,7 +125,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       isMoreLoading = false;
       onSuccess(true);
     } catch (e, trace) {
-      print('$e\n$trace');
+      // print('$e\n$trace');
       onError(e.toString());
     }
   }

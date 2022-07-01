@@ -106,7 +106,6 @@ class Api {
 
       return response;
     } on DioError catch (e) {
-      print('cry');
       await handleError(e);
     }
     return null;

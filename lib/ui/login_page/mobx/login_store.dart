@@ -51,7 +51,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
       AccountRepository().clearData();
       onError(e.message);
     } catch (e, trace) {
-      print('cry$e$trace');
       AccountRepository().clearData();
       onError(e.toString());
     }

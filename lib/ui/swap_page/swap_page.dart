@@ -272,7 +272,6 @@ class _SwapPageState extends State<SwapPage> {
 
                                   /// value 0.0 to 1.0
                                   );
-                              print('qrResult: $qrResult');
                               if (qrResult != null) {
                                 _addressToController.text = qrResult;
                               }

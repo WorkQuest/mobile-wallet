@@ -88,7 +88,7 @@ class MyHttpClient {
         return client;
       };
     } catch (e, trace) {
-      print('_setInterceptors e -> $e, trace -> $trace');
+      // print('_setInterceptors e -> $e, trace -> $trace');
     }
   }
 

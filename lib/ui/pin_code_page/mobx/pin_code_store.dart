@@ -97,8 +97,6 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
           startSwitch = true;
           return;
         case StatePinCode.repeat:
-          print('newPinCode: $newPinCode');
-          print('pinCode: $pinCode');
           if (newPinCode == pinCode) {
             startAnimation = true;
             await Future.delayed(const Duration(seconds: 2));
