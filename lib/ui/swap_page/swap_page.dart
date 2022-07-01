@@ -70,6 +70,12 @@ class _SwapPageState extends State<SwapPage> {
           if (store.successData == SuccessStatus.showing) {
             Navigator.of(context, rootNavigator: true).pop('dialog');
             if (store.isSuccessCourse) {
+              final _network = AccountRepository().notifierNetwork.value;
+              if (_network == Network.mainnet) {
+                AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              } else if (_network == Network.testnet) {
+                AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              }
               AlertDialogUtils.showSuccessDialog(context);
             }
           }
