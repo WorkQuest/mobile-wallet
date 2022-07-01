@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         return CustomBanner(
           text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
           visible: false,
-          color: visible ? AppColor.blue : Colors.transparent,
+          color: visible ? Colors.grey : Colors.transparent,
           textStyle: visible
               ? const TextStyle(
                   color: AppColor.enabledText, fontWeight: FontWeight.bold)
