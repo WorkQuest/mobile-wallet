@@ -50,7 +50,7 @@ class _NetworkPageState extends State<NetworkPage> {
         },
         onFailure: () {
           Navigator.of(context, rootNavigator: true).pop();
-          if (_store.errorMessage != 'User not found') {
+          if (_store.errorMessage != 'Wallet not found') {
             return false;
           }
           _showAlertConfirmChangeNetwork(_store.network == Network.mainnet
