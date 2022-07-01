@@ -7,6 +7,8 @@ import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/settings/network_page/store/network_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -137,7 +139,9 @@ class _NetworkPageState extends State<NetworkPage> {
   _pushToLogin(Network network) async {
     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
+    final _networkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
     AccountRepository().clearData();
     AccountRepository().notifierNetwork.value = network;
+    Storage.write(StorageKeys.networkName.name, _networkName.name);
   }
 }

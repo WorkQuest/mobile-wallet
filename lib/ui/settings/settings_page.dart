@@ -80,13 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 padding: const EdgeInsets.only(bottom: 30.0),
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () async {
-                    await PageRouter.pushNewRemoveRoute(
-                        context, const LoginPage());
-                    WebSocket().closeWebSocket();
-                    GetIt.I.get<TransferStore>().setCoin(null);
-                    AccountRepository().clearData();
-                  },
+                  onPressed: _onPressedLogout,
                   child: Container(
                     height: 43,
                     width: double.infinity,
@@ -109,6 +103,14 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  _onPressedLogout() async {
+    await PageRouter.pushNewRemoveRoute(
+        context, const LoginPage());
+    WebSocket().closeWebSocket();
+    GetIt.I.get<TransferStore>().setCoin(null);
+    AccountRepository().clearData();
   }
 
   String _getCurrentNetworkName() {
