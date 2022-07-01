@@ -92,18 +92,26 @@ class AddressService implements AddressServiceI {
 
   @override
   String hexToBech32(String address) {
-    final _address = EthereumAddress.fromHex(address);
-    final _hex = HEX.decode(_address.hexNo0x);
-    final _bech32 = Bech32Encoder.encode('wq', Uint8List.fromList(_hex));
-    return _bech32;
+    try {
+      final _address = EthereumAddress.fromHex(address);
+      final _hex = HEX.decode(_address.hexNo0x);
+      final _bech32 = Bech32Encoder.encode('wq', Uint8List.fromList(_hex));
+      return _bech32;
+    } catch (e) {
+      return address;
+    }
   }
 
   @override
   String bech32ToHex(String addressBech32) {
-    final bechToHex = Bech32Encoder.decode(addressBech32);
-    final result = HEX.encode(bechToHex.toList());
+    try {
+      final bechToHex = Bech32Encoder.decode(addressBech32);
+      final result = HEX.encode(bechToHex.toList());
 
-    return '0x$result';
+      return '0x$result';
+    } catch (e) {
+      return addressBech32;
+    }
   }
 }
 

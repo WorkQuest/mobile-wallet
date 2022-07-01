@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
+import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +37,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('addressTo: ${widget.addressTo}');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: DefaultAppBar(
@@ -54,8 +58,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             ),
             Expanded(child: Container()),
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 10.0),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -77,8 +80,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                       builder: (_) => LoginButton(
                         onTap: () {
                           AlertDialogUtils.showLoadingDialog(context);
-                          store.sendTransaction(
-                              widget.addressTo, widget.amount, widget.typeCoin);
+                          store.sendTransaction(widget.addressTo, widget.amount, widget.typeCoin);
                         },
                         title: 'meta.confirm'.tr(),
                         enabled: store.isLoading,
@@ -111,12 +113,11 @@ class _InformationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('bech32: ${AddressService().hexToBech32(addressTo)}');
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -131,10 +132,11 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            AddressService().hexToBech32(addressTo),
+            _getAddress(),
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
+              fontFamily: 'RobotoMono',
             ),
           ),
           const SizedBox(
@@ -171,7 +173,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            '$fee WQT',
+            '$fee ${_getTitleCoinFee()}',
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
@@ -180,5 +182,30 @@ class _InformationWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getTitleCoinFee() {
+    final _network =
+        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    switch (_network) {
+      case SwapNetworks.ETH:
+        return 'ETH';
+      case SwapNetworks.BSC:
+        return 'BNB';
+      case SwapNetworks.POLYGON:
+        return 'MATIC';
+      default:
+        return 'WQT';
+    }
+  }
+
+  String _getAddress() {
+    final _network =
+    Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    if (_network == null) {
+      return AddressService().hexToBech32(addressTo);
+    } else {
+      return AddressService().bech32ToHex(addressTo);
+    }
   }
 }
