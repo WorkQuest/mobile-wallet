@@ -41,7 +41,7 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e) {
       AccountRepository().clearData();
       onError(e.message);
-    } catch (e, trace) {
+    } catch (e) {
       AccountRepository().clearData();
       onError(e.toString());
     }
@@ -49,6 +49,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
 
   Future _saveToStorage(Wallet wallet) async {
     await Storage.write(
-        StorageKeys.wallet.toString(), jsonEncode(wallet.toJson()));
+        StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
   }
 }

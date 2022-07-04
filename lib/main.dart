@@ -5,7 +5,8 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/splash_page/splash_page.dart';
+import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
+import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
@@ -26,24 +27,28 @@ void main() async {
   GetIt.I.registerSingleton<SwapStore>(SwapStore());
   try {
     final wallet = await Storage.readWallet();
+    print('main $wallet');
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
     final _networkNameStorage =
-        await Storage.read(StorageKeys.networkName.toString());
+        await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
       AccountRepository().setNetwork(NetworkName.workNetMainnet);
       await Storage.write(
-          StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
+          StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
       AccountRepository().setNetwork(_networkName);
       await Storage.write(
-          StorageKeys.networkName.toString(), _networkName.name);
+          StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
+    print('main clearData');
     AccountRepository().clearData();
   }
+
+  print("AccountRepository().userWallet != null | ${AccountRepository().userWallet != null}");
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -109,7 +114,7 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
-        home: const SplashPage(),
+        home: hasAccount ? const PinCodePage() : const LoginPage(),
       ),
     );
   }
