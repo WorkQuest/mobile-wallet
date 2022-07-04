@@ -14,23 +14,14 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   ObservableList<_CoinEntity> coins = ObservableList.of([]);
 
   @observable
-  int index = 0;
-
-  @observable
   TokenSymbols type = TokenSymbols.WQT;
 
   @action
   setType(TokenSymbols value) => type = value;
 
   @action
-  setIndex(int value) {
-    index = value;
-  }
-
-  @action
   clearData() {
     coins.clear();
-    index = 0;
     type = TokenSymbols.WQT;
   }
 

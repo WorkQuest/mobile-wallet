@@ -7,8 +7,7 @@ import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_choose_role/sign_up_choose_role.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_profile/sign_up_create_profile.dart';
+import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
@@ -97,7 +96,7 @@ class _ContentScreenState extends State<_ContentScreen> {
             onChanged: (value) {
               setState(() {
                 final _networkName =
-                (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
                 AccountRepository().setNetwork(_networkName);
                 Storage.write(StorageKeys.network.toString(), (value).name);
                 Storage.write(StorageKeys.networkName.toString(), _networkName.name);
@@ -149,18 +148,7 @@ class _ContentScreenState extends State<_ContentScreen> {
               },
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
-                if (store.successData!) {
-                  PageRouter.pushNewReplacementRoute(context, const PinCodePage());
-                } else {
-                  final result = await PageRouter.pushNewRoute(
-                      context,
-                      const SignUpChooseRole(
-                        email: '',
-                      ));
-                  if (result != null && result) {
-                    AccountRepository().clearData();
-                  }
-                }
+                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
               },
               child: Observer(
                 builder: (_) {
@@ -201,9 +189,9 @@ class _ContentScreenState extends State<_ContentScreen> {
                   onPressed: store.isLoading
                       ? null
                       : () {
-                          PageRouter.pushNewRoute(context, const SignUpCreateProfile());
+                          PageRouter.pushNewRoute(context, const SignUpPage());
                         },
-                  title: 'signIn.createProfile'.tr(),
+                  title: 'wallet.createWallet'.tr(),
                 ),
               ),
             ),

@@ -288,26 +288,30 @@ class _SwapPageState extends State<SwapPage> {
                             ),
                           ),
                           validator: (value) {
-                            if (value != null) {
-                              final _isBech =
-                                  value.substring(0, 2).toLowerCase() == 'wq';
-                              if (_isBech) {
-                                if (value.length != 41) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                                if (!RegExpFields.addressBech32RegExp
-                                    .hasMatch(value)) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                              } else {
-                                if (value.length != 42) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                                if (!RegExpFields.addressRegExp
-                                    .hasMatch(value)) {
-                                  return "errors.incorrectFormat".tr();
+                            try {
+                              if (value != null) {
+                                final _isBech =
+                                    value.substring(0, 2).toLowerCase() == 'wq';
+                                if (_isBech) {
+                                  if (value.length != 41) {
+                                    return "errors.incorrectFormat".tr();
+                                  }
+                                  if (!RegExpFields.addressBech32RegExp
+                                      .hasMatch(value)) {
+                                    return "errors.incorrectFormat".tr();
+                                  }
+                                } else {
+                                  if (value.length != 42) {
+                                    return "errors.incorrectFormat".tr();
+                                  }
+                                  if (!RegExpFields.addressRegExp
+                                      .hasMatch(value)) {
+                                    return "errors.incorrectFormat".tr();
+                                  }
                                 }
                               }
+                            } catch (e) {
+                              return null;
                             }
                             return null;
                           },

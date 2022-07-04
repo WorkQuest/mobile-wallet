@@ -1,7 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
@@ -20,11 +19,6 @@ abstract class _NetworkStoreBase extends IStore<bool> with Store {
   changeNetwork(Network newNetwork) async {
     try {
       onLoading();
-      final _wallet = AccountRepository().userWallet!;
-      final signature =
-          await AccountRepository().client!.getSignature(_wallet.privateKey!);
-      await Api().login(signature, AccountRepository().userAddress,
-          isMain: newNetwork == Network.mainnet);
       final _newNetworkName =
           Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
       AccountRepository().notifierNetwork.value = newNetwork;

@@ -1,4 +1,4 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/mobx/sign_up_store.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_choose_page.dart';
-import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/custom_switch.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
@@ -36,22 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Observer(
       builder: (_) => Scaffold(
         backgroundColor: Colors.white,
-        appBar: DefaultAppBar(
-          onPressed: () {
-            AlertDialogUtils.showAlertDialog(
-              context,
-              title: Text('meta.warning'.tr()),
-              content: Text('signUp.leave_page'.tr()),
-              needCancel: true,
-              titleCancel: "meta.cancel".tr(),
-              titleOk: "meta.return".tr(),
-              onTabCancel: null,
-              onTabOk: () => Navigator.pop(context),
-              colorCancel: AppColor.enabledButton,
-              colorOk: Colors.red,
-            );
-          },
-        ),
+        appBar: const DefaultAppBar(),
         body: LayoutWithScroll(
           child: Padding(
             padding: _padding,
@@ -101,8 +85,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: DefaultButton(

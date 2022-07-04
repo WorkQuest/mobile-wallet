@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
-import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
-import 'package:workquest_wallet_app/utils/wallet.dart';
 
 part 'sign_up_store.g.dart';
 
@@ -101,13 +99,6 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
     onLoading();
     try {
       await Future.delayed(const Duration(seconds: 1));
-      Wallet wallet = await Wallet.derive(mnemonic!);
-      final result =
-          await Api().registerWallet(wallet.publicKey!, wallet.address!);
-      if (!result!) {
-        onError("Server error");
-        return;
-      }
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

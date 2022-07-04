@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/sign_up_page/sign_up_confirm/mobx/sign_up_confirm_store.dart';
 import 'package:workquest_wallet_app/ui/splash_page/splash_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
@@ -22,7 +21,6 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
   GetIt.I.registerSingleton<TransactionsStore>(TransactionsStore());
-  GetIt.I.registerSingleton<SignUpConfirmStore>(SignUpConfirmStore());
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
   GetIt.I.registerSingleton<TransferStore>(TransferStore());
   GetIt.I.registerSingleton<SwapStore>(SwapStore());

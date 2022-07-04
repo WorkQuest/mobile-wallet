@@ -25,22 +25,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
     });
   }
 
-  late final _$indexAtom =
-      Atom(name: 'WalletStoreBase.index', context: context);
-
-  @override
-  int get index {
-    _$indexAtom.reportRead();
-    return super.index;
-  }
-
-  @override
-  set index(int value) {
-    _$indexAtom.reportWrite(value, super.index, () {
-      super.index = value;
-    });
-  }
-
   late final _$typeAtom = Atom(name: 'WalletStoreBase.type', context: context);
 
   @override
@@ -79,17 +63,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
   }
 
   @override
-  dynamic setIndex(int value) {
-    final _$actionInfo = _$WalletStoreBaseActionController.startAction(
-        name: 'WalletStoreBase.setIndex');
-    try {
-      return super.setIndex(value);
-    } finally {
-      _$WalletStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic clearData() {
     final _$actionInfo = _$WalletStoreBaseActionController.startAction(
         name: 'WalletStoreBase.clearData');
@@ -104,7 +77,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
   String toString() {
     return '''
 coins: ${coins},
-index: ${index},
 type: ${type}
     ''';
   }
