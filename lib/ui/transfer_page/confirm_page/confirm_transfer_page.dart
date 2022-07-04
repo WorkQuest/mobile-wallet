@@ -205,9 +205,9 @@ class _InformationWidget extends StatelessWidget {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
         AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     if (_network == null) {
-      return AddressService().hexToBech32(addressTo);
+      return AddressService.hexToBech32(addressTo);
     } else {
-      return AddressService().bech32ToHex(addressTo);
+      return AddressService.bech32ToHex(addressTo);
     }
   }
 }

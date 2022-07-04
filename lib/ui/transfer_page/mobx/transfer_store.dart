@@ -102,7 +102,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       try {
         final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
         _address =
-            _isBech ? AddressService().bech32ToHex(addressTo) : addressTo;
+            _isBech ? AddressService.bech32ToHex(addressTo) : addressTo;
       } catch (e) {
         _address = AccountRepository().userAddress;
       }

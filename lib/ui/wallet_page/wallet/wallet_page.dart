@@ -82,7 +82,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AddressService().hexToBech32(AccountRepository().userWallet!.address!);
+    final address = AddressService.hexToBech32(AccountRepository().userWallet!.address!);
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;

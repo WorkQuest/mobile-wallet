@@ -8,31 +8,8 @@ import 'package:web3dart/credentials.dart';
 
 const _baseDerivationPath = "m/44'/60'/0'/0/0";
 
-abstract class AddressServiceI {
-  String generateMnemonic();
-
-  bool validateMnemonic(String mnemonic);
-
-  String getPrivateKey(String mnemonic);
-
-  String getPublicKey(String privateKey);
-
-  Future<EthereumAddress> getPublicAddress(String privateKey);
-
-  String hexToBech32(String privateKey);
-
-  String bech32ToHex(String privateKey);
-}
-
-class AddressService implements AddressServiceI {
-  static final AddressService _instance = AddressService._internal();
-
-  factory AddressService() => _instance;
-
-  AddressService._internal();
-
-  @override
-  String generateMnemonic() {
+class AddressService {
+  static String generateMnemonic() {
     try {
       return bip39.generateMnemonic(strength: 128);
     } catch (e) {
@@ -40,8 +17,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  bool validateMnemonic(String mnemonic) {
+  static bool validateMnemonic(String mnemonic) {
     try {
       return bip39.validateMnemonic(mnemonic);
     } catch (e) {
@@ -49,8 +25,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  String getPrivateKey(String mnemonic) {
+  static String getPrivateKey(String mnemonic) {
     try {
       final seed = bip39.mnemonicToSeedHex(mnemonic);
 
@@ -68,8 +43,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  Future<EthereumAddress> getPublicAddress(String privateKey) async {
+  static Future<EthereumAddress> getPublicAddress(String privateKey) async {
     try {
       final private = EthPrivateKey.fromHex(privateKey);
       final address = await private.extractAddress();
@@ -79,8 +53,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  String getPublicKey(String privateKey) {
+  static String getPublicKey(String privateKey) {
     try {
       final private = EthPrivateKey.fromHex(privateKey);
       final public = HEX.encode(private.encodedPublicKey);
@@ -90,8 +63,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  String hexToBech32(String address) {
+  static String hexToBech32(String address) {
     try {
       final _address = EthereumAddress.fromHex(address);
       final _hex = HEX.decode(_address.hexNo0x);
@@ -102,8 +74,7 @@ class AddressService implements AddressServiceI {
     }
   }
 
-  @override
-  String bech32ToHex(String addressBech32) {
+  static String bech32ToHex(String addressBech32) {
     try {
       final bechToHex = Bech32Encoder.decode(addressBech32);
       final result = HEX.encode(bechToHex.toList());

@@ -251,7 +251,7 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService().hexToBech32(
+            AddressService.hexToBech32(
                 AccountRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(),
@@ -278,7 +278,7 @@ class _TransferPageState extends State<TransferPage> {
           fee: store.fee,
           typeCoin: store.currentCoin!.typeCoin,
           addressTo: _isBech
-              ? AddressService().bech32ToHex(store.addressTo)
+              ? AddressService.bech32ToHex(store.addressTo)
               : store.addressTo,
           amount: store.amount,
         ),

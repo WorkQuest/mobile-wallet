@@ -371,7 +371,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
             height: 6,
           ),
           _ItemInfoFromTransaction(
-            info: AddressService().hexToBech32(address),
+            info: AddressService.hexToBech32(address),
             title: increase
                 ? "settings.education.from".tr()
                 : "settings.education.to".tr(),

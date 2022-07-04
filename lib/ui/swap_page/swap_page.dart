@@ -245,7 +245,7 @@ class _SwapPageState extends State<SwapPage> {
                               }
                               _amountController.text =
                                   store.maxAmount.toString();
-                              _addressToController.text = AddressService()
+                              _addressToController.text = AddressService
                                   .hexToBech32(
                                       AccountRepository().userWallet!.address!);
                             },
@@ -395,7 +395,7 @@ class _SwapPageState extends State<SwapPage> {
       final _isBech =
           _addressToController.text.substring(0, 2).toLowerCase() == 'wq';
       store.createSwap(_isBech
-          ? AddressService().bech32ToHex(_addressToController.text)
+          ? AddressService.bech32ToHex(_addressToController.text)
           : _addressToController.text);
     }
   }

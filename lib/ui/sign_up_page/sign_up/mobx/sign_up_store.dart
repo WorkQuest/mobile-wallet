@@ -58,7 +58,7 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
 
   @action
   generateMnemonic() {
-    mnemonic = AddressService().generateMnemonic();
+    mnemonic = AddressService.generateMnemonic();
   }
 
   @action

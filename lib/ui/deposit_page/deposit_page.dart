@@ -71,7 +71,7 @@ class _WalletAddress extends StatelessWidget {
   const _WalletAddress({Key? key}) : super(key: key);
 
   String get address =>
-      AddressService().hexToBech32(AccountRepository().userWallet!.address!);
+      AddressService.hexToBech32(AccountRepository().userWallet!.address!);
 
   @override
   Widget build(BuildContext context) {
