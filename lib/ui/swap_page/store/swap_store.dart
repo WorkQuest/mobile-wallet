@@ -100,9 +100,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       }
       convertWQT = (amount / courseWQT!) * (1 - 0.01);
       isSuccessCourse = true;
-    } catch (e) {
-      onError(e.toString(), true);
-    }
+    } catch (e) {}
     isLoadingCourse = false;
   }
 

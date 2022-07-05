@@ -70,6 +70,7 @@ class _SwapPageState extends State<SwapPage> {
               AccountRepository().changeNetwork(NetworkName.workNetTestnet);
             }
             store.setNetwork(null);
+            _amountController.clear();
             AlertDialogUtils.showSuccessDialog(context);
           }
         },
@@ -190,18 +191,18 @@ class _SwapPageState extends State<SwapPage> {
                               return "errors.fieldEmpty".tr();
                             }
                             try {
-                              // final val = double.parse(value);
-                              // if (val < 5.0) {
-                              //   return 'swap.minimum'.tr();
-                              // }
-                              // if (val > 100.0) {
-                              //   return 'swap.maximum'.tr();
-                              // }
-                              // if (store.maxAmount != null) {
-                              //   if (store.maxAmount! < val) {
-                              //     return 'errors.higherMaxAmount'.tr();
-                              //   }
-                              // }
+                              final val = double.parse(value);
+                              if (val < 5.0) {
+                                return 'swap.minimum'.tr();
+                              }
+                              if (val > 100.0) {
+                                return 'swap.maximum'.tr();
+                              }
+                              if (store.maxAmount != null) {
+                                if (store.maxAmount! < val) {
+                                  return 'errors.higherMaxAmount'.tr();
+                                }
+                              }
                             } catch (e) {
                               return "errors.incorrectFormat".tr();
                             }
