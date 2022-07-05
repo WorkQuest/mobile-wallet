@@ -37,7 +37,7 @@ class WebSocket {
     """);
 
     channel!.stream.listen((message) {
-      // print("WebSocket message: $message");
+      print("WebSocket message: $message");
       var jsonResponse = jsonDecode(message);
       handleSubscription(jsonResponse);
     }, onDone: () async {
@@ -78,25 +78,6 @@ class WebSocket {
         await Future.delayed(const Duration(seconds: 9));
         GetIt.I.get<WalletStore>().getCoins(isForce: false);
         GetIt.I.get<TransactionsStore>().getTransactions();
-
-        // final tx = await Api().getTransaction(
-        //     hashTx: transaction.result!.events!['ethereum_tx.txHash']!.first);
-        //
-        // GetIt.I.get<TransactionsStore>().addTransaction(
-        //       tran: Tx(
-        //           hash: tx!.result!.hash!,
-        //           insertedAt: DateTime.parse(tx.result!.insertedAt!),
-        //           amount: tx.result!.tokenTransfers!.isEmpty
-        //               ? tx.result!.value
-        //               : tx.result!.tokenTransfers!.first.amount,
-        //           toAddressHash:s
-        //               AddressHash.fromJson(tx.result!.toAddressHash!.toJson()),
-        //           fromAddressHash: AddressHash.fromJson(
-        //               tx.result!.fromAddressHash!.toJson()),
-        //           tokenTransfers: List<TokenTransfer>.from(tx
-        //               .result!.tokenTransfers!
-        //               .map((x) => TokenTransfer.fromJson(x.toJson())))),
-        //     );
       } else {
         final decode =
             json.decode(transaction.result!.events!['tx_log.txLog']!.first);
@@ -105,27 +86,9 @@ class WebSocket {
           await Future.delayed(const Duration(seconds: 9));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions();
-          // final tx = await Api().getTransaction(
-          //     hashTx: transaction.result!.events!['ethereum_tx.txHash']!.first);
-          //
-          // GetIt.I.get<TransactionsStore>().addTransaction(
-          //   tran: Tx(
-          //           hash: tx!.result!.hash!,
-          //           insertedAt: DateTime.parse(tx.result!.insertedAt!),
-          //           amount: tx.result!.tokenTransfers!.isEmpty
-          //               ? tx.result!.value
-          //               : tx.result!.tokenTransfers!.first.amount,
-          //           toAddressHash: AddressHash.fromJson(
-          //               tx.result!.toAddressHash!.toJson()),
-          //           fromAddressHash: AddressHash.fromJson(
-          //               tx.result!.fromAddressHash!.toJson()),
-          //           tokenTransfers: List<TokenTransfer>.from(tx
-          //               .result!.tokenTransfers!
-          //               .map((x) => TokenTransfer.fromJson(x.toJson())))),
-          //     );
         }
       }
-    } catch (e, trace) {
+    } catch (e) {
       // print('web socket e - $e\ntrace - $trace');
     }
   }
