@@ -231,7 +231,7 @@ class _TransferPageState extends State<TransferPage> {
           width: double.infinity,
           child: Observer(
             builder: (_) => DefaultButton(
-              title: 'wallet.transfer'.tr(),
+              title: 'wallet.withdraw'.tr(),
               onPressed:
                   store.statusButtonTransfer ? _pushConfirmTransferPage : null,
             ),
