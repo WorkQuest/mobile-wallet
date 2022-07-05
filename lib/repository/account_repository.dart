@@ -55,8 +55,6 @@ class AccountRepository {
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
     GetIt.I.get<TransferStore>().setCoin(null);
-    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(networkName);
-    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork, showing: false);
   }
 
   setWallet(Wallet wallet) {
