@@ -87,23 +87,8 @@ class _ContentScreenState extends State<_ContentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: DropDownAdaptiveWidget<Network>(
-            colorText: Colors.black,
-            items: Network.values,
-            value: AccountRepository().notifierNetwork.value,
-            onChanged: (value) {
-              setState(() {
-                final _networkName =
-                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
-                AccountRepository().setNetwork(_networkName);
-                Storage.write(StorageKeys.network.toString(), (value).name);
-                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
-              });
-              return value;
-            },
-          ),
+        const SizedBox(
+          height: 16,
         ),
         const Text(
           'wallet',
@@ -133,6 +118,27 @@ class _ContentScreenState extends State<_ContentScreen> {
               return null;
             },
             prefitIcon: null,
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: DropDownAdaptiveWidget<Network>(
+            colorText: Colors.black,
+            items: Network.values,
+            value: AccountRepository().notifierNetwork.value,
+            onChanged: (value) {
+              setState(() {
+                final _networkName =
+                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                AccountRepository().setNetwork(_networkName);
+                Storage.write(StorageKeys.network.toString(), (value).name);
+                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+              });
+              return value;
+            },
           ),
         ),
         const SizedBox(
