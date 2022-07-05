@@ -27,7 +27,6 @@ void main() async {
   GetIt.I.registerSingleton<SwapStore>(SwapStore());
   try {
     final wallet = await Storage.readWallet();
-    print('main $wallet');
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
@@ -44,11 +43,8 @@ void main() async {
           StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
-    print('main clearData');
     AccountRepository().clearData();
   }
-
-  print("AccountRepository().userWallet != null | ${AccountRepository().userWallet != null}");
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
