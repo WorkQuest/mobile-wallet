@@ -59,7 +59,7 @@ class Configs {
   static final configsNetwork = {
     NetworkName.workNetMainnet: ConfigNetwork(
       rpc: 'https://mainnet-gate.workquest.co/',
-      wss: 'wss://mainnet-gate-01.workquest.co/tendermint-rpc/websocket',
+      wss: 'wss://mainnet-gate.workquest.co/tendermint-rpc/websocket',
       urlExplorer: '',
       dataCoins: const [
         DataCoins(
