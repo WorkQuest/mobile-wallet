@@ -84,7 +84,6 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AddressService.hexToBech32(AccountRepository().userWallet!.address!);
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
@@ -105,80 +104,91 @@ class _WalletPageState extends State<WalletPage> {
             CupertinoSliverRefreshControl(
               onRefresh: _onRefresh,
             ),
-          SliverToBoxAdapter(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.subtitleText,
-                  ),
-                ),
-                const Spacer(),
-                CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  pressedOpacity: 0.2,
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: address));
-                    SnackBarUtils.success(
-                      context,
-                      title: 'wallet.copy'.tr(),
-                      duration: const Duration(milliseconds: 500),
-                    );
-                  },
-                  child: Container(
-                    height: 34,
-                    width: 34,
-                    padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
-                    child: SvgPicture.asset(
-                      Images.walletCopyIcon,
-                      color: AppColor.enabledButton,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-              child: Observer(
-                builder: (_) => _BannerBuyingWQT(
-                  isEnabled: _isShowBanner,
-                  button: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      Future.delayed(const Duration(milliseconds: 100))
-                          .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
-                    },
-                    child: Container(
-                      height: 43,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        border: Border.all(
-                          color: Colors.blue.withOpacity(0.1),
-                        ),
-                        color: Colors.white,
+          ValueListenableBuilder<NetworkName?>(
+            valueListenable: AccountRepository().networkName,
+            builder: (_, value, child) {
+              print('value: $value');
+              final _isWorknet = value! == NetworkName.workNetMainnet || value == NetworkName.workNetTestnet;
+              print('_isWorknet: $_isWorknet');
+              String address = _isWorknet
+                  ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
+                  : AccountRepository().userWallet!.address!;
+              return SliverToBoxAdapter(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.subtitleText,
                       ),
-                      child: const Text(
-                        'Buy WQT',
-                        style: TextStyle(
-                          fontSize: 16,
+                    ),
+                    const Spacer(),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.2,
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: address));
+                        SnackBarUtils.success(
+                          context,
+                          title: 'wallet.copy'.tr(),
+                          duration: const Duration(milliseconds: 500),
+                        );
+                      },
+                      child: Container(
+                        height: 34,
+                        width: 34,
+                        padding: const EdgeInsets.all(7.0),
+                        decoration:
+                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
+                        child: SvgPicture.asset(
+                          Images.walletCopyIcon,
                           color: AppColor.enabledButton,
                         ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          SliverToBoxAdapter(
+            child: Observer(
+              builder: (_) => _BannerBuyingWQT(
+                isEnabled: _isShowBanner,
+                button: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    Future.delayed(const Duration(milliseconds: 100))
+                        .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
+                  },
+                  child: Container(
+                    height: 43,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(
+                        color: Colors.blue.withOpacity(0.1),
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: const Text(
+                      'Buy WQT',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColor.enabledButton,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
+          ),
           SliverPersistentHeader(
             pinned: true,
             delegate: _WalletView(
-              address: address,
               minExtend: 0,
               maxExtend: 270,
             ),
@@ -295,13 +305,11 @@ class _BannerBuyingWQT extends StatelessWidget {
 }
 
 class _WalletView extends SliverPersistentHeaderDelegate {
-  final String address;
   final double minExtend;
   final double maxExtend;
   BuildContext? walletPageContext;
 
   _WalletView({
-    required this.address,
     required this.minExtend,
     required this.maxExtend,
   });

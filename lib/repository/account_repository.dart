@@ -79,7 +79,7 @@ class AccountRepository {
 
   _saveNetwork(NetworkName networkName) {
     this.networkName.value = networkName;
-    Storage.write(StorageKeys.networkName.toString(), networkName.name);
+    Storage.write(StorageKeys.networkName.name, networkName.name);
   }
 
   _disconnectWeb3Client() {
