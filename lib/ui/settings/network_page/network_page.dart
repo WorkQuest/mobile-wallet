@@ -2,17 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/http/web_socket.dart';
-import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
-import 'package:workquest_wallet_app/ui/settings/network_page/store/network_store.dart';
-import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
-import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 import '../../../repository/account_repository.dart';
 
@@ -28,14 +21,6 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-  late NetworkStore _store;
-
-  @override
-  void initState() {
-    _store = NetworkStore();
-    _store.setNetwork(AccountRepository().notifierNetwork.value);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,65 +29,48 @@ class _NetworkPageState extends State<NetworkPage> {
       appBar: DefaultAppBar(
         title: 'wallet.network'.tr(),
       ),
-      body: ObserverListener(
-        store: _store,
-        onSuccess: () async {
-          Navigator.of(context, rootNavigator: true).pop();
-          await AlertDialogUtils.showSuccessDialog(context);
-        },
-        onFailure: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (_store.errorMessage != 'Wallet not found') {
-            return false;
-          }
-          _showAlertConfirmChangeNetwork(_store.network == Network.mainnet
-              ? Network.testnet
-              : Network.mainnet);
-          return true;
-        },
-        child: Observer(
-          builder: (_) => LayoutWithScroll(
-            child: Padding(
-              padding: _padding,
-              child: Column(
-                children: _networks.map((network) {
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => _onPressedChange(network),
-                        child: ColoredBox(
-                          color: Colors.transparent,
-                          child: SizedBox(
-                            height: 36,
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                DefaultRadio(
-                                  status: _store.network == network,
+      body: Observer(
+        builder: (_) => LayoutWithScroll(
+          child: Padding(
+            padding: _padding,
+            child: Column(
+              children: _networks.map((network) {
+                return Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _onPressedChange(network),
+                      child: ColoredBox(
+                        color: Colors.transparent,
+                        child: SizedBox(
+                          height: 36,
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              DefaultRadio(
+                                status: AccountRepository().notifierNetwork.value == network,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                _getName(network.name),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: AppColor.subtitleText,
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  _getName(network.name),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: AppColor.subtitleText,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -115,34 +83,13 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   _onPressedChange(Network newNetwork) {
-    if (_store.network != newNetwork) {
-      AlertDialogUtils.showLoadingDialog(context);
-      _store.changeNetwork(newNetwork);
+    if (AccountRepository().notifierNetwork.value != newNetwork) {
+      final _newNetworkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
+      AccountRepository().notifierNetwork.value = newNetwork;
+      AccountRepository().changeNetwork(_newNetworkName);
+      setState(() {
+
+      });
     }
-  }
-
-  _showAlertConfirmChangeNetwork(Network network) {
-    AlertDialogUtils.showAlertDialog(
-      context,
-      title: Text('meta.warning'.tr()),
-      content: Text('wallet.changeNetworkInfo'.tr()),
-      needCancel: true,
-      titleCancel: null,
-      titleOk: 'meta.confirm'.tr(),
-      onTabCancel: null,
-      onTabOk: () => _pushToLogin(network),
-      colorCancel: AppColor.enabledButton,
-      colorOk: Colors.red,
-    );
-  }
-
-  _pushToLogin(Network network) async {
-    await PageRouter.pushNewRemoveRoute(context, const LoginPage());
-    WebSocket().closeWebSocket();
-    final _networkName =
-        Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
-    AccountRepository().clearData();
-    AccountRepository().notifierNetwork.value = network;
-    Storage.write(StorageKeys.networkName.name, _networkName.name);
   }
 }
