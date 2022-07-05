@@ -13,7 +13,6 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 
 import '../main.dart';
 import '../model/course_tokens_response.dart';
-import '../model/txs_info_response.dart';
 
 class Api {
   static final Api _instance = Api._internal();
@@ -25,9 +24,7 @@ class Api {
   Network get _network => AccountRepository().notifierNetwork.value;
 
   String get _courseWQT {
-    if (_network == Network.testnet) {
-    } else {}
-    return "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+    return "https://mainnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
   }
 
   String _transactions(String address) {
@@ -48,11 +45,6 @@ class Api {
       return "https://mainnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
   }
-
-  String _transactionInfo({
-    required String hashTx,
-  }) =>
-      "https://testnet-explorer-api.workquest.co/api/v1/transaction/$hashTx";
 
   final _dio = MyHttpClient().dio;
 
@@ -99,27 +91,6 @@ class Api {
 
       return List<Tx>.from(
           response.data['result']['txs'].map((x) => Tx.fromJson(x)));
-    } on DioError catch (e) {
-      await handleError(e);
-    }
-    return null;
-  }
-
-  Future<TxInfoResponse?> getTransaction({
-    required String hashTx,
-  }) async {
-    try {
-      final response = await _dio.get(_transactionInfo(hashTx: hashTx));
-
-      if (response.statusCode != 200) {
-        final message = await getTranslateMessage(
-          code: response.data['code'],
-          message: response.data['msg'],
-        );
-        throw FormatException(message);
-      }
-
-      return TxInfoResponse.fromJson(response.data);
     } on DioError catch (e) {
       await handleError(e);
     }
