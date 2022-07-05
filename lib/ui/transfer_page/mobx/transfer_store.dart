@@ -108,15 +108,15 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       }
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(currentCoin!.typeCoin);
-        final _degree = Web3Utils.getDegreeToken(currentCoin!.typeCoin);
         final _contract = Erc20(
           address: EthereumAddress.fromHex(_addressToken),
           client: _client.ethClient!,
-        ).self;
+        );
+        final _degree = await Web3Utils.getDegreeToken(_contract);
         final _estimateGas = await _client.getEstimateGas(
           Transaction.callContract(
-            contract: _contract,
-            function: _contract.abi.functions[7],
+            contract: _contract.self,
+            function: _contract.self.abi.functions[7],
             parameters: [
               EthereumAddress.fromHex(_address),
               BigInt.from(double.tryParse(_amount) ?? 0.0 * pow(10, _degree)),
@@ -146,7 +146,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       }
     } on SocketException catch (_) {
       onError("Lost connection to server");
-    } catch (e, trace) {
+    } catch (e) {
       onError(e.toString());
     }
   }
