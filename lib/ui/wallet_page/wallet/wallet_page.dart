@@ -148,9 +148,9 @@ class _WalletPageState extends State<WalletPage> {
                 isEnabled: _isShowBanner(),
                 button: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  pressedOpacity: 0.2,
                   onPressed: () {
-                    Provider.of<NotifyPage>(context, listen: false).setIndex(1);
+                    Future.delayed(const Duration(milliseconds: 100))
+                        .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
                   },
                   child: Container(
                     height: 43,
