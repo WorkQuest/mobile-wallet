@@ -143,9 +143,9 @@ class _WalletPageState extends State<WalletPage> {
                 ],
               ),
             ),
-            if (_isShowBanner())
               SliverToBoxAdapter(
                 child: _BannerBuyingWQT(
+                  isEnabled: _isShowBanner(),
                   button: CupertinoButton(
                     padding: EdgeInsets.zero,
                     pressedOpacity: 0.2,
@@ -235,49 +235,56 @@ class _WalletPageState extends State<WalletPage> {
 
 class _BannerBuyingWQT extends StatelessWidget {
   final Widget button;
+  final bool isEnabled;
 
   const _BannerBuyingWQT({
     Key? key,
     required this.button,
+    required this.isEnabled,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      height: isEnabled ? 220 : 0,
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColor.enabledButton,
         borderRadius: BorderRadius.circular(16.0),
       ),
       padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'wallet.buyTitleWQT'.tr(),
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'wallet.buyTitleWQT'.tr(),
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            'wallet.buyDescriptionWQT'.tr(),
-            style: const TextStyle(
-              color: Colors.white,
+            const SizedBox(
+              height: 5,
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: button,
-          ),
-        ],
+            Text(
+              'wallet.buyDescriptionWQT'.tr(),
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: button,
+            ),
+          ],
+        ),
       ),
     );
   }
