@@ -143,36 +143,36 @@ class _WalletPageState extends State<WalletPage> {
                 ],
               ),
             ),
-              SliverToBoxAdapter(
-                child: _BannerBuyingWQT(
-                  isEnabled: _isShowBanner(),
-                  button: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    pressedOpacity: 0.2,
-                    onPressed: () {
-                      Provider.of<NotifyPage>(context, listen: false).setIndex(1);
-                    },
-                    child: Container(
-                      height: 43,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        border: Border.all(
-                          color: Colors.blue.withOpacity(0.1),
-                        ),
-                        color: Colors.white,
+            SliverToBoxAdapter(
+              child: _BannerBuyingWQT(
+                isEnabled: _isShowBanner(),
+                button: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  pressedOpacity: 0.2,
+                  onPressed: () {
+                    Provider.of<NotifyPage>(context, listen: false).setIndex(1);
+                  },
+                  child: Container(
+                    height: 43,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(
+                        color: Colors.blue.withOpacity(0.1),
                       ),
-                      child: const Text(
-                        'Buy WQT',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColor.enabledButton,
-                        ),
+                      color: Colors.white,
+                    ),
+                    child: const Text(
+                      'Buy WQT',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColor.enabledButton,
                       ),
                     ),
                   ),
                 ),
               ),
+            ),
             SliverPersistentHeader(
               pinned: true,
               delegate: _WalletView(
@@ -245,47 +245,50 @@ class _BannerBuyingWQT extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      height: isEnabled ? 220 : 0,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColor.enabledButton,
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      padding: const EdgeInsets.all(12.0),
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'wallet.buyTitleWQT'.tr(),
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              'wallet.buyDescriptionWQT'.tr(),
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      child: isEnabled
+          ? Container(
               width: double.infinity,
-              child: button,
-            ),
-          ],
-        ),
-      ),
+              decoration: BoxDecoration(
+                color: AppColor.enabledButton,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              padding: const EdgeInsets.all(12.0),
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'wallet.buyTitleWQT'.tr(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'wallet.buyDescriptionWQT'.tr(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: button,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
