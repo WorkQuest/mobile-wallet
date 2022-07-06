@@ -50,7 +50,7 @@ class _WalletPageState extends State<WalletPage> {
           ValueListenableBuilder<NetworkName?>(
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
-              final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+              final _networkName = Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
               return DropDownAdaptiveWidget<SwitchNetworkNames>(
                 value: _networkName,
                 onChanged: (value) {
@@ -107,12 +107,11 @@ class _WalletPageState extends State<WalletPage> {
           ValueListenableBuilder<NetworkName?>(
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
-              print('value: $value');
-              final _isWorknet = value! == NetworkName.workNetMainnet || value == NetworkName.workNetTestnet;
-              print('_isWorknet: $_isWorknet');
+              final _value = value ?? NetworkName.workNetMainnet;
+              final _isWorknet = _value == NetworkName.workNetMainnet || _value == NetworkName.workNetTestnet;
               String address = _isWorknet
-                  ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
-                  : AccountRepository().userWallet!.address!;
+                  ? AddressService.hexToBech32(AccountRepository().userWallet?.address ?? '111111111111111111')
+                  : AccountRepository().userWallet?.address ?? '111111111111111111';
               return SliverToBoxAdapter(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,7 +220,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   bool get _isShowBanner {
-    final _networkName = AccountRepository().networkName.value!;
+    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
     if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
       if (GetIt.I.get<WalletStore>().coins.isEmpty) {
         return false;
@@ -462,7 +461,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           else
                             Text(
                               // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount!)} ${balance.symbol.name}',
+                              '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
