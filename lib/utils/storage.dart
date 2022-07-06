@@ -24,8 +24,7 @@ class Storage {
   }
 
   static Future<Wallet?> readWallet() async {
-    String? wallet =
-        await _secureStorage.read(key: StorageKeys.wallet.name);
+    String? wallet = await _secureStorage.read(key: StorageKeys.wallet.name);
     if (wallet == null || wallet.isEmpty) {
       return null;
     }

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -29,7 +28,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   CoinItem? currentCoin;
 
   @computed
-  bool get statusButtonTransfer => currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
+  bool get statusButtonTransfer =>
+      currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   clearData() {
@@ -54,19 +54,20 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     try {
       final _client = AccountRepository().getClient();
       final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-      final _isNotToken =
-          _dataCoins.firstWhere((element) => element.symbolToken == currentCoin!.typeCoin).addressToken == null;
+      final _isNotToken = _dataCoins
+              .firstWhere(
+                  (element) => element.symbolToken == currentCoin!.typeCoin)
+              .addressToken ==
+          null;
       if (_isNotToken) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _balance =
+            await _client.getBalance(AccountRepository().privateKey);
         final _balanceInWei = _balance.getInWei;
-        print('_balanceInWei: $_balanceInWei');
         await getFee();
-        final _gas = BigInt.from(double.parse(fee) * pow(10, 18));
-        final _amount =
-            ((Decimal.parse(_balanceInWei.toString()) - Decimal.parse(_gas.toString())) / Decimal.fromInt(10).pow(18))
-                .toDecimal();
-        // final _amount = (_balanceInWei - _gas).toDouble() * pow(10, -18);
-        print('amount: $_amount');
+        final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
+        final _amount = ((Decimal.parse(_balanceInWei.toString()) - _gas) /
+                Decimal.fromInt(10).pow(18))
+            .toDecimal();
         if (_amount < Decimal.zero) {
           amount = 0.0.toStringAsFixed(18);
         } else {
@@ -75,7 +76,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       } else {
         final _balance = await AccountRepository()
             .getClient()
-            .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
+            .getBalanceFromContract(
+                Web3Utils.getAddressToken(currentCoin!.typeCoin));
         amount = _balance.toStringAsFixed(18);
       }
       onSuccess(true);
@@ -84,7 +86,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e) {
       onError(e.message);
     } catch (e) {
-      print('e: $e');
+      // print('e: $e');
       onError(e.toString());
     }
   }
@@ -93,17 +95,16 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   getFee() async {
     try {
       final _client = AccountRepository().getClient();
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
-      final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
-      String _address = '';
       String _amount = amount.isEmpty ? '0.0' : amount;
-      try {
-        final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
-        _address = _isBech ? AddressService.bech32ToHex(addressTo) : addressTo;
-      } catch (e) {
-        _address = AccountRepository().userAddress;
-      }
+      String _address = AddressService.convertToHexAddress(addressTo);
+      final _gas = await _client.getGas();
+
+      final _currentListTokens =
+          AccountRepository().getConfigNetwork().dataCoins;
+      final _isToken =
+          currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
+
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(currentCoin!.typeCoin);
         final _contract = Erc20(
@@ -117,21 +118,18 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             function: _contract.self.abi.functions[7],
             parameters: [
               EthereumAddress.fromHex(_address),
-              BigInt.from(double.tryParse(_amount) ?? 0.0 * pow(10, _degree)),
+              Web3Utils.getAmountBigInt(amount: _amount, degree: _degree),
             ],
             from: _from,
           ),
         );
-        final _gas = await _client.getGas();
-
-        fee = ((Decimal.parse(_estimateGas.toString()) * Decimal.parse(_gas.getInWei.toString())) /
-                Decimal.fromInt(10).pow(18))
-            .toDecimal()
+        fee = Web3Utils.getGas(
+                estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
             .toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
-          BigInt.from(double.parse(_amount) * pow(10, 18)),
+          Web3Utils.getAmountBigInt(amount: _amount, degree: 18),
         );
         final _to = EthereumAddress.fromHex(_address);
         final _estimateGas = await _client.getEstimateGas(
@@ -141,17 +139,14 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             value: _value,
           ),
         );
-        final _gas = await _client.getGas();
-        fee = ((Decimal.parse(_estimateGas.toString()) * Decimal.parse(_gas.getInWei.toString())) /
-                Decimal.fromInt(10).pow(18))
-            .toDecimal()
+        fee = Web3Utils.getGas(
+                estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
             .toStringAsFixed(18);
       }
-      print('fee: $fee');
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } catch (e) {
-      print('e: $e');
+      // print('e: $e');
       onError(e.toString());
     }
   }

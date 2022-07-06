@@ -21,7 +21,6 @@ class WebSocket {
   int closeCode = 4001;
 
   init() async {
-    // print('web socket init');
     shouldReconnectFlag = true;
     channel =
         IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
@@ -51,7 +50,6 @@ class WebSocket {
   }
 
   void closeWebSocket() {
-    print('closeWebSocket');
     shouldReconnectFlag = false;
     channel!.sink.close(closeCode, "closeCode");
   }

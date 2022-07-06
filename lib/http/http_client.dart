@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 
 class MyHttpClient {
   static final MyHttpClient _instance = MyHttpClient._internal();
@@ -16,10 +15,6 @@ class MyHttpClient {
 
   Dio dio = Dio();
 
-  String? accessToken;
-
-  set setAccessToken(String? accessToken) => this.accessToken = accessToken;
-
   void _setUpDio() {
     dio = Dio();
     dio.options.connectTimeout = 60000;
@@ -32,14 +27,10 @@ class MyHttpClient {
         InterceptorsWrapper(
           onRequest: (RequestOptions options, handler) {
             print('\n---------------- onRequest ----------------');
-            if (accessToken != null) {
-              options.headers['authorization'] = "Bearer $accessToken";
-            }
             print("url: ${options.path}");
             print("queryParameters: ${options.queryParameters}");
             print("headers: ${options.headers}");
             print('method: ${options.method}');
-            print("Adding accessToken $accessToken");
             if (options.data != null) print("url ${options.data}");
             print('-------------------------------------------');
             return handler.next(options);
@@ -56,7 +47,9 @@ class MyHttpClient {
               } else {
                 print('response.status - Failed');
               }
-            } catch (e) {}
+            } catch (e) {
+              // print('onResponse e -> $e, trace -> $trace');
+            }
             print('-------------------------------------------');
             handler.next(response);
           },
@@ -67,16 +60,6 @@ class MyHttpClient {
             print("message ${e.type} ${e.message}");
             print("response ${e.type} ${e.response}");
             print('-------------------------------------------');
-            try {
-              if (e.response?.data["code"] == 401001) {
-                return handleRefreshToken(e);
-              }
-              if (e.response?.data["code"] == 401002) {
-                return handleChangeToken(e);
-              }
-            } catch (e) {
-              print('error $e');
-            }
             return handler.next(e);
           },
         ),
@@ -87,27 +70,8 @@ class MyHttpClient {
             (X509Certificate cert, String host, int port) => true;
         return client;
       };
-    } catch (e, trace) {
+    } catch (e) {
       // print('_setInterceptors e -> $e, trace -> $trace');
     }
-  }
-
-  void handleChangeToken(DioError e) async {
-    accessToken = null;
-    Storage.delete(StorageKeys.refreshToken.toString());
-    return;
-  }
-
-  void handleRefreshToken(DioError e) async {
-    accessToken = null;
-    final refreshToken =
-        await Storage.read(StorageKeys.refreshToken.toString());
-    //TODO refresh Token
-    // var response = await Api().authRequest.refreshTokens(refreshToken);
-    // if (response != null) {
-    //   return response;
-    // } else {
-    //   return e;
-    // }
   }
 }

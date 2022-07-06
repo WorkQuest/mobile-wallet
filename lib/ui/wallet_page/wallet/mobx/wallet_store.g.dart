@@ -25,21 +25,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
     });
   }
 
-  late final _$typeAtom = Atom(name: 'WalletStoreBase.type', context: context);
-
-  @override
-  TokenSymbols get type {
-    _$typeAtom.reportRead();
-    return super.type;
-  }
-
-  @override
-  set type(TokenSymbols value) {
-    _$typeAtom.reportWrite(value, super.type, () {
-      super.type = value;
-    });
-  }
-
   late final _$getCoinsAsyncAction =
       AsyncAction('WalletStoreBase.getCoins', context: context);
 
@@ -50,17 +35,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
 
   late final _$WalletStoreBaseActionController =
       ActionController(name: 'WalletStoreBase', context: context);
-
-  @override
-  dynamic setType(TokenSymbols value) {
-    final _$actionInfo = _$WalletStoreBaseActionController.startAction(
-        name: 'WalletStoreBase.setType');
-    try {
-      return super.setType(value);
-    } finally {
-      _$WalletStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic clearData() {
@@ -77,7 +51,6 @@ mixin _$WalletStore on WalletStoreBase, Store {
   String toString() {
     return '''
 coins: ${coins},
-type: ${type}
     ''';
   }
 }

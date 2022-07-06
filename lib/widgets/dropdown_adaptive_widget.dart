@@ -22,7 +22,8 @@ class DropDownAdaptiveWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState<T> createState() => _DropDownAdaptiveWidgetState<T>();
+  _DropDownAdaptiveWidgetState<T> createState() =>
+      _DropDownAdaptiveWidgetState<T>();
 }
 
 class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
@@ -74,7 +75,9 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
             if (widget.value is Network)
               Row(
                 children: [
-                  const SizedBox(width: 16,),
+                  const SizedBox(
+                    width: 16,
+                  ),
                   Icon(
                     Icons.arrow_drop_down,
                     color: widget.colorText,
@@ -117,7 +120,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
             width: 250.0,
             child: Scrollbar(
               child: ListView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 shrinkWrap: true,
                 children: [
                   for (int i = 0; i < widget.items.length; i++)
@@ -127,7 +131,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                           Container(
                             width: double.infinity,
                             height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             color: const Color(0xc1e2e2e2),
                           ),
                           _ItemEnvironmentWidget(
@@ -136,12 +141,14 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                               widget.onChanged(widget.items[i]);
                               Navigator.pop(context);
                             },
-                            title: _getName(_getTitleItem(widget.items[i].toString())),
+                            title: _getName(
+                                _getTitleItem(widget.items[i].toString())),
                           ),
                           Container(
                             width: double.infinity,
                             height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             color: const Color(0xc1e2e2e2),
                           ),
                         ],
@@ -152,7 +159,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                           Container(
                             width: double.infinity,
                             height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             color: const Color(0xc1e2e2e2),
                           ),
                           _ItemNetworkWidget(
@@ -161,16 +169,21 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                               widget.onChanged(widget.items[i]);
                               Navigator.pop(context);
                             },
-                            title: _getName(_getTitleItem(widget.items[i].toString())),
+                            title: _getName(
+                                _getTitleItem(widget.items[i].toString())),
                             pathIcon: widget.haveIcon
-                                ? _getPathIcons(_getTitleItem(widget.items[i].toString()))
+                                ? _getPathIcons(
+                                    _getTitleItem(widget.items[i].toString()))
                                 : null,
-                            haveGradient: _getTitleItem(widget.items[i].toString()) == 'WORKNET',
+                            haveGradient:
+                                _getTitleItem(widget.items[i].toString()) ==
+                                    'WORKNET',
                           ),
                           Container(
                             width: double.infinity,
                             height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             color: const Color(0xc1e2e2e2),
                           ),
                         ],
@@ -199,7 +212,8 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                     padding: EdgeInsets.zero,
                     child: const Text(
                       'Close',
-                      style: TextStyle(fontSize: 16, color: AppColor.enabledButton),
+                      style: TextStyle(
+                          fontSize: 16, color: AppColor.enabledButton),
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -270,11 +284,16 @@ class _ItemEnvironmentWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.check, color: isEnabled ? Colors.black : Colors.transparent, size: 25),
+              Icon(Icons.check,
+                  color: isEnabled ? Colors.black : Colors.transparent,
+                  size: 25),
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               )
             ],
           ),
@@ -314,7 +333,9 @@ class _ItemNetworkWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.check, color: isEnabled ? Colors.black : Colors.transparent, size: 25),
+              Icon(Icons.check,
+                  color: isEnabled ? Colors.black : Colors.transparent,
+                  size: 25),
               const SizedBox(width: 5),
               if (pathIcon != null)
                 if (haveGradient)
@@ -331,7 +352,10 @@ class _ItemNetworkWidget extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               )
             ],
           ),

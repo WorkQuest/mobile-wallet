@@ -20,17 +20,19 @@ class AccountRepository {
   AccountRepository._internal();
 
   Wallet? userWallet;
-
   ClientService? client;
 
   ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
-
   ValueNotifier<Network> notifierNetwork =
       ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
   String get privateKey => userWallet!.privateKey!;
+
+  bool get isOtherNetwork =>
+      networkName.value != NetworkName.workNetTestnet &&
+      networkName.value != NetworkName.workNetMainnet;
 
   ClientService getClient() {
     return client!;
@@ -39,6 +41,10 @@ class AccountRepository {
   connectClient() {
     final config = Configs.configsNetwork[networkName.value!];
     client = ClientService(config!);
+  }
+
+  ConfigNetwork getConfigNetwork() {
+    return Configs.configsNetwork[networkName.value!]!;
   }
 
   setNetwork(NetworkName networkName) {
@@ -73,10 +79,6 @@ class AccountRepository {
     Storage.deleteAllFromSecureStorage();
   }
 
-  ConfigNetwork getConfigNetwork() {
-    return Configs.configsNetwork[networkName.value!]!;
-  }
-
   _saveNetwork(NetworkName networkName) {
     this.networkName.value = networkName;
     Storage.write(StorageKeys.networkName.name, networkName.name);
@@ -87,21 +89,5 @@ class AccountRepository {
       client!.ethClient!.dispose();
       client!.ethClient = null;
     }
-  }
-
-  bool get isOtherNetwork =>
-      networkName.value != NetworkName.workNetTestnet &&
-      networkName.value != NetworkName.workNetMainnet;
-}
-
-class BalanceItem {
-  String title;
-  String amount;
-
-  BalanceItem(this.title, this.amount);
-
-  @override
-  String toString() {
-    return 'BalanceItem {title: $title, amount: $amount}';
   }
 }

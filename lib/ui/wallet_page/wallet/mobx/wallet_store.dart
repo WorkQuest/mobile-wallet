@@ -13,16 +13,9 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   @observable
   ObservableList<_CoinEntity> coins = ObservableList.of([]);
 
-  @observable
-  TokenSymbols type = TokenSymbols.WQT;
-
-  @action
-  setType(TokenSymbols value) => type = value;
-
   @action
   clearData() {
     coins.clear();
-    type = TokenSymbols.WQT;
   }
 
   @action
@@ -71,7 +64,8 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
             (_balance.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(8);
         _result.add(_CoinEntity(coin.symbolToken, _amount));
       } else {
-        final _amount = await _client.getBalanceFromContract(coin.addressToken!);
+        final _amount =
+            await _client.getBalanceFromContract(coin.addressToken!);
         _result.add(_CoinEntity(coin.symbolToken, _amount.toString()));
       }
     }).toList();

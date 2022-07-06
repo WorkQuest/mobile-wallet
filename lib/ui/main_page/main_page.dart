@@ -104,7 +104,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 tabBuilder: (context, index) {
                   if (index == 0) {
                     return ChangeNotifierProvider(
-                      create: (context) => Provider.of<NotifyPage>(context, listen: false),
+                      create: (context) =>
+                          Provider.of<NotifyPage>(context, listen: false),
                       child: WalletPage(
                         key: _keys[0],
                       ),

@@ -13,7 +13,7 @@ class AddressService {
     try {
       return bip39.generateMnemonic(strength: 128);
     } catch (e) {
-      throw Exception("Error generating mnemonic");
+      throw const FormatException("Error generating mnemonic");
     }
   }
 
@@ -21,7 +21,7 @@ class AddressService {
     try {
       return bip39.validateMnemonic(mnemonic);
     } catch (e) {
-      throw Exception("Error validate mnemonic");
+      throw const FormatException("Error validate mnemonic");
     }
   }
 
@@ -39,7 +39,7 @@ class AddressService {
 
       return privateKey;
     } catch (e) {
-      throw Exception("Error getting private key");
+      throw const FormatException("Error getting private key");
     }
   }
 
@@ -49,7 +49,7 @@ class AddressService {
       final address = await private.extractAddress();
       return address;
     } catch (e) {
-      throw Exception("Error getting address");
+      throw const FormatException("Error getting address");
     }
   }
 
@@ -59,7 +59,7 @@ class AddressService {
       final public = HEX.encode(private.encodedPublicKey);
       return public;
     } catch (e) {
-      throw Exception("Error getting public key");
+      throw const FormatException("Error getting public key");
     }
   }
 
@@ -82,6 +82,15 @@ class AddressService {
       return '0x$result';
     } catch (e) {
       return addressBech32;
+    }
+  }
+
+  static String convertToHexAddress(String address) {
+    try {
+      final _isBech = address.substring(0, 2).toLowerCase() == 'wq';
+      return _isBech ? AddressService.bech32ToHex(address) : address;
+    } catch (e) {
+      return address;
     }
   }
 }
@@ -110,7 +119,7 @@ class Bech32Encoder {
 
     for (var v in data) {
       if (v < 0 || (v >> from) != 0) {
-        throw Exception();
+        throw const FormatException();
       }
       acc = (acc << from) | v;
       bits += from;
@@ -125,9 +134,9 @@ class Bech32Encoder {
         result.add((acc << (to - bits)) & maxv);
       }
     } else if (bits >= from) {
-      throw Exception('illegal zero padding');
+      throw const FormatException('illegal zero padding');
     } else if (((acc << (to - bits)) & maxv) != 0) {
-      throw Exception('non zero');
+      throw const FormatException('non zero');
     }
 
     return Uint8List.fromList(result);

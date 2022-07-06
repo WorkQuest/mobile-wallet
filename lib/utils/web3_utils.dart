@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
@@ -36,6 +37,22 @@ class Web3Utils {
   static Future<int> getDegreeToken(Erc20 contract) async {
     final _decimals = await contract.decimals();
     return _decimals.toInt();
+  }
+
+  static Decimal getGas({
+    required BigInt estimateGas,
+    required BigInt gas,
+    required int degree,
+  }) {
+    return ((Decimal.parse(estimateGas.toString()) * Decimal.parse(gas.toString())) / Decimal.fromInt(10).pow(18))
+        .toDecimal();
+  }
+
+  static BigInt getAmountBigInt({
+    required String amount,
+    required int degree,
+  }) {
+    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree)).toBigInt();
   }
 
   static String getAddressToken(TokenSymbols typeCoin) {

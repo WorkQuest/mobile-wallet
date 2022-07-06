@@ -50,14 +50,18 @@ class _WalletPageState extends State<WalletPage> {
           ValueListenableBuilder<NetworkName?>(
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
-              final _networkName = Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
+              final _networkName = Web3Utils.getNetworkNameForSwitch(
+                  value ?? NetworkName.workNetMainnet);
               return DropDownAdaptiveWidget<SwitchNetworkNames>(
                 value: _networkName,
                 onChanged: (value) {
-                  final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                      value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+                  final _newNetwork =
+                      Web3Utils.getNetworkNameFromSwitchNetworkName(
+                          value as SwitchNetworkNames,
+                          AccountRepository().notifierNetwork.value);
                   AccountRepository().changeNetwork(_newNetwork);
-                  final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
+                  final _swapNetwork =
+                      Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
                   GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
                   return value;
                 },
@@ -79,7 +83,10 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return Platform.isAndroid
         ? RefreshIndicator(
-            displacement: 20, triggerMode: RefreshIndicatorTriggerMode.anywhere, onRefresh: _onRefresh, child: layout())
+            displacement: 20,
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            onRefresh: _onRefresh,
+            child: layout())
         : layout();
   }
 
@@ -108,10 +115,14 @@ class _WalletPageState extends State<WalletPage> {
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
               final _value = value ?? NetworkName.workNetMainnet;
-              final _isWorknet = _value == NetworkName.workNetMainnet || _value == NetworkName.workNetTestnet;
+              final _isWorknet = _value == NetworkName.workNetMainnet ||
+                  _value == NetworkName.workNetTestnet;
               String address = _isWorknet
-                  ? AddressService.hexToBech32(AccountRepository().userWallet?.address ?? '111111111111111111')
-                  : AccountRepository().userWallet?.address ?? '111111111111111111';
+                  ? AddressService.hexToBech32(
+                      AccountRepository().userWallet?.address ??
+                          '111111111111111111')
+                  : AccountRepository().userWallet?.address ??
+                      '111111111111111111';
               return SliverToBoxAdapter(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,8 +151,9 @@ class _WalletPageState extends State<WalletPage> {
                         height: 34,
                         width: 34,
                         padding: const EdgeInsets.all(7.0),
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: AppColor.disabledButton),
                         child: SvgPicture.asset(
                           Images.walletCopyIcon,
                           color: AppColor.enabledButton,
@@ -160,8 +172,10 @@ class _WalletPageState extends State<WalletPage> {
                 button: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100))
-                        .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
+                    Future.delayed(const Duration(milliseconds: 100)).then(
+                        (value) =>
+                            Provider.of<NotifyPage>(context, listen: false)
+                                .setIndex(1));
                   },
                   child: Container(
                     height: 43,
@@ -202,7 +216,10 @@ class _WalletPageState extends State<WalletPage> {
               titlePadding: const EdgeInsets.only(bottom: 12.0),
               title: Text(
                 'wallet.table.trx'.tr(),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -220,13 +237,18 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   bool get _isShowBanner {
-    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
-    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
+    final _networkName =
+        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+    if (_networkName == NetworkName.workNetTestnet ||
+        _networkName == NetworkName.workNetMainnet) {
       if (GetIt.I.get<WalletStore>().coins.isEmpty) {
         return false;
       }
       try {
-        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        final _wqt = GetIt.I
+            .get<WalletStore>()
+            .coins
+            .firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
           return true;
         }
@@ -352,7 +374,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                           padding: EdgeInsets.zero,
                           pressedOpacity: 0.2,
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const WithdrawPage());
+                            PageRouter.pushNewRoute(
+                                context, const WithdrawPage());
                           },
                           child: Container(
                             height: 43,
@@ -381,7 +404,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                         child: DefaultButton(
                           title: 'wallet'.tr(gender: 'deposit'),
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const DepositPage());
+                            PageRouter.pushNewRoute(
+                                context, const DepositPage());
                           },
                         ),
                       )
@@ -460,7 +484,6 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              // '${num.parse(balance.amount).toInt()} ${balance.title}',
                               '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
                               style: const TextStyle(
                                 fontSize: 25,
@@ -478,7 +501,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(balance.symbol.name, balance.amount!),
+                              _getCourseDollar(
+                                  balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -510,8 +534,14 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                          border: isCurrency
+                              ? null
+                              : Border.all(
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );
@@ -530,14 +560,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 children: [
                   Text(
                     'errors.failedToGetBalance'.tr(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   Text(
                     'errors.swipeUpdate'.tr(),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -556,23 +588,18 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
   _onPageChanged(int index, dynamic _) {
     switch (index) {
       case 0:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.WQT);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WQT);
         break;
       case 1:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.WUSD);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.wBNB);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wBNB);
         break;
       case 3:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.wETH);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wETH);
         break;
       case 4:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.USDT);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);
         break;
     }

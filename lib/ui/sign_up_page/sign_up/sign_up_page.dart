@@ -85,7 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: DefaultButton(

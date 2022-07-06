@@ -39,8 +39,7 @@ void main() async {
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
       AccountRepository().setNetwork(_networkName);
-      await Storage.write(
-          StorageKeys.networkName.name, _networkName.name);
+      await Storage.write(StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
     AccountRepository().clearData();
@@ -102,7 +101,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
         ),
         builder: (context, child) {
-          /// Set app text scale between 90% and 110%
+          /// Set app text scale between 80% and 110%
           final mq = MediaQuery.of(context);
           double fontScale = mq.textScaleFactor.clamp(0.8, 1.0);
           return MediaQuery(

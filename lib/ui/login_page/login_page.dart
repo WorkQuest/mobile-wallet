@@ -16,18 +16,8 @@ import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +120,8 @@ class _ContentScreenState extends State<_ContentScreen> {
               },
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
-                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                PageRouter.pushNewReplacementRoute(
+                    context, const PinCodePage());
               },
               child: Observer(
                 builder: (_) {
@@ -187,14 +178,9 @@ class _ContentScreenState extends State<_ContentScreen> {
   }
 }
 
-class _HeaderScreen extends StatefulWidget {
+class _HeaderScreen extends StatelessWidget {
   const _HeaderScreen({Key? key}) : super(key: key);
 
-  @override
-  State<_HeaderScreen> createState() => _HeaderScreenState();
-}
-
-class _HeaderScreenState extends State<_HeaderScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -209,7 +195,8 @@ class _HeaderScreenState extends State<_HeaderScreen> {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),

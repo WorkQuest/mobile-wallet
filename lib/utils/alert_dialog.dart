@@ -60,7 +60,8 @@ class AlertDialogUtils {
     }
   }
 
-  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context,
+      {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -264,28 +265,28 @@ class AlertDialogUtils {
                 color: Color(0xFF7C838D),
               ),
             ),
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 10.0,
+            Column(
+              children: [
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "wallet.amount".tr(),
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 17.0,
                   ),
-                  Text(
-                    "wallet.amount".tr(),
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 17.0,
-                    ),
+                ),
+                Text(
+                  "$amount $tokenSymbol",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                    color: Color(0xFF7C838D),
                   ),
-                  Text(
-                    "$amount $tokenSymbol",
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      color: Color(0xFF7C838D),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 10.0,
             ),

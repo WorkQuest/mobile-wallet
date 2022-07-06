@@ -12,7 +12,8 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 abstract class ClientServiceI {
-  Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
+  Future<List<BalanceItem>> getBalanceFromList(
+      List<EtherUnit> units, String privateKey);
 
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
 
@@ -43,17 +44,13 @@ abstract class ClientServiceI {
 class ClientService implements ClientServiceI {
   Web3Client? ethClient;
 
-  ClientService(ConfigNetwork config, {String? customRpc}) {
+  ClientService(ConfigNetwork config) {
     try {
-      if (customRpc != null) {
-        ethClient = Web3Client(customRpc, Client());
-        return;
-      }
       ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
-    } catch (e, trace) {
-      print('e -> $e\ntrace -> $trace');
+    } catch (e) {
+      // print('e -> $e\ntrace -> $trace');
       throw Exception(e.toString());
     }
   }
@@ -70,16 +67,15 @@ class ClientService implements ClientServiceI {
     required String amount,
     required TokenSymbols coin,
   }) async {
-    print('client sendTransaction');
     String? hash;
     final _privateKey = AccountRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString()),
+        BigInt.parse(
+            (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString()),
       );
-      print('value: $_value');
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       final _chainId = await ethClient!.getChainId();
@@ -101,19 +97,16 @@ class ClientService implements ClientServiceI {
       final _degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
-        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(_degree)).toString()),
+        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(_degree))
+            .toString()),
         credentials: _credentials,
       );
-      print('${coin.toString()} hash - $hash');
     }
 
     int attempts = 0;
     TransactionReceipt? result;
     while (result == null) {
       result = await ethClient!.getTransactionReceipt(hash);
-      if (result != null) {
-        print('result - ${result.blockNumber}');
-      }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
       if (attempts == 5) {
@@ -126,10 +119,14 @@ class ClientService implements ClientServiceI {
   Future<Decimal> getBalanceFromContract(String address) async {
     try {
       address = address.toLowerCase();
-      final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
-      final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+      final contract =
+          Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
+      final balance = await contract.balanceOf(
+          EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
       final _degree = await Web3Utils.getDegreeToken(contract);
-      return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree)).toDecimal();
+      return (Decimal.parse(balance.toString()) /
+              Decimal.fromInt(10).pow(_degree))
+          .toDecimal();
     } catch (e) {
       throw Exception("Error connection to network");
     }
@@ -157,7 +154,8 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey) async {
+  Future<List<BalanceItem>> getBalanceFromList(
+      List<EtherUnit> units, String privateKey) async {
     if (units.isEmpty) {
       throw Exception("List units is empty");
     }
@@ -172,7 +170,8 @@ class ClientService implements ClientServiceI {
 
   @override
   Future<List<BalanceItem>> getAllBalance(String privateKey) async {
-    final list = await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
+    final list =
+        await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();
@@ -201,5 +200,17 @@ class ClientService implements ClientServiceI {
   Erc20 getContract(String address) {
     address = address.toLowerCase();
     return Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
+  }
+}
+
+class BalanceItem {
+  String title;
+  String amount;
+
+  BalanceItem(this.title, this.amount);
+
+  @override
+  String toString() {
+    return 'BalanceItem {title: $title, amount: $amount}';
   }
 }

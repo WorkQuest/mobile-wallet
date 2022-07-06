@@ -60,12 +60,9 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
       if (didAuthenticate) {
         signIn(isBiometric: true);
       } else {
-        await Future.delayed(const Duration(milliseconds: 350));
         errorMessage = null;
       }
     } catch (e) {
-      print(e);
-      await Future.delayed(const Duration(milliseconds: 350));
       errorMessage = null;
     }
   }
@@ -86,7 +83,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
     try {
       if (isBiometric) {
         startAnimation = true;
-        await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 1));
         statePin = StatePinCode.check;
         onSuccess(StatePinCode.success);
         return;
@@ -101,7 +98,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
       } else if (statePin == StatePinCode.repeat) {
         if (newPinCode == pinCode) {
           startAnimation = true;
-          await Future.delayed(const Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 1));
           await Storage.write(StorageKeys.pinCode.toString(), pinCode);
           onSuccess(StatePinCode.success);
         } else {
@@ -120,7 +117,7 @@ abstract class PinCodeStoreBase extends IStore<StatePinCode> with Store {
         final value = await Storage.read(StorageKeys.pinCode.toString());
         if (value == pinCode) {
           startAnimation = true;
-          await Future.delayed(const Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 1));
           onSuccess(StatePinCode.success);
         } else {
           attempts++;

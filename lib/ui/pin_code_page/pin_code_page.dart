@@ -29,7 +29,8 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage>
+    with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -163,8 +164,12 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                         ),
                       KeyboardButton(
                         child: SvgPicture.asset(
-                          store.isFaceId ? Images.faceIdIcon : Images.biometricIcon,
-                          color: store.canBiometrics ? AppColor.enabledButton : Colors.transparent,
+                          store.isFaceId
+                              ? Images.faceIdIcon
+                              : Images.biometricIcon,
+                          color: store.canBiometrics
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                           width: 30,
                           height: 30,
                         ),
@@ -258,7 +263,6 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
               animationController: animationController,
               pinCode: pinCode,
               haveError: store.errorMessage != null,
-
             ),
           ),
       ],
@@ -302,7 +306,9 @@ class _PasswordFieldState extends State<PasswordField> {
                   margin: const EdgeInsets.symmetric(horizontal: 7.5),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: widget.pinCode.length >= i ? AppColor.enabledButton : const Color(0xffE9EDF2),
+                    color: widget.pinCode.length >= i
+                        ? AppColor.enabledButton
+                        : const Color(0xffE9EDF2),
                   ),
                   child: AnimationColor(
                     duration: const Duration(milliseconds: 350),

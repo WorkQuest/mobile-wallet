@@ -24,9 +24,9 @@ class Api {
   Network get _network => AccountRepository().notifierNetwork.value;
 
   String get _courseWQT {
-    if (_network == Network.testnet) {
-      return "https://testnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
-    }
+    // if (_network == Network.testnet) {
+    //   return "https://testnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+    // }
     return "https://mainnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
   }
 

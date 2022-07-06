@@ -55,7 +55,8 @@ class ListTransactions extends StatelessWidget {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (store.isMoreLoading && index == store.transactions.length) {
+                  if (store.isMoreLoading &&
+                      index == store.transactions.length) {
                     return Column(
                       children: const [
                         SizedBox(
@@ -65,17 +66,22 @@ class ListTransactions extends StatelessWidget {
                       ],
                     );
                   }
-                  final increase = store.transactions[index].fromAddressHash!.hex! !=
-                      (AccountRepository().userWallet?.address ?? '1234');
+                  final increase =
+                      store.transactions[index].fromAddressHash!.hex! !=
+                          (AccountRepository().userWallet?.address ?? '1234');
                   return TransactionItem(
                     transaction: store.transactions[index],
                     coin: increase
-                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!)
-                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!),
+                        ? _getTitleCoin(
+                            store.transactions[index].fromAddressHash!.hex!)
+                        : _getTitleCoin(
+                            store.transactions[index].toAddressHash!.hex!),
                     opacity: !store.transactions[index].show,
                   );
                 },
-                childCount: store.isMoreLoading ? store.transactions.length + 1 : store.transactions.length,
+                childCount: store.isMoreLoading
+                    ? store.transactions.length + 1
+                    : store.transactions.length,
               ),
             );
           } else {
@@ -102,41 +108,37 @@ class ListTransactions extends StatelessWidget {
     if (GetIt.I.get<TransactionsStore>().type == TokenSymbols.WQT) {
       final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
       if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.WUSD).addressToken) {
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+              .addressToken) {
         return TokenSymbols.WUSD;
       } else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wBNB).addressToken) {
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+              .addressToken) {
         return TokenSymbols.wBNB;
       } else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wETH).addressToken) {
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+              .addressToken) {
         return TokenSymbols.wETH;
       } else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.USDT).addressToken) {
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
+              .addressToken) {
         return TokenSymbols.USDT;
       } else {
         return TokenSymbols.WQT;
       }
     } else {
-      switch (GetIt.I.get<TransactionsStore>().type) {
-        case TokenSymbols.WQT:
-          return TokenSymbols.WQT;
-        case TokenSymbols.WUSD:
-          return TokenSymbols.WUSD;
-        case TokenSymbols.wBNB:
-          return TokenSymbols.wBNB;
-        case TokenSymbols.USDT:
-          return TokenSymbols.USDT;
-        case TokenSymbols.wETH:
-          return TokenSymbols.wETH;
-        default:
-          return TokenSymbols.WUSD;
-      }
+      return GetIt.I.get<TransactionsStore>().type;
     }
   }
 
   _onPressedGoToExplorer() {
-    final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer + AccountRepository().userAddress;
-    launch(_urlExplorer);
+    final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer +
+        AccountRepository().userAddress;
+    launchUrl(Uri.parse(_urlExplorer));
   }
 }
 
@@ -156,13 +158,15 @@ class TransactionItem extends StatefulWidget {
   _TransactionItemState createState() => _TransactionItemState();
 }
 
-class _TransactionItemState extends State<TransactionItem> with TickerProviderStateMixin {
+class _TransactionItemState extends State<TransactionItem>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 350), value: 0.15);
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 350), value: 0.15);
   }
 
   @override
@@ -177,7 +181,8 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       _animationController.forward();
     }
     widget.transaction.show = true;
-    bool increase = widget.transaction.fromAddressHash!.hex! != AccountRepository().userWallet!.address!;
+    bool increase = widget.transaction.fromAddressHash!.hex! !=
+        AccountRepository().userWallet!.address!;
     Color color = increase ? Colors.green : Colors.red;
     double score = _getScore(widget.transaction);
     return AnimatedBuilder(
@@ -185,7 +190,11 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       builder: (context, child) {
         return Transform.translate(
           filterQuality: FilterQuality.low,
-          offset: Offset(widget.opacity ? (50 - (50 * _animationController.value - 0.001)) : 0.0, 0.0),
+          offset: Offset(
+              widget.opacity
+                  ? (50 - (50 * _animationController.value - 0.001))
+                  : 0.0,
+              0.0),
           child: AnimatedOpacity(
             opacity: widget.opacity ? _animationController.value : 1.0,
             duration: const Duration(milliseconds: 450),
@@ -208,7 +217,9 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
         collapsed: const SizedBox(),
         expanded: _ExpandedTransactionWidget(
           hashTransaction: widget.transaction.hash!,
-          address: increase ? widget.transaction.fromAddressHash!.hex! : widget.transaction.toAddressHash!.hex!,
+          address: increase
+              ? widget.transaction.fromAddressHash!.hex!
+              : widget.transaction.toAddressHash!.hex!,
           increase: increase,
         ),
       ),
@@ -223,9 +234,11 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       return BigInt.parse(tx.amount!).toDouble() * pow(10, -18);
     }
     if (widget.coin == TokenSymbols.USDT) {
-      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -6);
+      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+          pow(10, -6);
     }
-    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -18);
+    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+        pow(10, -18);
   }
 }
 
@@ -347,7 +360,9 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           ),
           _ItemInfoFromTransaction(
             info: AddressService.hexToBech32(address),
-            title: increase ? "settings.education.from".tr() : "settings.education.to".tr(),
+            title: increase
+                ? "settings.education.from".tr()
+                : "settings.education.to".tr(),
           ),
         ],
       ),
@@ -372,7 +387,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: "$title: ",
-        style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+        style:
+            const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
         children: [
           TextSpan(
             text: info,
@@ -389,7 +405,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
   }
 
   _onTapTxHash() {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet =
+        AccountRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {
@@ -413,7 +430,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
               height: 34,
               width: 34,
               padding: const EdgeInsets.all(10.0),
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
             ),
           ),
           const SizedBox(
@@ -426,7 +444,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 child: Container(
                   height: 20,
                   width: 120,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(
@@ -436,7 +456,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 child: Container(
                   height: 14,
                   width: 150,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -450,7 +472,9 @@ class _ShimmerTransactionItem extends StatelessWidget {
               child: Container(
                 height: 20,
                 width: 100,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.white),
               ),
             ),
           )

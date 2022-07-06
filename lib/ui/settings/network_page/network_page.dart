@@ -21,7 +21,6 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +47,9 @@ class _NetworkPageState extends State<NetworkPage> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               DefaultRadio(
-                                status: AccountRepository().notifierNetwork.value == network,
+                                status:
+                                    AccountRepository().notifierNetwork.value ==
+                                        network,
                               ),
                               const SizedBox(
                                 width: 10,
@@ -84,12 +85,11 @@ class _NetworkPageState extends State<NetworkPage> {
 
   _onPressedChange(Network newNetwork) {
     if (AccountRepository().notifierNetwork.value != newNetwork) {
-      final _newNetworkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
+      final _newNetworkName =
+          Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
       AccountRepository().notifierNetwork.value = newNetwork;
       AccountRepository().changeNetwork(_newNetworkName);
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 }

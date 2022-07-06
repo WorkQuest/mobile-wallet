@@ -48,7 +48,6 @@ abstract class LoginStoreBase extends IStore<bool> with Store {
   }
 
   Future _saveToStorage(Wallet wallet) async {
-    await Storage.write(
-        StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
+    await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
   }
 }
