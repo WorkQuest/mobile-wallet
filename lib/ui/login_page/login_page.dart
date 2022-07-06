@@ -4,16 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
-import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
-import 'package:workquest_wallet_app/widgets/dropdown_adaptive_widget.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 
@@ -118,27 +115,6 @@ class _ContentScreenState extends State<_ContentScreen> {
               return null;
             },
             prefitIcon: null,
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: DropDownAdaptiveWidget<Network>(
-            colorText: Colors.black,
-            items: Network.values,
-            value: AccountRepository().notifierNetwork.value,
-            onChanged: (value) {
-              setState(() {
-                final _networkName =
-                    (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
-                AccountRepository().setNetwork(_networkName);
-                Storage.write(StorageKeys.network.toString(), (value).name);
-                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
-              });
-              return value;
-            },
           ),
         ),
         const SizedBox(
