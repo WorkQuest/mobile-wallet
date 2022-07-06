@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 const double _kOffset =
-    40.0; // distance to bottom of banner, at a 45 degree angle inwards
+    48.0; // distance to bottom of banner, at a 45 degree angle inwards
 const double _kHeight = 24.0; // height of banner
 const double _kBottomOffset =
     _kOffset + 0.707 * _kHeight; // offset plus sqrt(2)/2 * banner height
