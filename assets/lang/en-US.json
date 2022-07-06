@@ -167,6 +167,7 @@
     "swap": "Swap",
     "network": "Network",
     "send": "Send",
+    "underConstruction": "Still under construction",
     "mnemonic": "Mnemonic",
     "createWallet": "Create Wallet",
     "importWallet": "Import Wallet",
@@ -185,7 +186,7 @@
     "transfer": "Transfer",
     "addCardProposal": "Add your own card for easy withdrawal",
     "addCard": "Add now",
-    "addCartToContinue": "You have to add your card to continue",
+    "addCartToContinue": "Please add a bank card to your account",
     "copy": "Wallet address copied to clipboard",
     "recipientsAddress": "Recipient's address",
     "enterAddress": "Enter address",
@@ -372,15 +373,16 @@
     "info": "Deposit info"
   },
   "swap": {
-    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is \\$5 USDT/USDC",
-    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is \\$100 USDT/USDC.",
+    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is $5 USDT/USDC",
+    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is $100 USDT/USDC.",
     "connecting": "Connecting to {object}...",
     "buying": "Buying WQT",
     "choose": "Choose {object}",
     "amountBalance": "Amount (Balance: {maxAmount})",
     "addressWalletTo": "Address wallet to",
     "addressTo": "Address to",
-    "amountOfWQT": "Amount of WQT"
+    "amountOfWQT": "Amount of WQT to receive",
+    "includesWorkNetNetwork": "Includes a WorkNet network fee."
   },
   "lang": {
     "english": "English",

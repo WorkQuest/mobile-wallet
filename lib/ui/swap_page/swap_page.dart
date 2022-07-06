@@ -273,6 +273,10 @@ class _SwapPageState extends State<SwapPage> {
                             if (store.isSuccessCourse) Text(store.convertWQT.toString()),
                           ],
                         ),
+                        Text(
+                          'swap.includesWorkNetNetwork'.tr(),
+                          style: const TextStyle(fontSize: 12,),
+                        ),
                         const SizedBox(
                           height: 250,
                         ),
@@ -424,7 +428,7 @@ class _SwapPageState extends State<SwapPage> {
   _getTitleToken(SwapToken token) {
     switch (token) {
       case SwapToken.tusdt:
-        return 'TUSDT';
+        return 'USDT';
       case SwapToken.usdc:
         return 'USDC';
     }

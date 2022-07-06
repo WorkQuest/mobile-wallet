@@ -31,7 +31,7 @@ class _DepositBankCardState extends State<DepositBankCard>
     return _NotBankCards(
       onTab: () {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.warning'.tr(),
+            title: 'wallet.underConstruction'.tr(),
             content: 'meta.serviceUnavailable'.tr());
         setState(() {
           _addingBankCard = !_addingBankCard;
