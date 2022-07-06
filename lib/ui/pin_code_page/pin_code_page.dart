@@ -29,8 +29,7 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage>
-    with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -79,10 +78,13 @@ class _PinCodePageState extends State<PinCodePage>
           AccountRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
-          PageRouter.pushNewRemoveRoute(context, ChangeNotifierProvider(
-            create: (context) => NotifyPage(),
-            child: const MainPage(),
-          ),);
+          PageRouter.pushNewRemoveRoute(
+            context,
+            ChangeNotifierProvider(
+              create: (context) => NotifyPage(),
+              child: const MainPage(),
+            ),
+          );
         }
       },
       store: store,
@@ -162,9 +164,7 @@ class _PinCodePageState extends State<PinCodePage>
                       KeyboardButton(
                         child: SvgPicture.asset(
                           Images.biometricIcon,
-                          color: store.canBiometrics
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          color: store.canBiometrics ? AppColor.enabledButton : Colors.transparent,
                         ),
                         onTab: () async {
                           if (store.canBiometrics) {
@@ -227,21 +227,26 @@ class _PinCodePageState extends State<PinCodePage>
             ),
           ),
         ),
-        const SizedBox(
-          height: 40,
-        ),
         if (activateAnimation)
-          AnimationCompression(
-            first: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: PasswordField(
-                animationController: animationController,
-                pinCode: pinCode,
-                haveError: store.errorMessage != null,
+          Container(
+            height: 50,
+            margin: const EdgeInsets.only(top: 16.0),
+            child: AnimationCompression(
+              first: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: PasswordField(
+                  animationController: animationController,
+                  pinCode: pinCode,
+                  haveError: store.errorMessage != null,
+                ),
               ),
+              second: const SizedBox(
+                height: 50,
+                width: 50,
+                child: CircularProgressIndicator(),
+              ),
+              enabled: isLoading,
             ),
-            second: const CircularProgressIndicator(),
-            enabled: isLoading,
           )
         else
           PasswordField(
@@ -249,9 +254,6 @@ class _PinCodePageState extends State<PinCodePage>
             pinCode: pinCode,
             haveError: store.errorMessage != null,
           ),
-        const SizedBox(
-          height: 20,
-        ),
       ],
     );
   }
@@ -293,9 +295,7 @@ class _PasswordFieldState extends State<PasswordField> {
                   margin: const EdgeInsets.symmetric(horizontal: 7.5),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: widget.pinCode.length >= i
-                        ? AppColor.enabledButton
-                        : const Color(0xffE9EDF2),
+                    color: widget.pinCode.length >= i ? AppColor.enabledButton : const Color(0xffE9EDF2),
                   ),
                   child: AnimationColor(
                     duration: const Duration(milliseconds: 350),
