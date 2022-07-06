@@ -24,9 +24,7 @@ class Web3Utils {
       }
     } else {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
-      print('_balanceToken: $_balanceToken');
-      print('amount: $amount');
-      if (amount > _balanceToken) {
+      if (amount > _balanceToken.toDouble()) {
         throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       if (_balanceWQT.getInWei < _gasTx.getInWei) {

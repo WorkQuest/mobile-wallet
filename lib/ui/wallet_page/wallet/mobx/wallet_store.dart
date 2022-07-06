@@ -71,8 +71,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
             (_balance.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(8);
         _result.add(_CoinEntity(coin.symbolToken, _amount));
       } else {
-        final _amount = await _client.getBalanceFromContract(coin.addressToken!,
-            isUSDT: coin.symbolToken == TokenSymbols.USDT);
+        final _amount = await _client.getBalanceFromContract(coin.addressToken!);
         _result.add(_CoinEntity(coin.symbolToken, _amount.toString()));
       }
     }).toList();

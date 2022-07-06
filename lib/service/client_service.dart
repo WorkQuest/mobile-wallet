@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:decimal/decimal.dart';
 import 'package:hex/hex.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
@@ -20,7 +20,7 @@ abstract class ClientServiceI {
 
   Future<EthPrivateKey> getCredentials(String privateKey);
 
-  Future<double> getBalanceFromContract(String address);
+  Future<Decimal> getBalanceFromContract(String address);
 
   Future<EtherAmount> getBalance(String privateKey);
 
@@ -77,10 +77,12 @@ class ClientService implements ClientServiceI {
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        BigInt.from(double.parse(amount) * pow(10, 18)),
+        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString()),
       );
+      print('value: $_value');
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+      final _chainId = await ethClient!.getChainId();
       hash = await ethClient!.sendTransaction(
         _credentials,
         Transaction(
@@ -88,7 +90,7 @@ class ClientService implements ClientServiceI {
           from: _from,
           value: _value,
         ),
-        chainId: 1991,
+        chainId: _chainId.toInt(),
       );
     } else {
       String _addressToken = Web3Utils.getAddressToken(coin);
@@ -99,7 +101,7 @@ class ClientService implements ClientServiceI {
       final _degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
-        BigInt.from(double.parse(amount) * pow(10, _degree)),
+        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(_degree)).toString()),
         credentials: _credentials,
       );
       print('${coin.toString()} hash - $hash');
@@ -121,19 +123,14 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
+  Future<Decimal> getBalanceFromContract(String address) async {
     try {
       address = address.toLowerCase();
       final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
       final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
       final _degree = await Web3Utils.getDegreeToken(contract);
-      if (otherNetwork || isUSDT) {
-        return balance.toDouble() * pow(10, -_degree);
-      }
-
-      return balance.toDouble() * pow(10, -_degree);
-    } catch (e, trace) {
-      print('e: $e\ntrace: $trace');
+      return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree)).toDecimal();
+    } catch (e) {
       throw Exception("Error connection to network");
     }
   }

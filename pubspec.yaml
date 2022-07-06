@@ -67,6 +67,7 @@ dependencies:
   web3dart: ^2.3.3
   bip32: ^2.0.0
   pointycastle: ^3.4.0
+  decimal: ^2.2.0
 
   #client
   dio: ^4.0.4

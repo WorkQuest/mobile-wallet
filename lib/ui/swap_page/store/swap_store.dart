@@ -59,10 +59,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async {
-    maxAmount = await service.getBalanceFromContract(
-      Web3Utils.getTokenUSDTForSwap(network!),
-      otherNetwork: true,
-    );
+    final _result = await service.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!));
+    maxAmount = _result.toDouble();
   }
 
   @action
