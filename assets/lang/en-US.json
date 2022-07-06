@@ -356,7 +356,7 @@
     "shortPassword": "Short password",
     "incompleteCardNumber": "Incomplete card number",
     "incompleteDateFormat": "Incomplete date format",
-    "higherMaxAmount": "Higher max amount",
+    "higherMaxAmount": "Not enough USDT to complete this transaction",
     "failedToGetBalance": "Failed to get balance",
     "swipeUpdate": "Swipe to update",
     "invalidMnemonic": "Invalid mnemonic",

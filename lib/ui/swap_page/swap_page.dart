@@ -106,14 +106,11 @@ class _SwapPageState extends State<SwapPage> {
                         Row(
                           children: [
                             Text(
-                              'swap.choose'
-                                  .tr(namedArgs: {'object': 'network'}),
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.black),
+                              'swap.choose'.tr(namedArgs: {'object': 'network'}),
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
                             ),
                             const Spacer(),
-                            if (store.isLoading)
-                              const CircularProgressIndicator.adaptive(),
+                            if (store.isLoading) const CircularProgressIndicator.adaptive(),
                             if (!store.isConnect && store.errorMessage != null)
                               SizedBox(
                                 height: 18,
@@ -121,8 +118,7 @@ class _SwapPageState extends State<SwapPage> {
                                   padding: EdgeInsets.zero,
                                   child: Text(
                                     'meta.retry'.tr(),
-                                    style: const TextStyle(
-                                        color: AppColor.enabledButton),
+                                    style: const TextStyle(color: AppColor.enabledButton),
                                   ),
                                   onPressed: () {
                                     store.setNetwork(store.network!);
@@ -142,8 +138,7 @@ class _SwapPageState extends State<SwapPage> {
                         _spaceDivider,
                         Text(
                           'swap.choose'.tr(namedArgs: {'object': 'token'}),
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
+                          style: const TextStyle(fontSize: 16, color: Colors.black),
                         ),
                         _divider,
                         SelectedItem(
@@ -158,11 +153,8 @@ class _SwapPageState extends State<SwapPage> {
                             Row(
                               children: [
                                 Text(
-                                  'swap.amountBalance'.tr(namedArgs: {
-                                    'maxAmount': '${store.maxAmount ?? ''}'
-                                  }),
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.black),
+                                  'swap.amountBalance'.tr(namedArgs: {'maxAmount': '${store.maxAmount ?? ''}'}),
+                                  style: const TextStyle(fontSize: 16, color: Colors.black),
                                 ),
                               ],
                             ),
@@ -212,15 +204,13 @@ class _SwapPageState extends State<SwapPage> {
                                 }
                               }
                             } catch (e) {
-                              return "errors.incorrectFormat".tr();
+                              return "errors.fieldEmpty".tr();
                             }
                             return null;
                           },
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,18}')),
+                            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                           ],
                           suffixIcon: CupertinoButton(
                             padding: const EdgeInsets.only(right: 12.5),
@@ -236,8 +226,7 @@ class _SwapPageState extends State<SwapPage> {
                               if (!store.isConnect) {
                                 return;
                               }
-                              _amountController.text =
-                                  (store.maxAmount ?? 0.0).toString();
+                              _amountController.text = (store.maxAmount ?? 0.0).toString();
                             },
                           ),
                         ),
@@ -281,8 +270,7 @@ class _SwapPageState extends State<SwapPage> {
                                 width: 10,
                                 child: CircularProgressIndicator.adaptive(),
                               ),
-                            if (store.isSuccessCourse)
-                              Text(store.convertWQT.toString()),
+                            if (store.isSuccessCourse) Text(store.convertWQT!.toStringAsFixed(6)),
                           ],
                         ),
                         Text(
@@ -318,8 +306,7 @@ class _SwapPageState extends State<SwapPage> {
   _showLoading({bool start = false, String? message}) {
     if (start) {
       Future.delayed(const Duration(milliseconds: 150)).then(
-        (value) =>
-            AlertDialogUtils.showLoadingDialog(context, message: message),
+        (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
       );
     } else {
       AlertDialogUtils.showLoadingDialog(context, message: message);
@@ -346,19 +333,16 @@ class _SwapPageState extends State<SwapPage> {
             print('onTabOk');
             try {
               _showLoading(message: 'Approving...');
-              await Web3Utils.checkPossibilityTx(
-                  TokenSymbols.USDT, store.amount);
+              await Web3Utils.checkPossibilityTx(TokenSymbols.USDT, store.amount);
               await store.approve();
               Navigator.of(context, rootNavigator: true).pop();
               _onPressedSend();
             } on FormatException catch (e) {
               Navigator.of(context, rootNavigator: true).pop();
-              AlertDialogUtils.showInfoAlertDialog(context,
-                  title: 'meta.error'.tr(), content: e.message);
+              AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.message);
             } catch (e) {
               Navigator.of(context, rootNavigator: true).pop();
-              AlertDialogUtils.showInfoAlertDialog(context,
-                  title: 'meta.error'.tr(), content: e.toString());
+              AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.toString());
             }
           },
         );
@@ -386,8 +370,8 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   String _getTitleCoinFee() {
-    final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network =
+        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -409,13 +393,9 @@ class _SwapPageState extends State<SwapPage> {
         },
         title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
-          _ModelItem(
-              iconPath: 'assets/svg/eth_logo.svg', item: SwapNetworks.ETH),
-          _ModelItem(
-              iconPath: 'assets/svg/bsc_logo.svg', item: SwapNetworks.BSC),
-          _ModelItem(
-              iconPath: 'assets/svg/polygon_logo.svg',
-              item: SwapNetworks.POLYGON),
+          _ModelItem(iconPath: 'assets/svg/eth_logo.svg', item: SwapNetworks.ETH),
+          _ModelItem(iconPath: 'assets/svg/bsc_logo.svg', item: SwapNetworks.BSC),
+          _ModelItem(iconPath: 'assets/svg/polygon_logo.svg', item: SwapNetworks.POLYGON),
         ],
       ),
     );
@@ -428,8 +408,7 @@ class _SwapPageState extends State<SwapPage> {
         onTap: (value) => store.setToken(value),
         title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
-          _ModelItem(
-              item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
+          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
         ],
       ),
     );
