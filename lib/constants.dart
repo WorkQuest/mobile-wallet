@@ -31,6 +31,7 @@ class Images {
   static const emailIcon = "$_svgPath/email_icon.svg";
   static const passwordIcon = "$_svgPath/password_icon.svg";
   static const biometricIcon = "$_svgPath/biometric_icon.svg";
+  static const faceIdIcon = "$_svgPath/face_id.svg";
   static const removePinIcon = "$_svgPath/remove_pin_icon.svg";
 }
 

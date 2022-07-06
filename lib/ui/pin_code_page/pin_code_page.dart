@@ -163,8 +163,10 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                         ),
                       KeyboardButton(
                         child: SvgPicture.asset(
-                          Images.biometricIcon,
+                          store.isFaceId ? Images.faceIdIcon : Images.biometricIcon,
                           color: store.canBiometrics ? AppColor.enabledButton : Colors.transparent,
+                          width: 30,
+                          height: 30,
                         ),
                         onTab: () async {
                           if (store.canBiometrics) {
@@ -249,10 +251,15 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             ),
           )
         else
-          PasswordField(
-            animationController: animationController,
-            pinCode: pinCode,
-            haveError: store.errorMessage != null,
+          Container(
+            height: 50,
+            margin: const EdgeInsets.only(top: 16.0),
+            child: PasswordField(
+              animationController: animationController,
+              pinCode: pinCode,
+              haveError: store.errorMessage != null,
+
+            ),
           ),
       ],
     );
