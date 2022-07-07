@@ -37,6 +37,8 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
       onError("Lost connection to server");
     } on RPCError catch (e) {
       onError(e.message);
+    } catch (e) {
+      onError(e.toString());
     }
   }
 }
