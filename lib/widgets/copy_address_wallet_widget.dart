@@ -135,7 +135,7 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
                         SnackBarUtils.success(
                           context,
                           title: 'wallet.copy'.tr(),
-                          duration: const Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 1000),
                         );
                       },
                       child: Container(
