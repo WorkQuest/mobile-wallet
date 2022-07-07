@@ -314,58 +314,63 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _onPressedSend() async {
-    try {
-      _showLoading();
-      final _addressTo = Web3Utils.getAddressContractForSwap(store.network!);
-      final _needApprove = await store.needApprove();
-      if (_needApprove) {
-        final _gasApprove = await store.getEstimateGasApprove();
+    if (_formKey.currentState!.validate()) {
+      try {
+        _showLoading();
+        final _addressTo = Web3Utils.getAddressContractForSwap(store.network!);
+        final _needApprove = await store.needApprove();
+        if (_needApprove) {
+          final _gasApprove = await store.getEstimateGasApprove();
+          Navigator.of(context, rootNavigator: true).pop();
+          AlertDialogUtils.showAlertTxConfirm(
+            context,
+            fee: _gasApprove,
+            amount: _amountController.text,
+            typeTx: 'Approve',
+            tokenSymbolFee: _getTitleCoinFee(),
+            addressTo: _addressTo,
+            tokenSymbol: 'USDT',
+            onTabOk: () async {
+              print('onTabOk');
+              try {
+                _showLoading(message: 'Approving...');
+                await store.approve();
+                Navigator.of(context, rootNavigator: true).pop();
+                _onPressedSend();
+              } on FormatException catch (e) {
+                Navigator.of(context, rootNavigator: true).pop();
+                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.message);
+              } catch (e) {
+                Navigator.of(context, rootNavigator: true).pop();
+                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.toString());
+              }
+            },
+          );
+          return;
+        }
+        final _gasSwap = await store.getEstimateGasSwap();
         Navigator.of(context, rootNavigator: true).pop();
         AlertDialogUtils.showAlertTxConfirm(
           context,
-          fee: _gasApprove,
-          amount: _amountController.text,
-          typeTx: 'Approve',
+          fee: _gasSwap,
+          amount: _amountController.text.isEmpty ? '0.0' : _amountController.text,
+          typeTx: 'Swap',
           tokenSymbolFee: _getTitleCoinFee(),
           addressTo: _addressTo,
           tokenSymbol: 'USDT',
-          onTabOk: () async {
-            print('onTabOk');
-            try {
-              _showLoading(message: 'Approving...');
-              await Web3Utils.checkPossibilityTx(TokenSymbols.USDT, store.amount);
-              await store.approve();
-              Navigator.of(context, rootNavigator: true).pop();
-              _onPressedSend();
-            } on FormatException catch (e) {
-              Navigator.of(context, rootNavigator: true).pop();
-              AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.message);
-            } catch (e) {
-              Navigator.of(context, rootNavigator: true).pop();
-              AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.toString());
-            }
+          onTabOk: () {
+            _showLoading(message: 'Swaping...');
+            store.createSwap();
           },
         );
-        return;
+      } on FormatException catch (e) {
+        print('_onPressedSend | $e');
+        Navigator.of(context, rootNavigator: true).pop();
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: e.message);
+      } catch (e, trace) {
+        print('_onPressedSend | $e\n$trace');
+        Navigator.of(context, rootNavigator: true).pop();
       }
-      final _gasSwap = await store.getEstimateGasSwap();
-      Navigator.of(context, rootNavigator: true).pop();
-      AlertDialogUtils.showAlertTxConfirm(
-        context,
-        fee: _gasSwap,
-        amount: _amountController.text.isEmpty ? '0.0' : _amountController.text,
-        typeTx: 'Swap',
-        tokenSymbolFee: _getTitleCoinFee(),
-        addressTo: _addressTo,
-        tokenSymbol: 'USDT',
-        onTabOk: () {
-          _showLoading(message: 'Swaping...');
-          store.createSwap();
-        },
-      );
-    } catch (e, trace) {
-      print('_onPressedSend | $e\n$trace');
-      Navigator.of(context, rootNavigator: true).pop();
     }
   }
 

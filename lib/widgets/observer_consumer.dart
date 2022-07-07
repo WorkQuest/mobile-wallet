@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
 
 class ObserverListener<T extends IStore> extends StatefulWidget {
   final Function() onSuccess;
@@ -52,31 +55,70 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
       (String? errorMessage) {
         if (errorMessage != null) {
           if (widget.onFailure != null) if (widget.onFailure!()) return;
+          final _words = errorMessage.split(' ');
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
             builder: (_) {
-              final title = 'meta.error'.tr();
+              final title = 'meta.warning'.tr();
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text(title),
-                      content: Text(errorMessage),
+                      content: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: '',
+                            style: DefaultTextStyle.of(context).style,
+                            children: _words.map((word) {
+                              return TextSpan(
+                                  text: '$word ',
+                                  style: TextStyle(
+                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = isLink(word)
+                                        ? () async {
+                                            if (await canLaunchUrl(Uri.parse(word))) {
+                                              launchUrl(Uri.parse(word));
+                                            }
+                                          }
+                                        : null);
+                            }).toList()),
+                      ),
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed:
-                              Navigator.of(context, rootNavigator: true).pop,
+                          onPressed: Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     )
                   : AlertDialog(
                       title: Text(title),
-                      content: Text(errorMessage),
+                      content: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: '',
+                            style: DefaultTextStyle.of(context).style,
+                            children: _words.map((word) {
+                              return TextSpan(
+                                  text: '$word ',
+                                  style: TextStyle(
+                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = isLink(word)
+                                        ? () async {
+                                            if (await canLaunchUrl(Uri.parse(word))) {
+                                              launchUrl(Uri.parse(word));
+                                            }
+                                          }
+                                        : null);
+                            }).toList()),
+                      ),
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed:
-                              Navigator.of(context, rootNavigator: true).pop,
+                          onPressed: Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     );
@@ -99,4 +141,6 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
     }
     super.dispose();
   }
+
+  bool isLink(String value) => value.contains('https');
 }
