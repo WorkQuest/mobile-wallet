@@ -1,4 +1,4 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +12,7 @@ import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
+import 'package:workquest_wallet_app/widgets/switch_format_address_widget.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -22,8 +23,7 @@ class DepositPage extends StatefulWidget {
   _DepositPageState createState() => _DepositPageState();
 }
 
-class _DepositPageState extends State<DepositPage>
-    with SingleTickerProviderStateMixin {
+class _DepositPageState extends State<DepositPage> with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -67,12 +67,24 @@ class _DepositPageState extends State<DepositPage>
   }
 }
 
-class _WalletAddress extends StatelessWidget {
+class _WalletAddress extends StatefulWidget {
   const _WalletAddress({Key? key}) : super(key: key);
 
+  @override
+  State<_WalletAddress> createState() => _WalletAddressState();
+}
+
+class _WalletAddressState extends State<_WalletAddress> {
+  late FormatAddress _format;
+
+  @override
+  void initState() {
+    _format = AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    super.initState();
+  }
+
   String get address {
-    final _isWorknet = !AccountRepository().isOtherNetwork;
-    return _isWorknet
+    return _format == FormatAddress.BECH32
         ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
         : AccountRepository().userWallet!.address!;
   }
@@ -105,10 +117,21 @@ class _WalletAddress extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
+            if (!AccountRepository().isOtherNetwork)
+              SwitchFormatAddressWidget(
+                format: _format,
+                onChanged: (FormatAddress value) {
+                  setState(() {
+                    _format = value;
+                  });
+                },
+              ),
+            const SizedBox(
+              height: 10,
+            ),
             Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+              padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(
@@ -116,7 +139,6 @@ class _WalletAddress extends StatelessWidget {
                 ),
               ),
               child: Text(
-                // '0xf376g...G7f3g8b',
                 '${address.substring(0, 7)}...${address.substring(address.length - 7, address.length)}',
                 style: const TextStyle(
                   fontSize: 16,

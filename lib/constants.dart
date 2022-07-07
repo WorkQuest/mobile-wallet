@@ -34,6 +34,7 @@ class Images {
   static const biometricIcon = "$_svgPath/biometric_icon.svg";
   static const faceIdIcon = "$_svgPath/face_id.svg";
   static const removePinIcon = "$_svgPath/remove_pin_icon.svg";
+  static const arrowDropDownIcon = "$_svgPath/arrow_dropdown_icon.svg";
 }
 
 class AppColor {

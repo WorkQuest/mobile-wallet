@@ -370,7 +370,8 @@
     "totalFee": "Total fee",
     "min": "min",
     "choose_bank_card": "Choose bank card",
-    "info": "Deposit info"
+    "info": "Deposit info",
+    "chooseAddressType": "Choose address type"
   },
   "swap": {
     "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is $5 USDT/USDC",

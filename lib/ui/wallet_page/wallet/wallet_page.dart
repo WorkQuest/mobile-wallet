@@ -5,15 +5,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -21,12 +18,13 @@ import 'package:workquest_wallet_app/ui/wallet_page/transactions/list_transactio
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/ui/withdraw_page/withdraw_page.dart';
-import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
+import 'package:workquest_wallet_app/widgets/copy_address_wallet_widget.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/dropdown_adaptive_widget.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/shimmer.dart';
+import 'package:workquest_wallet_app/widgets/switch_format_address_widget.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
@@ -50,18 +48,14 @@ class _WalletPageState extends State<WalletPage> {
           ValueListenableBuilder<NetworkName?>(
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
-              final _networkName = Web3Utils.getNetworkNameForSwitch(
-                  value ?? NetworkName.workNetMainnet);
+              final _networkName = Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
               return DropDownAdaptiveWidget<SwitchNetworkNames>(
                 value: _networkName,
                 onChanged: (value) {
-                  final _newNetwork =
-                      Web3Utils.getNetworkNameFromSwitchNetworkName(
-                          value as SwitchNetworkNames,
-                          AccountRepository().notifierNetwork.value);
+                  final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+                      value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
                   AccountRepository().changeNetwork(_newNetwork);
-                  final _swapNetwork =
-                      Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
+                  final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
                   GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
                   return value;
                 },
@@ -83,10 +77,7 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return Platform.isAndroid
         ? RefreshIndicator(
-            displacement: 20,
-            triggerMode: RefreshIndicatorTriggerMode.anywhere,
-            onRefresh: _onRefresh,
-            child: layout())
+            displacement: 20, triggerMode: RefreshIndicatorTriggerMode.anywhere, onRefresh: _onRefresh, child: layout())
         : layout();
   }
 
@@ -111,59 +102,8 @@ class _WalletPageState extends State<WalletPage> {
             CupertinoSliverRefreshControl(
               onRefresh: _onRefresh,
             ),
-          ValueListenableBuilder<NetworkName?>(
-            valueListenable: AccountRepository().networkName,
-            builder: (_, value, child) {
-              final _value = value ?? NetworkName.workNetMainnet;
-              final _isWorknet = _value == NetworkName.workNetMainnet ||
-                  _value == NetworkName.workNetTestnet;
-              String address = _isWorknet
-                  ? AddressService.hexToBech32(
-                      AccountRepository().userWallet?.address ??
-                          '111111111111111111')
-                  : AccountRepository().userWallet?.address ??
-                      '111111111111111111';
-              return SliverToBoxAdapter(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${address.substring(0, 9)}...${address.substring(address.length - 3, address.length)}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.subtitleText,
-                      ),
-                    ),
-                    const Spacer(),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.2,
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: address));
-                        SnackBarUtils.success(
-                          context,
-                          title: 'wallet.copy'.tr(),
-                          duration: const Duration(milliseconds: 500),
-                        );
-                      },
-                      child: Container(
-                        height: 34,
-                        width: 34,
-                        padding: const EdgeInsets.all(7.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            color: AppColor.disabledButton),
-                        child: SvgPicture.asset(
-                          Images.walletCopyIcon,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+          CopyAddressWalletWidget(
+            format: AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32,
           ),
           SliverToBoxAdapter(
             child: Observer(
@@ -172,10 +112,8 @@ class _WalletPageState extends State<WalletPage> {
                 button: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100)).then(
-                        (value) =>
-                            Provider.of<NotifyPage>(context, listen: false)
-                                .setIndex(1));
+                    Future.delayed(const Duration(milliseconds: 100))
+                        .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
                   },
                   child: Container(
                     height: 43,
@@ -216,10 +154,7 @@ class _WalletPageState extends State<WalletPage> {
               titlePadding: const EdgeInsets.only(bottom: 12.0),
               title: Text(
                 'wallet.table.trx'.tr(),
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -237,18 +172,13 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   bool get _isShowBanner {
-    final _networkName =
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
-    if (_networkName == NetworkName.workNetTestnet ||
-        _networkName == NetworkName.workNetMainnet) {
+    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
       if (GetIt.I.get<WalletStore>().coins.isEmpty) {
         return false;
       }
       try {
-        final _wqt = GetIt.I
-            .get<WalletStore>()
-            .coins
-            .firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
           return true;
         }
@@ -374,8 +304,7 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                           padding: EdgeInsets.zero,
                           pressedOpacity: 0.2,
                           onPressed: () {
-                            PageRouter.pushNewRoute(
-                                context, const WithdrawPage());
+                            PageRouter.pushNewRoute(context, const WithdrawPage());
                           },
                           child: Container(
                             height: 43,
@@ -404,8 +333,7 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                         child: DefaultButton(
                           title: 'wallet'.tr(gender: 'deposit'),
                           onPressed: () {
-                            PageRouter.pushNewRoute(
-                                context, const DepositPage());
+                            PageRouter.pushNewRoute(context, const DepositPage());
                           },
                         ),
                       )
@@ -501,8 +429,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(
-                                  balance.symbol.name, balance.amount!),
+                              _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -534,14 +461,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
                     );
@@ -560,16 +481,14 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 children: [
                   Text(
                     'errors.failedToGetBalance'.tr(),
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w400),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   Text(
                     'errors.swipeUpdate'.tr(),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
