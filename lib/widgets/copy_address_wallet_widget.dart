@@ -52,6 +52,7 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
             duration: const Duration(milliseconds: 200),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!AccountRepository().isOtherNetwork)
                   Column(
@@ -59,55 +60,58 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Stack(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                _format.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.underline,
+                      SizedBox(
+                        width: 150,
+                        child: Stack(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  _format.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              SvgPicture.asset(Images.arrowDropDownIcon),
-                            ],
-                          ),
-                          if (Platform.isAndroid)
-                            Positioned.fill(
-                              child: Opacity(
-                                opacity: 0.0,
-                                child: DropdownCard(
-                                  child: DropdownButton<FormatAddress>(
-                                    items: FormatAddress.values.map((format) {
-                                      return DropdownMenuItem<FormatAddress>(
-                                        value: format,
-                                        child: Text(format.name),
-                                      );
-                                    }).toList(),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _format = value!;
-                                      });
-                                    },
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                SvgPicture.asset(Images.arrowDropDownIcon),
+                              ],
+                            ),
+                            if (Platform.isAndroid)
+                              Positioned.fill(
+                                child: Opacity(
+                                  opacity: 0.0,
+                                  child: DropdownCard(
+                                    child: DropdownButton<FormatAddress>(
+                                      items: FormatAddress.values.map((format) {
+                                        return DropdownMenuItem<FormatAddress>(
+                                          value: format,
+                                          child: Text(format.name),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _format = value!;
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          if (Platform.isIOS)
-                            Positioned.fill(
-                              child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: _showCupertinoActionSheet,
-                                child: const SizedBox.shrink(),
+                            if (Platform.isIOS)
+                              Positioned.fill(
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: _showCupertinoActionSheet,
+                                  child: const SizedBox.shrink(),
+                                ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
