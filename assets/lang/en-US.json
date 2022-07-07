@@ -360,7 +360,7 @@
     "failedToGetBalance": "Failed to get balance",
     "swipeUpdate": "Swipe to update",
     "invalidMnemonic": "Invalid mnemonic",
-    "notHaveEnoughTx": "Not have enough WQT for the transaction",
+    "notHaveEnoughTx": "Not have enough {token} for the transaction",
     "notHaveEnoughTxToken": "Not have enough {token} for the transaction"
   },
   "deposit": {
