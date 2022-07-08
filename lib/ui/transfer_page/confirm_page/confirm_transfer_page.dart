@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
@@ -81,7 +82,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                         onTap: () {
                           AlertDialogUtils.showLoadingDialog(context);
                           store.sendTransaction(
-                              widget.addressTo, widget.amount, widget.typeCoin);
+                              widget.addressTo, widget.amount, widget.typeCoin, Decimal.parse(widget.fee));
                         },
                         title: 'meta.confirm'.tr(),
                         enabled: store.isLoading,

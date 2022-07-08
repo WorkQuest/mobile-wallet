@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
-import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -16,15 +13,17 @@ class Web3Utils {
   }) async {
     final _client = AccountRepository().getClient();
     final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
-    final _gasTx = await _client.getGas();
 
     if (typeCoin == TokenSymbols.WQT ||
         typeCoin == TokenSymbols.ETH ||
         typeCoin == TokenSymbols.BNB ||
         typeCoin == TokenSymbols.MATIC) {
-      final _gas = (_gasTx.getInWei.toDouble() * pow(10, -18));
-      final _balanceWQTInWei = (_balanceNative.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
-      if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
+      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) /  Decimal.fromInt(10).pow(18))
+          .toDouble();
+      print('fee: $fee');
+      print('_balanceWQTInWei: $_balanceWQTInWei');
+      print('amount: $amount');
+      if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else {
@@ -284,6 +283,16 @@ class Web3Utils {
       case NetworkName.polygonTestnet:
         return 'MATIC';
     }
+  }
+
+  static bool isNativeToken(TokenSymbols token) {
+    if (token == TokenSymbols.WQT ||
+        token == TokenSymbols.ETH ||
+        token == TokenSymbols.BNB ||
+        token == TokenSymbols.MATIC) {
+      return true;
+    }
+    return false;
   }
 
   static String? getTitleOtherNetwork(NetworkName name) {

@@ -17,6 +17,22 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
+  late final _$maxAmountAtom =
+      Atom(name: 'TransferStoreBase.maxAmount', context: context);
+
+  @override
+  double? get maxAmount {
+    _$maxAmountAtom.reportRead();
+    return super.maxAmount;
+  }
+
+  @override
+  set maxAmount(double? value) {
+    _$maxAmountAtom.reportWrite(value, super.maxAmount, () {
+      super.maxAmount = value;
+    });
+  }
+
   late final _$addressToAtom =
       Atom(name: 'TransferStoreBase.addressTo', context: context);
 
@@ -80,6 +96,14 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
+  late final _$setCoinAsyncAction =
+      AsyncAction('TransferStoreBase.setCoin', context: context);
+
+  @override
+  Future setCoin(CoinItem? value) {
+    return _$setCoinAsyncAction.run(() => super.setCoin(value));
+  }
+
   late final _$getMaxAmountAsyncAction =
       AsyncAction('TransferStoreBase.getMaxAmount', context: context);
 
@@ -133,19 +157,9 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
-  dynamic setCoin(CoinItem? value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
-        name: 'TransferStoreBase.setCoin');
-    try {
-      return super.setCoin(value);
-    } finally {
-      _$TransferStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
+maxAmount: ${maxAmount},
 addressTo: ${addressTo},
 amount: ${amount},
 fee: ${fee},
