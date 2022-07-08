@@ -130,6 +130,27 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }
   }
 
+  @action
+  addTransaction(Tx transaction) {
+    try {
+      if (isLoading) {
+        return;
+      }
+      final _address = Web3Utils.getAddressToken(type);
+      print('_address: $_address');
+      print('transaction.fromAddressHash!.hex: ${transaction.fromAddressHash!.hex}');
+      print('_address != transaction.fromAddressHash!.hex: ${_address != transaction.fromAddressHash!.hex}');
+      if (_address != transaction.fromAddressHash!.hex && _address.isNotEmpty) {
+        return;
+      }
+      print('success');
+      transactions.insert(0, transaction);
+    } catch (e) {
+      print('addTransaction | $e');
+      onError(e.toString());
+    }
+  }
+
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
       if (tran.fromAddressHash!.hex ==
