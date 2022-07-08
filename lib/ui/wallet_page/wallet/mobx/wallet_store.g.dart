@@ -50,7 +50,7 @@ mixin _$WalletStore on WalletStoreBase, Store {
   @override
   String toString() {
     return '''
-coins: ${coins},
+coins: ${coins}
     ''';
   }
 }
