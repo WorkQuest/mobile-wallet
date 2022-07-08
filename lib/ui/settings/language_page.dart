@@ -10,7 +10,7 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
 const _languages = [
   Locale('en', 'US'),
-  Locale('ru', 'RU'),
+  // Locale('ru', 'RU'),
   // Locale('ar', 'SA'),
 ];
 
@@ -91,9 +91,11 @@ class _LanguagePageState extends State<LanguagePage> {
   }
 
   Future _changeLanguage(Locale language) async {
-    _currentLanguage = language;
-    await context.setLocale(language);
-    Navigator.pop(context, true);
+    if (language != _currentLanguage) {
+      _currentLanguage = language;
+      await context.setLocale(language);
+      Navigator.pop(context, true);
+    }
   }
 
   String _getTitleLanguage(Locale locale) {

@@ -258,7 +258,12 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       ),
     );
     final _gas = await service.getGas();
-    final _fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18);
+    final _fee = Web3Utils.getGas(
+      estimateGas: _estimateGas,
+      gas: _gas.getInWei,
+      degree: 18,
+      isETH: network == SwapNetworks.ETH,
+    );
     await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
   }
@@ -299,7 +304,12 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         ],
       ),
     );
-    final _fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18);
+    final _fee = Web3Utils.getGas(
+      estimateGas: _estimateGas,
+      gas: _gas.getInWei,
+      degree: 18,
+      isETH: network == SwapNetworks.ETH,
+    );
     await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
   }

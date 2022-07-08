@@ -18,8 +18,7 @@ class Web3Utils {
         typeCoin == TokenSymbols.ETH ||
         typeCoin == TokenSymbols.BNB ||
         typeCoin == TokenSymbols.MATIC) {
-      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) /  Decimal.fromInt(10).pow(18))
-          .toDouble();
+      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
       print('fee: $fee');
       print('_balanceWQTInWei: $_balanceWQTInWei');
       print('amount: $amount');
@@ -47,8 +46,12 @@ class Web3Utils {
     required BigInt estimateGas,
     required BigInt gas,
     required int degree,
+    bool isETH = false,
   }) {
-    return ((Decimal.parse(estimateGas.toString()) * Decimal.parse(gas.toString())) / Decimal.fromInt(10).pow(18))
+    return ((Decimal.parse(estimateGas.toString()) *
+                Decimal.parse(gas.toString()) *
+                Decimal.parse(isETH ? '1.1' : '1.0')) /
+            Decimal.fromInt(10).pow(18))
         .toDecimal();
   }
 
