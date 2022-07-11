@@ -34,12 +34,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   bool get statusButtonTransfer => currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
-  clearData() {
-    addressTo = '';
-    amount = '';
-    fee = '';
-    currentCoin = null;
-  }
+  setFee(String value) => fee = value;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -52,15 +47,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     maxAmount = null;
     currentCoin = value;
     if (value != null) {
-      final _isNative = Web3Utils.isNativeToken(currentCoin!.typeCoin);
-      final _client = AccountRepository().getClient();
-      final _address = Web3Utils.getAddressToken(currentCoin!.typeCoin);
-      final amount = _isNative
-          ? await _client.getBalance(AccountRepository().privateKey)
-          : await _client.getBalanceFromContract(_address);
-      maxAmount = amount is Decimal
-          ? amount.toDouble()
-          : (Decimal.fromBigInt((amount as EtherAmount).getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
+      getFee();
+      maxAmount = double.parse(await _getMaxAmount());
     }
   }
 
@@ -68,27 +56,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   getMaxAmount() async {
     onLoading();
     try {
-      final _client = AccountRepository().getClient();
-      final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-      final _isNotToken =
-          _dataCoins.firstWhere((element) => element.symbolToken == currentCoin!.typeCoin).addressToken == null;
-      if (_isNotToken) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
-        final _balanceInWei = _balance.getInWei;
-        await getFee();
-        final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
-        final _amount = ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18)).toDecimal();
-        if (_amount < Decimal.zero) {
-          amount = 0.0.toStringAsFixed(18);
-        } else {
-          amount = _amount.toStringAsFixed(18);
-        }
-      } else {
-        final _balance = await AccountRepository()
-            .getClient()
-            .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
-        amount = _balance.toStringAsFixed(18);
-      }
+      amount = await _getMaxAmount();
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -106,7 +74,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final _client = AccountRepository().getClient();
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       String _amount = amount.isEmpty ? '0.0' : amount;
-      String _address = AddressService.convertToHexAddress(addressTo);
+      String _address =
+          AddressService.convertToHexAddress(addressTo.isEmpty ? AccountRepository().userAddress : addressTo);
       final _gas = await _client.getGas();
 
       final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
@@ -152,5 +121,36 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       print('e: $e\n$trace');
       onError(e.toString());
     }
+  }
+
+  @action
+  clearData() {
+    addressTo = '';
+    amount = '';
+    fee = '';
+    currentCoin = null;
+  }
+
+  Future<String> _getMaxAmount() async {
+    final _client = AccountRepository().getClient();
+    final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
+    final _isNotToken =
+        _dataCoins.firstWhere((element) => element.symbolToken == currentCoin!.typeCoin).addressToken == null;
+    if (_isNotToken) {
+      final _balance = await _client.getBalance(AccountRepository().privateKey);
+      final _balanceInWei = _balance.getInWei;
+      await getFee();
+      final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
+      final _amount = ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18)).toDecimal();
+      if (_amount < Decimal.zero) {
+        return 0.0.toStringAsFixed(18);
+      } else {
+        return _amount.toStringAsFixed(18);
+      }
+    }
+
+    final _balance =
+        await AccountRepository().getClient().getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
+    return _balance.toStringAsFixed(18);
   }
 }
