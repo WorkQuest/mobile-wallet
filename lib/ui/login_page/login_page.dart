@@ -8,6 +8,7 @@ import 'package:workquest_wallet_app/ui/login_page/mobx/login_store.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/sign_up_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/validators.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -95,15 +96,7 @@ class _ContentScreenState extends State<_ContentScreen> {
             isPassword: true,
             suffixIcon: null,
             inputFormatters: null,
-            validator: (value) {
-              if (mnemonicController.text.length <= 24) {
-                return "errors.smallNumberWords".tr();
-              }
-              if (mnemonicController.text.split(' ').toList().length < 12) {
-                return "errors.incorrectMnemonicFormat".tr();
-              }
-              return null;
-            },
+            validator: (value) => Validators.loginMnemonic(mnemonicController.text),
             prefitIcon: null,
           ),
         ),
@@ -120,8 +113,7 @@ class _ContentScreenState extends State<_ContentScreen> {
               },
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
-                PageRouter.pushNewReplacementRoute(
-                    context, const PinCodePage());
+                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
               },
               child: Observer(
                 builder: (_) {
@@ -195,8 +187,7 @@ class _HeaderScreen extends StatelessWidget {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),

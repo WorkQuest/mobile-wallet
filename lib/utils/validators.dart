@@ -44,5 +44,39 @@ class Validators {
     } catch (e) {
       return 'errors.incorrectFormat'.tr();
     }
+    return null;
+  }
+
+  static String? loginMnemonic(String value) {
+    if (value.length <= 24) {
+      return "errors.smallNumberWords".tr();
+    }
+    if (value.split(' ').toList().length < 12) {
+      return "errors.incorrectMnemonicFormat".tr();
+    }
+    return null;
+  }
+
+  static String? swapAmount(String? value, double? maxAmount) {
+    if (value == null) {
+      return "errors.fieldEmpty".tr();
+    }
+    try {
+      final val = double.parse(value);
+      if (val < 5.0) {
+        return 'swap.minimum'.tr();
+      }
+      if (val > 100.0) {
+        return 'swap.maximum'.tr();
+      }
+      if (maxAmount != null) {
+        if (maxAmount < val) {
+          return 'errors.higherMaxAmount'.tr();
+        }
+      }
+    } catch (e) {
+      return "errors.fieldEmpty".tr();
+    }
+    return null;
   }
 }

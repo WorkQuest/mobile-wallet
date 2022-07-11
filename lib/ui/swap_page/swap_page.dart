@@ -10,6 +10,7 @@ import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/bottom_sheet.dart';
+import 'package:workquest_wallet_app/utils/validators.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
@@ -186,28 +187,7 @@ class _SwapPageState extends State<SwapPage> {
                           hint: 'wallet.amount'.tr(),
                           enabled: store.isConnect,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null) {
-                              return "errors.fieldEmpty".tr();
-                            }
-                            try {
-                              final val = double.parse(value);
-                              if (val < 5.0) {
-                                return 'swap.minimum'.tr();
-                              }
-                              if (val > 100.0) {
-                                return 'swap.maximum'.tr();
-                              }
-                              if (store.maxAmount != null) {
-                                if (store.maxAmount! < val) {
-                                  return 'errors.higherMaxAmount'.tr();
-                                }
-                              }
-                            } catch (e) {
-                              return "errors.fieldEmpty".tr();
-                            }
-                            return null;
-                          },
+                          validator: (value) => Validators.swapAmount(value, store.maxAmount),
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
