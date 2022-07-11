@@ -346,6 +346,7 @@
   },
   "errors": {
     "fieldEmpty": "Field is empty",
+    "invalidAddress": "Address invalid",
     "incorrectFormat": "Incorrect format",
     "passwordsNotMatch": "Passwords don't match",
     "smallNumberWords": "A small number of words",

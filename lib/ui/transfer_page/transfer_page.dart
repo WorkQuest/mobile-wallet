@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +11,8 @@ import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/validators.dart';
+import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
@@ -72,13 +72,19 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   @override
+  void dispose() {
+    store.setAmount('');
+    store.setAddressTo('');
+    store.setFee('');
+    store.setCoin(null);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _initCoins();
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: DefaultAppBar(
-      //   title: 'wallet.withdraw'.tr(),
-      // ),
       body: LayoutWithScroll(
         child: Observer(
           builder: (_) => Padding(
@@ -117,52 +123,18 @@ class _TransferPageState extends State<TransferPage> {
                   key: _key,
                   child: DefaultTextField(
                     controller: _addressController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     hint: 'wallet.enterAddress'.tr(),
                     suffixIcon: CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () async {
-                        String? qrResult = await MajaScan.startScan(
-                            title: "QRcode scanner",
-                            barColor: Colors.black,
-                            titleColor: Colors.white,
-                            qRCornerColor: Colors.blue,
-                            qRScannerColor: Colors.white,
-                            flashlightEnable: true,
-                            scanAreaScale: 0.7);
-                        if (qrResult != null) {
-                          _addressController.text = qrResult;
-                          store.setAddressTo(qrResult);
-                        }
-                      },
+                      onPressed: _onPressedScan,
                       child: SvgPicture.asset(
                         'assets/svg/scan_qr.svg',
                         color: AppColor.enabledButton,
                       ),
                     ),
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.isEmpty) {
-                          return 'errors.fieldEmpty'.tr();
-                        }
-                        final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
-                        if (_isBech) {
-                          if (value.length != 41) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                          if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                        } else {
-                          if (value.length != 42) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                          if (!RegExpFields.addressRegExp.hasMatch(value)) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                        }
-                      }
-                      return null;
-                    },
+
+                    validator: Validators.transferAddress,
                   ),
                 ),
                 const SizedBox(
@@ -180,25 +152,8 @@ class _TransferPageState extends State<TransferPage> {
                   child: DefaultTextField(
                     controller: _amountController,
                     hint: 'wallet.enterAmount'.tr(),
-                    validator: (value) {
-                      if (value == null) {
-                        return null;
-                      }
-                      if (value.isEmpty) {
-                        return 'errors.fieldEmpty'.tr();
-                      }
-                      try {
-                        final _value = double.parse(value);
-                        if (store.maxAmount != null) {
-                          if (_value > store.maxAmount!) {
-                            return 'Max: ${store.maxAmount}';
-                          }
-                        }
-                      } catch (e) {
-                        return 'errors.incorrectFormat'.tr();
-                      }
-                    },
-                    // keyboardType: TextInputType.number,
+                    validator: (value) => Validators.transferAmount(value, store.maxAmount),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     suffixIcon: ObserverListener(
                       store: store,
                       onFailure: () {
@@ -217,17 +172,7 @@ class _TransferPageState extends State<TransferPage> {
                             color: AppColor.enabledButton,
                           ),
                         ),
-                        onPressed: () async {
-                          if (_key.currentState!.validate()) {
-                            if (store.currentCoin != null) {
-                              store.getMaxAmount();
-                            } else {
-                              final title = 'meta.error'.tr();
-                              final content = 'crediting.chooseCoin'.tr();
-                              AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
-                            }
-                          }
-                        },
+                        onPressed: _onPressedMax,
                       ),
                     ),
                     inputFormatters: [
@@ -237,8 +182,14 @@ class _TransferPageState extends State<TransferPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
+                Observer(
+                  builder: (_) => Text(
+                    _getTitleTrxFee(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                )
               ],
             ),
           ),
@@ -251,7 +202,7 @@ class _TransferPageState extends State<TransferPage> {
           child: Observer(
             builder: (_) => DefaultButton(
               title: 'wallet.withdraw'.tr(),
-              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+              onPressed: store.statusButtonTransfer ? _onPressedTransfer : null,
             ),
           ),
         ),
@@ -259,13 +210,39 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 
-  Future<void> _pushConfirmTransferPage() async {
+  _onPressedScan() async {
+    String? qrResult = await MajaScan.startScan(
+        title: "QRcode scanner",
+        barColor: Colors.black,
+        titleColor: Colors.white,
+        qRCornerColor: Colors.blue,
+        qRScannerColor: Colors.white,
+        flashlightEnable: true,
+        scanAreaScale: 0.7);
+    if (qrResult != null) {
+      _addressController.text = qrResult;
+      store.setAddressTo(qrResult);
+    }
+  }
+
+  _onPressedMax() {
+    if (_key.currentState!.validate()) {
+      if (store.currentCoin != null) {
+        store.getMaxAmount();
+      } else {
+        final title = 'meta.error'.tr();
+        final content = 'crediting.chooseCoin'.tr();
+        AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+      }
+    }
+  }
+
+  _onPressedTransfer() async {
     if (_key.currentState!.validate() && _keyAmount.currentState!.validate()) {
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
         FocusManager.instance.primaryFocus?.unfocus();
       }
-      await store.getFee();
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
@@ -304,6 +281,12 @@ class _TransferPageState extends State<TransferPage> {
         });
       }
     }
+  }
+
+  _getTitleTrxFee() {
+    final _value = store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
+    return '${'wallet.table.trxFee'.tr()}: ${_value.toStringAsFixed(7)} '
+        '${Web3Utils.getNativeToken()}';
   }
 
   void _chooseCoin() {
