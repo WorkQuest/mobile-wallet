@@ -77,7 +77,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       transactions.addAll(result);
 
       onSuccess(true);
-    } on FormatException catch (e, trace) {
+    } on FormatException catch (e) {
       // print('$e\n$trace');
       onError(e.message);
     } catch (e) {
@@ -114,17 +114,10 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       if (result!.isEmpty) {
         canMoreLoading = false;
       }
-      result.map((tran) {
-        final index =
-            transactions.indexWhere((element) => element.hash == tran.hash);
-        if (index == -1) {
-          transactions.add(tran);
-        }
-      }).toList();
-      await Future.delayed(const Duration(milliseconds: 500));
+      transactions.addAll(result);
       isMoreLoading = false;
       onSuccess(true);
-    } catch (e, trace) {
+    } catch (e) {
       // print('$e\n$trace');
       onError(e.toString());
     }

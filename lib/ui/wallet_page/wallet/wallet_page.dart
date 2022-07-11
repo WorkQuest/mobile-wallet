@@ -85,7 +85,7 @@ class _WalletPageState extends State<WalletPage> {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
-        if (metrics.maxScrollExtent < metrics.pixels &&
+        if (metrics.maxScrollExtent <= metrics.pixels &&
             !GetIt.I.get<TransactionsStore>().isMoreLoading &&
             GetIt.I.get<TransactionsStore>().canMoreLoading) {
           GetIt.I.get<TransactionsStore>().getTransactionsMore();
