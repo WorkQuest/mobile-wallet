@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workquest_wallet_app/keys.dart';
 
 class Images {
   static const _imagePath = "assets/images";
@@ -125,7 +126,7 @@ class Configs {
     NetworkName.ethereumMainnet: ConfigNetwork(
       rpc: 'https://eth-mainnet.public.blastapi.io/',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/eth/mainnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/mainnet/ws',
       urlExplorer: 'https://etherscan.io/address/',
       dataCoins: const [
         DataCoins(
@@ -142,9 +143,9 @@ class Configs {
     ),
     NetworkName.ethereumTestnet: ConfigNetwork(
       rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
+          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby/ws',
       urlExplorer: 'https://rinkeby.etherscan.io/address/',
       dataCoins: const [
         DataCoins(
@@ -162,7 +163,7 @@ class Configs {
     NetworkName.bscMainnet: ConfigNetwork(
       rpc: 'https://bscrpc.com/',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/bsc/mainnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/mainnet/ws',
       urlExplorer: 'https://bscscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -179,9 +180,9 @@ class Configs {
     ),
     NetworkName.bscTestnet: ConfigNetwork(
       rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
+          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet/ws',
       urlExplorer: 'https://testnet.bscscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -199,7 +200,7 @@ class Configs {
     NetworkName.polygonMainnet: ConfigNetwork(
       rpc: 'https://polygon-mainnet.public.blastapi.io/',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/polygon/mainnet/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mainnet/ws',
       urlExplorer: 'https://polygonscan.com/address/',
       dataCoins: const [
         DataCoins(
@@ -216,9 +217,9 @@ class Configs {
     ),
     NetworkName.polygonTestnet: ConfigNetwork(
       rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
+          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
+          'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai/ws',
       urlExplorer: 'https://mumbai.polygonscan.com/address/',
       dataCoins: const [
         DataCoins(
