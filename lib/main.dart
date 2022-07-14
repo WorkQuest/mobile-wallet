@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
-        locale: context.locale,
+        locale: const Locale('en', 'US'),
         title: 'WorkQuest Wallet',
         theme: ThemeData(
           textTheme: GoogleFonts.interTextTheme(
