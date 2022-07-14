@@ -56,8 +56,8 @@ void main() async {
     child: const MyApp(),
     supportedLocales: const [
       Locale('en', 'US'),
-      Locale('ru', 'RU'),
-      Locale('ar', 'SA'),
+      // Locale('ru', 'RU'),
+      // Locale('ar', 'SA'),
     ],
     path: 'assets/lang',
   ));
@@ -92,7 +92,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
-        locale: const Locale('en', 'US'),
+        locale: context.locale,
+        // locale: const Locale('en', 'US'),
         title: 'WorkQuest Wallet',
         theme: ThemeData(
           textTheme: GoogleFonts.interTextTheme(
