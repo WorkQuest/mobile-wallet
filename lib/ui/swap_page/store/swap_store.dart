@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:web_socket_channel/io.dart';
 
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
@@ -22,6 +24,11 @@ class SwapStore = SwapStoreBase with _$SwapStore;
 
 abstract class SwapStoreBase extends IStore<bool> with Store {
   double? courseWQT;
+
+  String? hashWorknetTrx;
+
+  bool shouldReconnect = true;
+  IOWebSocketChannel? _notificationChannel;
 
   @observable
   SwapNetworks? network;
@@ -48,7 +55,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   bool isSuccessCourse = false;
 
   @computed
-  bool get statusSend => isSuccessCourse && maxAmount != null && isConnect && convertWQT != null;
+  bool get statusSend =>
+      isSuccessCourse && maxAmount != null && isConnect && convertWQT != null;
 
   ClientService get service => AccountRepository().getClient();
 
@@ -60,7 +68,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async {
-    final _result = await service.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!));
+    final _result =
+        await service.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!));
     maxAmount = _result.toDouble();
   }
 
@@ -107,6 +116,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   createSwap() async {
+    hashWorknetTrx = null;
+    shouldReconnect = true;
     try {
       onLoading();
       Web3Client _client = service.ethClient!;
@@ -152,10 +163,13 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         ),
         chainId: _chainId.toInt(),
       );
+      _connectSocket();
       int _attempts = 0;
-      while (_attempts < 8) {
+      while (_attempts < 60) {
         final result = await _client.getTransactionReceipt(_hashTx);
-        if (result != null) {
+        if (result != null && hashWorknetTrx != null) {
+          shouldReconnect = false;
+          _notificationChannel?.sink.close();
           getMaxBalance();
           onSuccess(true);
           return;
@@ -165,7 +179,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       }
       getMaxBalance();
       final _link = Web3Utils.getLinkToExplorer(network!, _hashTx);
-      onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
+      shouldReconnect = false;
+      _notificationChannel?.sink.close();
+      onError(
+          'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
     } catch (e) {
       // print('createSwap | e: $e\ntrace: $trace');
       onError(e.toString());
@@ -177,8 +194,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
       client: service.ethClient!,
     );
-    final _cred = await service.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+    final _cred =
+        await service.getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _spender =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _gas = await service.getGas();
     final _degree = await Web3Utils.getDegreeToken(contract);
     final _txHashApprove = await contract.approve(
@@ -192,7 +211,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       ),
     );
     int _attempts = 0;
-    while (_attempts < 8) {
+    while (_attempts < 60) {
       final result = await service.ethClient!.getTransactionReceipt(_txHashApprove);
       if (result != null) {
         getMaxBalance();
@@ -203,7 +222,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       _attempts++;
     }
     final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
-    onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
+    onError(
+        'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
   }
 
   Future<bool> needApprove() async {
@@ -213,7 +233,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     );
     final _degree = await Web3Utils.getDegreeToken(_contract);
     final _amount = BigInt.from(amount * pow(10, _degree));
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+    final _spender =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _allowance = await _contract.allowance(
       EthereumAddress.fromHex(AccountRepository().userAddress),
       _spender,
@@ -236,7 +257,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   Future<DeployedContract> _getContract() async {
     final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
     final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+    final _contractAddress =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     return DeployedContract(_contractAbi, _contractAddress);
   }
 
@@ -245,8 +267,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
       client: service.ethClient!,
     );
-    final _cred = await service.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+    final _cred =
+        await service.getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _spender =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _degree = await Web3Utils.getDegreeToken(_contract);
     final _estimateGas = await service.getEstimateGas(
       Transaction.callContract(
@@ -266,13 +290,15 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       degree: 18,
       isETH: network == SwapNetworks.ETH,
     );
-    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
+    await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
   }
 
   Future<String> getEstimateGasSwap() async {
     final _address = AccountRepository().userWallet!.address!;
-    final _nonce = await service.ethClient!.getTransactionCount(EthereumAddress.fromHex(_address));
+    final _nonce =
+        await service.ethClient!.getTransactionCount(EthereumAddress.fromHex(_address));
     final _gas = await service.getGas();
     final _contract = await _getContract();
     final _contractToken = Erc20(
@@ -312,8 +338,45 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       degree: 18,
       isETH: network == SwapNetworks.ETH,
     );
-    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
+    await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+  }
+
+  _connectSocket() {
+    _notificationChannel = IOWebSocketChannel.connect(
+        "wss://notifications.workquest.co/api/v1/notifications");
+
+    _notificationChannel!.sink.add("""{
+                  "type": "hello",
+                  "id": 1,
+                  "version": "2",                  
+                  "auth": {
+                      "headers": {"authorization": null}
+                  },
+                  "subs": ["/notifications/bridgeUsdt/${AccountRepository().userAddress}"]
+                }""");
+
+    _notificationChannel!.stream.listen(
+      (message) {
+        print('message connect: $message');
+        try {
+          final _response = jsonDecode(message);
+          hashWorknetTrx = _response['message']['data']['hash'];
+        } catch (e) {
+          // print('catch socket: $e');
+        }
+      },
+      onError: (error) {
+        print('message error: $error');
+      },
+      onDone: () {
+        print('done conntect');
+        if (shouldReconnect) {
+          _connectSocket();
+        }
+      },
+    );
   }
 
   @action
@@ -328,4 +391,3 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     isSuccessCourse = false;
   }
 }
-
