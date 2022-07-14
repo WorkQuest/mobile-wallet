@@ -126,14 +126,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   addTransaction(Tx transaction) {
     try {
-      if (isLoading) {
+      if (isLoading || AccountRepository().isOtherNetwork) {
         return;
       }
       final _address = Web3Utils.getAddressToken(type);
-      print('_address: $_address');
-      print('transaction.fromAddressHash!.hex: ${transaction.fromAddressHash!.hex}');
-      print('_address != transaction.fromAddressHash!.hex: ${_address != transaction.fromAddressHash!.hex}');
-      if (_address != transaction.fromAddressHash!.hex && _address.isNotEmpty) {
+
+      final _currentTokenIsNative = _address.isEmpty;
+      final _isCurrentToken =
+          _address == transaction.fromAddressHash!.hex ||
+          _address == transaction.toAddressHash!.hex ||
+          _currentTokenIsNative;
+      if (!_isCurrentToken) {
         return;
       }
       print('success');
@@ -146,8 +149,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
-      if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.WUSD)) {
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD)) {
         tran.coin = TokenSymbols.WUSD;
       } else if (tran.fromAddressHash!.hex ==
           Web3Utils.getAddressToken(TokenSymbols.wETH)) {

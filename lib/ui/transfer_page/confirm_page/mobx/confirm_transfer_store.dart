@@ -7,7 +7,6 @@ import 'package:web3dart/json_rpc.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
@@ -31,8 +30,6 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
           );
       GetIt.I.get<WalletStore>().getCoins();
       onSuccess(true);
-      await Future.delayed(const Duration(seconds: 4));
-      GetIt.I.get<TransactionsStore>().getTransactions();
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on RPCError catch (e) {
