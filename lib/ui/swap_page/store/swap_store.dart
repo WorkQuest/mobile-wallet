@@ -16,7 +16,7 @@ part 'swap_store.g.dart';
 
 enum SwapNetworks { ETH, BSC, POLYGON }
 
-enum SwapToken { usdt, usdc }
+enum SwapToken { usdt }
 
 class SwapStore = SwapStoreBase with _$SwapStore;
 

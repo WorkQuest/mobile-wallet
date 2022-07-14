@@ -413,12 +413,11 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    switch (token) {
-      case SwapToken.usdt:
-        return 'USDT';
-      case SwapToken.usdc:
-        return 'USDC';
+    final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+    if (_isTestnet) {
+      return 'T${token.name}'.toUpperCase();
     }
+    return token.name.toUpperCase();
   }
 
   _getIconPathNetwork(SwapNetworks? network) {
@@ -578,6 +577,10 @@ class _ListBottomWidget extends StatelessWidget {
 
   String _getName(dynamic value) {
     if (value is SwapToken) {
+      final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+      if (_isTestnet) {
+        return 'T${value.name}'.toUpperCase();
+      }
       return value.name.toUpperCase();
     } else if (value is SwapNetworks) {
       switch (value) {
