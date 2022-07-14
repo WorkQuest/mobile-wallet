@@ -393,7 +393,7 @@ class _SwapPageState extends State<SwapPage> {
         onTap: (value) => store.setToken(value),
         title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
-          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
+          _ModelItem(item: SwapToken.usdt, iconPath: 'assets/svg/usdt_coin_icon.svg'),
         ],
       ),
     );
@@ -414,7 +414,7 @@ class _SwapPageState extends State<SwapPage> {
 
   _getTitleToken(SwapToken token) {
     switch (token) {
-      case SwapToken.tusdt:
+      case SwapToken.usdt:
         return 'USDT';
       case SwapToken.usdc:
         return 'USDC';
