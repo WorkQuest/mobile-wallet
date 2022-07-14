@@ -25,6 +25,7 @@ import '../../utils/bottom_sheet.dart';
 import '../../widgets/dismiss_keyboard.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
+const _divider = SizedBox(height: 15);
 
 class TransferPage extends StatefulWidget {
   const TransferPage({
@@ -109,9 +110,7 @@ class _TransferPageState extends State<TransferPage> {
                   isSelected: store.currentCoin != null,
                   onTap: _chooseCoin,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                _divider,
                 Text(
                   'wallet.recipientsAddress'.tr(),
                   style: const TextStyle(fontSize: 16, color: Colors.black),
@@ -133,13 +132,10 @@ class _TransferPageState extends State<TransferPage> {
                         color: AppColor.enabledButton,
                       ),
                     ),
-
                     validator: Validators.transferAddress,
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                _divider,
                 Text(
                   'wallet.amount'.tr(),
                   style: const TextStyle(fontSize: 16, color: Colors.black),
@@ -152,7 +148,8 @@ class _TransferPageState extends State<TransferPage> {
                   child: DefaultTextField(
                     controller: _amountController,
                     hint: 'wallet.enterAmount'.tr(),
-                    validator: (value) => Validators.transferAmount(value, store.maxAmount),
+                    validator: (value) =>
+                        Validators.transferAmount(value, store.maxAmount),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     suffixIcon: ObserverListener(
                       store: store,
@@ -181,22 +178,22 @@ class _TransferPageState extends State<TransferPage> {
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                _divider,
                 Observer(
                   builder: (_) => Text(
                     _getTitleTrxFee(),
                     style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
-                )
+                ),
+                _divider,
               ],
             ),
           ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
+        padding: EdgeInsets.only(
+            bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
         child: SizedBox(
           width: double.infinity,
           child: Observer(
@@ -246,20 +243,23 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService.hexToBech32(AccountRepository().userWallet!.address!.toLowerCase())) {
+            AddressService.hexToBech32(
+                AccountRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
-        if (store.addressTo.toLowerCase() == AccountRepository().userWallet!.address!.toLowerCase()) {
+        if (store.addressTo.toLowerCase() ==
+            AccountRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await PageRouter.pushNewRoute(
@@ -267,7 +267,8 @@ class _TransferPageState extends State<TransferPage> {
         ConfirmTransferPage(
           fee: store.fee,
           typeCoin: store.currentCoin!.typeCoin,
-          addressTo: _isBech ? AddressService.bech32ToHex(store.addressTo) : store.addressTo,
+          addressTo:
+              _isBech ? AddressService.bech32ToHex(store.addressTo) : store.addressTo,
           amount: store.amount,
         ),
       );
@@ -279,6 +280,7 @@ class _TransferPageState extends State<TransferPage> {
           _amountController.clear();
           _addressController.clear();
         });
+        Navigator.pop(context);
       }
     }
   }
@@ -381,7 +383,9 @@ class _TransferPageState extends State<TransferPage> {
                                                   coin.title,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                                                    color: coin.isEnable
+                                                        ? Colors.black
+                                                        : AppColor.disabledText,
                                                   ),
                                                 ),
                                               ],
