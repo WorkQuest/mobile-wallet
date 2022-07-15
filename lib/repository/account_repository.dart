@@ -85,7 +85,7 @@ class AccountRepository {
   }
 
   _disconnectWeb3Client() {
-      client?.ethClient!.dispose();
+      client?.ethClient?.dispose();
       client?.ethClient = null;
       client?.stream?.cancel();
   }
