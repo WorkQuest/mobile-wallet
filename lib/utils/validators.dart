@@ -7,21 +7,25 @@ class Validators {
       if (value.isEmpty) {
         return 'errors.fieldEmpty'.tr();
       }
-      final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
-      if (_isBech) {
-        if (value.length != 41) {
-          return "errors.invalidAddress".tr();
+      try {
+        final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+        if (_isBech) {
+          if (value.length != 41) {
+            return "errors.invalidAddress".tr();
+          }
+          if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+            return "errors.invalidAddress".tr();
+          }
+        } else {
+          if (value.length != 42) {
+            return "errors.invalidAddress".tr();
+          }
+          if (!RegExpFields.addressRegExp.hasMatch(value)) {
+            return "errors.invalidAddress".tr();
+          }
         }
-        if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
-          return "errors.invalidAddress".tr();
-        }
-      } else {
-        if (value.length != 42) {
-          return "errors.invalidAddress".tr();
-        }
-        if (!RegExpFields.addressRegExp.hasMatch(value)) {
-          return "errors.invalidAddress".tr();
-        }
+      } catch (e) {
+        return 'errors.incorrectFormat'.tr();
       }
     }
     return null;
