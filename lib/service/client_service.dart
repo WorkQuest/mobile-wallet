@@ -13,6 +13,7 @@ import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 abstract class ClientServiceI {
@@ -46,12 +47,27 @@ abstract class ClientServiceI {
 
 class ClientService implements ClientServiceI {
   Web3Client? ethClient;
+  StreamSubscription<String>? stream;
 
   ClientService(ConfigNetwork config) {
     try {
       ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
+      if (AccountRepository().isOtherNetwork) {
+        final _stream = ethClient!.socketConnector!.call();
+        _stream.sink.add("""
+          {
+            "jsonrpc": "2.0",
+            "method": "eth_subscribe",
+            "id": 1,
+            "params": ["newHeads"]
+          }
+        """);
+        stream = _stream.stream.listen((event) {
+          GetIt.I.get<WalletStore>().getCoins(isForce: false);
+        });
+      }
     } catch (e) {
       // print('e -> $e\ntrace -> $trace');
       throw Exception(e.toString());
