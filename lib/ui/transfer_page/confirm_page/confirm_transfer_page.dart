@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
-import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
@@ -135,7 +134,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            _getAddress(),
+            addressTo,
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
@@ -202,13 +201,4 @@ class _InformationWidget extends StatelessWidget {
     }
   }
 
-  String _getAddress() {
-    final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
-    if (_network == null) {
-      return AddressService.hexToBech32(addressTo);
-    } else {
-      return AddressService.bech32ToHex(addressTo);
-    }
-  }
 }

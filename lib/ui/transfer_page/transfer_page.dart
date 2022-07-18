@@ -267,8 +267,7 @@ class _TransferPageState extends State<TransferPage> {
         ConfirmTransferPage(
           fee: store.fee,
           typeCoin: store.currentCoin!.typeCoin,
-          addressTo:
-              _isBech ? AddressService.bech32ToHex(store.addressTo) : store.addressTo,
+          addressTo: store.addressTo,
           amount: store.amount,
         ),
       );
