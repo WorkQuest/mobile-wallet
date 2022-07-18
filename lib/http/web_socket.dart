@@ -126,8 +126,8 @@ class WebSocket {
           GetIt.I.get<TransactionsStore>().getTransactions();
         }
       }
-    } catch (e, trace) {
-      print('web socket e - $e\ntrace - $trace');
+    } catch (e) {
+      // print('web socket e - $e\ntrace - $trace');
     }
   }
 }
