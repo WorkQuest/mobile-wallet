@@ -102,22 +102,39 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ],
                 ),
                 tabBuilder: (context, index) {
+                  final AnimationController _controller = AnimationController(
+                    duration: const Duration(milliseconds: 250),
+                    vsync: this,
+                  )..forward(from: 0.5);
+                  late final Animation<double> _animation = CurvedAnimation(
+                    parent: _controller,
+                    curve: Curves.easeIn,
+                  );
                   if (index == 0) {
-                    return ChangeNotifierProvider(
-                      create: (context) =>
-                          Provider.of<NotifyPage>(context, listen: false),
-                      child: WalletPage(
-                        key: _keys[0],
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: ChangeNotifierProvider(
+                        create: (context) =>
+                            Provider.of<NotifyPage>(context, listen: false),
+                        child: WalletPage(
+                          key: _keys[0],
+                        ),
                       ),
                     );
                   } else if (index == 1) {
-                    return SwapPage(
-                      key: _keys[1],
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: SwapPage(
+                        key: _keys[1],
+                      ),
                     );
                   } else {
-                    return SettingsPage(
-                      key: _keys[2],
-                      update: _update,
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: SettingsPage(
+                        key: _keys[2],
+                        update: _update,
+                      ),
                     );
                   }
                 },
@@ -125,8 +142,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ValueListenableBuilder<NetworkName?>(
                 valueListenable: AccountRepository().networkName,
                 builder: (_, value, child) {
-                  final _title = Web3Utils.getTitleOtherNetwork(
-                      value ?? NetworkName.workNetMainnet);
+                  final _title =
+                      Web3Utils.getTitleOtherNetwork(value ?? NetworkName.workNetMainnet);
                   if (_title == null) {
                     return const SizedBox.shrink();
                   }
@@ -166,8 +183,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       return false;
     }
 
-    if (_exitAttempt + _doubleTapDuration >
-        DateTime.now().millisecondsSinceEpoch) {
+    if (_exitAttempt + _doubleTapDuration > DateTime.now().millisecondsSinceEpoch) {
       return true;
     } else {
       _exitAttempt = DateTime.now().millisecondsSinceEpoch;
