@@ -347,4 +347,25 @@ class Web3Utils {
       return 'USDT';
     }
   }
+
+  static String getPathIcon(TokenSymbols token) {
+    switch (token) {
+      case TokenSymbols.WUSD:
+        return 'assets/svg/wusd_coin_icon.svg';
+      case TokenSymbols.WQT:
+        return 'assets/svg/wqt_coin_icon.svg';
+      case TokenSymbols.wBNB:
+        return 'assets/svg/bsc_logo.svg';
+      case TokenSymbols.wETH:
+        return 'assets/svg/eth_coin_icon.svg';
+      case TokenSymbols.USDT:
+       return 'assets/svg/tusdt_coin_icon.svg';
+      case TokenSymbols.BNB:
+        return 'assets/svg/bsc_logo.svg';
+      case TokenSymbols.ETH:
+        return 'assets/svg/eth_coin_icon.svg';
+      case TokenSymbols.MATIC:
+        return 'assets/svg/matic_coin_icon.svg';
+    }
+  }
 }

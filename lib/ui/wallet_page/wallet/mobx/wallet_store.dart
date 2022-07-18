@@ -43,6 +43,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
 
   _setCoins(List<_CoinEntity> listCoins) {
     if (coins.isNotEmpty) {
+      print('coins: $coins');
       coins.map((element) {
         element.amount = listCoins.firstWhere((el) => el.symbol == element.symbol).amount;
       }).toList();
@@ -116,7 +117,7 @@ class _CoinEntity {
   toString() {
     return 'symbol: $symbol\n'
         'amount: $amount\n'
-        'pricePerDollar: $pricePerDollar\n';
+        'pricePerDollar: $pricePerDollar';
   }
 }
 
