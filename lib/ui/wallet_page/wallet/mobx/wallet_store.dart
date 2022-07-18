@@ -30,7 +30,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     try {
       final _tokens =
           Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
-      await Future.delayed(const Duration(milliseconds: 250));
+      await Future.delayed(const Duration(milliseconds: 500));
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
 

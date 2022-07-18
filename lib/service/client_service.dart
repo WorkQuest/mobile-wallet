@@ -179,8 +179,9 @@ class ClientService implements ClientServiceI {
       final _degree = await Web3Utils.getDegreeToken(contract);
       return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
           .toDecimal();
-    } catch (e) {
-      throw Exception("Error connection to network");
+    } catch (e, trace) {
+      print('getBalanceFromContract | $e\n$trace');
+      return Decimal.zero;
     }
   }
 
