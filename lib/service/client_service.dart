@@ -12,6 +12,7 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
+import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
@@ -67,8 +68,13 @@ class ClientService implements ClientServiceI {
           }
         """);
             stream = _stream.stream.listen((event) {
-              if (!GetIt.I.get<WalletStore>().isLoading) {
-                GetIt.I.get<WalletStore>().getCoins(isForce: false);
+              final _walletStore = GetIt.I.get<WalletStore>();
+              if (!_walletStore.isLoading) {
+                _walletStore.getCoins(isForce: false);
+              }
+              final _swapStore = GetIt.I.get<SwapStore>();
+              if (_swapStore.network != null && !_swapStore.isLoading) {
+                _swapStore.getMaxBalance();
               }
             });
           } catch (e) {
