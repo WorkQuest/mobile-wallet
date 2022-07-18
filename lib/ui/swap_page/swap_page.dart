@@ -89,7 +89,7 @@ class _SwapPageState extends State<SwapPage> {
                   store.getCourseWQT(isForce: true);
                   store.getMaxBalance();
                 } else {
-                  store.setNetwork(store.network!);
+                  store.setNetwork(store.network!, isForce: true);
                 }
                 return Future.delayed(const Duration(seconds: 1));
               },
@@ -122,7 +122,7 @@ class _SwapPageState extends State<SwapPage> {
                                     style: const TextStyle(color: AppColor.enabledButton),
                                   ),
                                   onPressed: () {
-                                    store.setNetwork(store.network!);
+                                    store.setNetwork(store.network!, isForce: true);
                                   },
                                 ),
                               ),
@@ -359,7 +359,7 @@ class _SwapPageState extends State<SwapPage> {
       context,
       child: _ListBottomWidget(
         onTap: (value) {
-          store.setNetwork(value);
+          store.setNetwork(value, isForce: true);
         },
         title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [

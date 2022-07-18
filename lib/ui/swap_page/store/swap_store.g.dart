@@ -156,8 +156,8 @@ mixin _$SwapStore on SwapStoreBase, Store {
       AsyncAction('SwapStoreBase.setNetwork', context: context);
 
   @override
-  Future setNetwork(SwapNetworks? value) {
-    return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
+  Future setNetwork(SwapNetworks? value, {bool isForce = false}) {
+    return _$setNetworkAsyncAction.run(() => super.setNetwork(value, isForce: isForce));
   }
 
   late final _$getCourseWQTAsyncAction =

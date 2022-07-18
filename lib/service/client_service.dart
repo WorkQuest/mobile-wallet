@@ -176,19 +176,13 @@ class ClientService implements ClientServiceI {
 
   @override
   Future<Decimal> getBalanceFromContract(String address) async {
-    try {
-      address = address.toLowerCase();
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
-      final balance = await contract
-          .balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      final _degree = await Web3Utils.getDegreeToken(contract);
-      return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
-          .toDecimal();
-    } catch (e, trace) {
-      print('getBalanceFromContract | $e\n$trace');
-      return Decimal.zero;
-    }
+    address = address.toLowerCase();
+    final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
+    final balance = await contract
+        .balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+    final _degree = await Web3Utils.getDegreeToken(contract);
+    return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
+        .toDecimal();
   }
 
   @override

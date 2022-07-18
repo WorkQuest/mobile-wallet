@@ -74,7 +74,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   @action
-  setNetwork(SwapNetworks? value) async {
+  setNetwork(SwapNetworks? value, {bool isForce = false}) async {
     try {
       onLoading();
       network = value;
@@ -87,7 +87,9 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         return;
       }
       final _networkName = Web3Utils.getNetworkNameFromSwapNetworks(network!);
-      AccountRepository().changeNetwork(_networkName);
+      if (isForce) {
+        AccountRepository().changeNetwork(_networkName);
+      }
       await getMaxBalance();
       isConnect = true;
       onSuccess(false);

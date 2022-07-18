@@ -21,7 +21,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   }
 
   @action
-  getCoins({bool isForce = true}) async {
+  getCoins({bool isForce = true, bool tryAgain = true}) async {
     if (isForce) {
       onLoading();
       coins.clear();
@@ -31,13 +31,19 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       final _tokens =
           Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
       await Future.delayed(const Duration(milliseconds: 500));
+
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
 
       onSuccess(true);
     } catch (e, trace) {
       print('getCoins | $e\n$trace');
-      onError(e.toString());
+      await Future.delayed(const Duration(seconds: 1));
+      if (tryAgain) {
+        await getCoins(isForce: true, tryAgain: false);
+      } else {
+        onError(e.toString());
+      }
     }
   }
 
@@ -82,26 +88,21 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       }
     }).toList();
 
-
     return _result;
   }
 
   List<_TokenCourse> _getListTokenCourse(CurrentCourseTokensResponse courses) {
     List<_TokenCourse> result = [];
-    try {
-      final _list = courses.result!;
-      for (var i in _list) {
-        final _token = Web3Utils.getTokenSymbol(i.symbol!);
-        if (_token != null) {
-          final _course = Decimal.parse(i.price!) / Decimal.fromInt(10).pow(18);
-          result.add(_TokenCourse(_token, _course.toDouble().toString()));
-        }
+    final _list = courses.result!;
+    for (var i in _list) {
+      final _token = Web3Utils.getTokenSymbol(i.symbol!);
+      if (_token != null) {
+        final _course = Decimal.parse(i.price!) / Decimal.fromInt(10).pow(18);
+        result.add(_TokenCourse(_token, _course.toDouble().toString()));
       }
-      result.add(_TokenCourse(TokenSymbols.WUSD, '1.0'));
-      return result;
-    } catch (e) {
-      return result;
     }
+    result.add(_TokenCourse(TokenSymbols.WUSD, '1.0'));
+    return result;
   }
 }
 
