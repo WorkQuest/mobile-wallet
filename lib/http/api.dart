@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/http_client.dart';
+import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 
@@ -28,6 +29,13 @@ class Api {
       return "https://testnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
     }
     return "https://mainnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens";
+  }
+
+  String get _courseTokens {
+    if (_network == Network.testnet) {
+      return "https://testnet-oracle.workquest.co/api/v1/oracle/current-prices";
+    }
+    return "https://mainnet-oracle.workquest.co/api/v1/oracle/current-prices";
   }
 
   String _transactions(String address) {
@@ -121,6 +129,25 @@ class Api {
       await handleError(e);
     }
     return null;
+  }
+
+  Future<CurrentCourseTokensResponse?> getCourseTokens() async {
+    try {
+      final response = await _dio.get(_courseTokens);
+
+      if (response.statusCode != 200) {
+        final message = await getTranslateMessage(
+          code: response.data['code'],
+          message: response.data['msg'],
+        );
+        throw FormatException(message);
+      }
+
+      return CurrentCourseTokensResponse.fromJson(response.data);
+    } on DioError catch (e) {
+      // print('getCourseTokens | $e\n$trace');
+      return null;
+    }
   }
 
   handleError(DioError e, {bool translate = true}) async {

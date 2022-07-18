@@ -48,14 +48,17 @@ class _WalletPageState extends State<WalletPage> {
           ValueListenableBuilder<NetworkName?>(
             valueListenable: AccountRepository().networkName,
             builder: (_, value, child) {
-              final _networkName = Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
+              final _networkName =
+                  Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
               return DropDownAdaptiveWidget<SwitchNetworkNames>(
                 value: _networkName,
                 onChanged: (value) {
                   final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                      value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+                      value as SwitchNetworkNames,
+                      AccountRepository().notifierNetwork.value);
                   AccountRepository().changeNetwork(_newNetwork);
-                  final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
+                  final _swapNetwork =
+                      Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
                   GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
                   return value;
                 },
@@ -77,7 +80,10 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return Platform.isAndroid
         ? RefreshIndicator(
-            displacement: 20, triggerMode: RefreshIndicatorTriggerMode.anywhere, onRefresh: _onRefresh, child: layout())
+            displacement: 20,
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            onRefresh: _onRefresh,
+            child: layout())
         : layout();
   }
 
@@ -103,7 +109,9 @@ class _WalletPageState extends State<WalletPage> {
               onRefresh: _onRefresh,
             ),
           CopyAddressWalletWidget(
-            format: AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32,
+            format: AccountRepository().isOtherNetwork
+                ? FormatAddress.HEX
+                : FormatAddress.BECH32,
           ),
           SliverToBoxAdapter(
             child: Observer(
@@ -112,8 +120,8 @@ class _WalletPageState extends State<WalletPage> {
                 button: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100))
-                        .then((value) => Provider.of<NotifyPage>(context, listen: false).setIndex(1));
+                    Future.delayed(const Duration(milliseconds: 100)).then((value) =>
+                        Provider.of<NotifyPage>(context, listen: false).setIndex(1));
                   },
                   child: Container(
                     height: 43,
@@ -154,7 +162,8 @@ class _WalletPageState extends State<WalletPage> {
               titlePadding: const EdgeInsets.only(bottom: 12.0),
               title: Text(
                 'wallet.table.trx'.tr(),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -175,10 +184,15 @@ class _WalletPageState extends State<WalletPage> {
     if (GetIt.I.get<WalletStore>().coins.isEmpty) {
       return false;
     }
-    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
-    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
+    final _networkName =
+        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+    if (_networkName == NetworkName.workNetTestnet ||
+        _networkName == NetworkName.workNetMainnet) {
       try {
-        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        final _wqt = GetIt.I
+            .get<WalletStore>()
+            .coins
+            .firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
           return true;
         }
@@ -427,9 +441,10 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                               width: 140,
                               height: 15,
                             )
-                          else
+                          else if (balance.pricePerDollar != null)
                             Text(
-                              _getCourseDollar(balance.symbol.name, balance.amount!),
+                              '\$ ${balance.pricePerDollar}',
+                              // _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -461,7 +476,10 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          border: isCurrency
+                              ? null
+                              : Border.all(
+                                  color: AppColor.enabledButton.withOpacity(0.1)),
                           color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
@@ -526,17 +544,6 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
     setState(() {
       _currencyIndex = index;
     });
-  }
-
-  String _getCourseDollar(String title, String amount) {
-    switch (title) {
-      case 'WQT':
-        return '\$ ${(num.parse(amount).toDouble() * 0.03431).toStringAsFixed(4)}';
-      case 'wBNB':
-        return '\$ ${(num.parse(amount).toDouble() * 0.1375).toStringAsFixed(4)}';
-      default:
-        return '\$ ${num.parse(amount).toDouble().toStringAsFixed(4)}';
-    }
   }
 }
 
