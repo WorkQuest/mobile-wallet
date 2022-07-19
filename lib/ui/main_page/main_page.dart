@@ -102,39 +102,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   ],
                 ),
                 tabBuilder: (context, index) {
-                  final AnimationController _controller = AnimationController(
-                    duration: const Duration(milliseconds: 250),
-                    vsync: this,
-                  )..forward(from: 0.5);
-                  late final Animation<double> _animation = CurvedAnimation(
-                    parent: _controller,
-                    curve: Curves.easeIn,
-                  );
                   if (index == 0) {
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: ChangeNotifierProvider(
-                        create: (context) =>
-                            Provider.of<NotifyPage>(context, listen: false),
-                        child: WalletPage(
-                          key: _keys[0],
-                        ),
+                    return ChangeNotifierProvider(
+                      create: (context) =>
+                          Provider.of<NotifyPage>(context, listen: false),
+                      child: WalletPage(
+                        key: _keys[0],
                       ),
                     );
                   } else if (index == 1) {
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: SwapPage(
-                        key: _keys[1],
-                      ),
+                    return SwapPage(
+                      key: _keys[1],
                     );
                   } else {
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: SettingsPage(
-                        key: _keys[2],
-                        update: _update,
-                      ),
+                    return SettingsPage(
+                      key: _keys[2],
+                      update: _update,
                     );
                   }
                 },
