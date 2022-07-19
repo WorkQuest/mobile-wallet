@@ -29,8 +29,7 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage>
-    with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -89,125 +88,126 @@ class _PinCodePageState extends State<PinCodePage>
         }
       },
       store: store,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Observer(
-          builder: (_) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: double.infinity,
-                  height: 110,
-                ),
-                if (store.statePin == StatePinCode.check)
-                  _elementField(
-                    title: 'pinCode.writePinCode'.tr(),
-                    pinCode: store.pinCode,
-                    isLoading: store.startAnimation,
-                    activateAnimation: true,
-                  )
-                else
-                  AnimationSwitchWidget(
-                    first: _elementField(
-                      title: 'pinCode.comeUp'.tr(),
-                      pinCode: store.pinCode,
-                      isLoading: store.startAnimation,
-                    ),
-                    second: _elementField(
-                      title: 'pinCode.repeat'.tr(),
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Observer(
+            builder: (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 60.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
+                    height: 110,
+                  ),
+                  if (store.statePin == StatePinCode.check)
+                    _elementField(
+                      title: 'pinCode.writePinCode'.tr(),
                       pinCode: store.pinCode,
                       isLoading: store.startAnimation,
                       activateAnimation: true,
+                    )
+                  else
+                    AnimationSwitchWidget(
+                      first: _elementField(
+                        title: 'pinCode.comeUp'.tr(),
+                        pinCode: store.pinCode,
+                        isLoading: store.startAnimation,
+                      ),
+                      second: _elementField(
+                        title: 'pinCode.repeat'.tr(),
+                        pinCode: store.pinCode,
+                        isLoading: store.startAnimation,
+                        activateAnimation: true,
+                      ),
+                      enabled: store.startSwitch,
                     ),
-                    enabled: store.startSwitch,
-                  ),
-                if (store.attempts != 0)
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.red,
+                  if (store.attempts != 0)
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
                       ),
                     ),
+                  SizedBox(
+                    height: store.attempts != 0 ? 15 : 20,
                   ),
-                SizedBox(
-                  height: store.attempts != 0 ? 15 : 20,
-                ),
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    primary: false,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    children: [
-                      for (int i = 1; i < 10; i++)
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      primary: false,
+                      crossAxisSpacing: 30,
+                      mainAxisSpacing: 30,
+                      children: [
+                        for (int i = 1; i < 10; i++)
+                          KeyboardButton(
+                            child: Text(
+                              i.toString(),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                            onTab: () async {
+                              HapticFeedback.lightImpact();
+                              await store.inputPin(i);
+                              if (store.pinCode.length == 4) {
+                                store.signIn();
+                              }
+                            },
+                          ),
                         KeyboardButton(
-                          child: Text(
-                            i.toString(),
-                            style: const TextStyle(
+                          child: SvgPicture.asset(
+                            store.isFaceId ? Images.faceIdIcon : Images.biometricIcon,
+                            color: store.canBiometrics
+                                ? AppColor.enabledButton
+                                : Colors.transparent,
+                            width: 30,
+                            height: 30,
+                          ),
+                          onTab: () async {
+                            if (store.canBiometrics) {
+                              HapticFeedback.lightImpact();
+                              await store.biometricScan();
+                            }
+                          },
+                          hide: !store.canBiometrics,
+                        ),
+                        KeyboardButton(
+                          child: const Text(
+                            '0',
+                            style: TextStyle(
                               fontSize: 20,
                               color: Colors.black,
                             ),
                           ),
                           onTab: () async {
                             HapticFeedback.lightImpact();
-                            await store.inputPin(i);
+                            await store.inputPin(0);
                             if (store.pinCode.length == 4) {
                               store.signIn();
                             }
                           },
                         ),
-                      KeyboardButton(
-                        child: SvgPicture.asset(
-                          store.isFaceId
-                              ? Images.faceIdIcon
-                              : Images.biometricIcon,
-                          color: store.canBiometrics
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
-                          width: 30,
-                          height: 30,
-                        ),
-                        onTab: () async {
-                          if (store.canBiometrics) {
+                        KeyboardButton(
+                          child: SvgPicture.asset(Images.removePinIcon),
+                          onTab: () {
                             HapticFeedback.lightImpact();
-                            await store.biometricScan();
-                          }
-                        },
-                        hide: !store.canBiometrics,
-                      ),
-                      KeyboardButton(
-                        child: const Text(
-                          '0',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
+                            store.removePin();
+                          },
                         ),
-                        onTab: () async {
-                          HapticFeedback.lightImpact();
-                          await store.inputPin(0);
-                          if (store.pinCode.length == 4) {
-                            store.signIn();
-                          }
-                        },
-                      ),
-                      KeyboardButton(
-                        child: SvgPicture.asset(Images.removePinIcon),
-                        onTab: () {
-                          HapticFeedback.lightImpact();
-                          store.removePin();
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

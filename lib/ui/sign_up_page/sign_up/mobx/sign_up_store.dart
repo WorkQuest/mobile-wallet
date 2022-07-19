@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
+import 'package:workquest_wallet_app/utils/wallet.dart';
 
 part 'sign_up_store.g.dart';
 
@@ -98,12 +103,27 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   openWallet() async {
     onLoading();
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 500));
+      Wallet? wallet = await Wallet.derive(mnemonic!);
+      if (AccountRepository().networkName.value == null) {
+        final _networkName =
+        AccountRepository().notifierNetwork.value == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
+        AccountRepository().setNetwork(_networkName);
+      }
+      AccountRepository().setWallet(wallet);
+      AccountRepository().connectClient();
+      await _saveToStorage(wallet);
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);
     } catch (e) {
       onError(e.toString());
     }
+  }
+
+  Future _saveToStorage(Wallet wallet) async {
+    await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
   }
 }

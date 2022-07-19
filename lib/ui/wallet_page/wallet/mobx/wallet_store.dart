@@ -29,7 +29,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     if (isForce) {
       onLoading();
       coins.clear();
-    }
+    } //curve game abandon accident enrich ecology zero lady priority fringe ignore curve
     try {
       final _tokens =
           Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
