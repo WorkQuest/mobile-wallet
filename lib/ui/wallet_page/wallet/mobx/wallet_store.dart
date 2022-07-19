@@ -12,13 +12,15 @@ part 'wallet_store.g.dart';
 class WalletStore = WalletStoreBase with _$WalletStore;
 
 abstract class WalletStoreBase extends IStore<bool> with Store {
+
+  @observable
+  TokenSymbols currentToken = TokenSymbols.WQT;
+
   @observable
   ObservableList<_CoinEntity> coins = ObservableList.of([]);
 
   @action
-  clearData() {
-    coins.clear();
-  }
+  setCurrentToken(TokenSymbols value) => currentToken = value;
 
   @action
   getCoins({bool isForce = true, bool tryAgain = true}) async {
@@ -26,7 +28,6 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       onLoading();
       coins.clear();
     }
-    // print('getCoins | isLoading = $isLoading');
     try {
       final _tokens =
           Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
@@ -35,6 +36,9 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
 
+      if (isForce) {
+        currentToken = coins.first.symbol;
+      }
       onSuccess(true);
     } catch (e, trace) {
       print('getCoins | $e\n$trace');
@@ -103,6 +107,11 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     }
     result.add(_TokenCourse(TokenSymbols.WUSD, '1.0'));
     return result;
+  }
+
+  @action
+  clearData() {
+    coins.clear();
   }
 }
 
