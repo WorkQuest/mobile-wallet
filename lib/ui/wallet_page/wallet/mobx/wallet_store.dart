@@ -1,10 +1,12 @@
 import 'package:decimal/decimal.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'wallet_store.g.dart';
@@ -38,6 +40,8 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
 
       if (isForce) {
         currentToken = coins.first.symbol;
+        GetIt.I.get<TransactionsStore>().setType(currentToken);
+        GetIt.I.get<TransactionsStore>().getTransactions();
       }
       onSuccess(true);
     } catch (e, trace) {
