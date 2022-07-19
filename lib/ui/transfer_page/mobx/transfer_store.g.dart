@@ -124,17 +124,6 @@ mixin _$TransferStore on TransferStoreBase, Store {
       ActionController(name: 'TransferStoreBase', context: context);
 
   @override
-  dynamic clearData() {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
-        name: 'TransferStoreBase.clearData');
-    try {
-      return super.clearData();
-    } finally {
-      _$TransferStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic setFee(String value) {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.setFee');
@@ -162,6 +151,17 @@ mixin _$TransferStore on TransferStoreBase, Store {
         name: 'TransferStoreBase.setAmount');
     try {
       return super.setAmount(value);
+    } finally {
+      _$TransferStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic clearData() {
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.clearData');
+    try {
+      return super.clearData();
     } finally {
       _$TransferStoreBaseActionController.endAction(_$actionInfo);
     }
