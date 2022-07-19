@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
               left: 16.0,
               bottom: MediaQuery.of(context).padding.bottom + 10,
             ),
-            child: const Text('Version 1.1.4')),
+            child: const Text('Version 2.0.0')),
       ),
     );
   }
