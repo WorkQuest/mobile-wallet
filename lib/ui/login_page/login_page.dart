@@ -38,12 +38,12 @@ class LoginPage extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              bottom: MediaQuery.of(context).padding.bottom + 10,
-            ),
-            child: const Text('Version 2.0.0')),
+        // bottomNavigationBar: Padding(
+        //     padding: EdgeInsets.only(
+        //       left: 16.0,
+        //       bottom: MediaQuery.of(context).padding.bottom + 10,
+        //     ),
+        //     child: const Text('Version 2.0.0')),
       ),
     );
   }
