@@ -315,7 +315,8 @@ class _SwapPageState extends State<SwapPage> {
                 Navigator.of(context, rootNavigator: true).pop();
                 AlertDialogUtils.showInfoAlertDialog(context,
                     title: 'meta.error'.tr(), content: e.message);
-              } catch (e) {
+              } catch (e, trace) {
+                print('store.approve() | $e\n$trace');
                 Navigator.of(context, rootNavigator: true).pop();
                 AlertDialogUtils.showInfoAlertDialog(context,
                     title: 'meta.error'.tr(), content: e.toString());
