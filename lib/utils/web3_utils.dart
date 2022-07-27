@@ -54,6 +54,8 @@ class Web3Utils {
     required int degree,
     bool isETH = false,
   }) {
+    print('estimateGas: $estimateGas');
+    print('gas: $gas');
     return ((Decimal.parse(estimateGas.toString()) *
                 Decimal.parse(gas.toString()) *
                 Decimal.parse(isETH ? '1.1' : '1.0')) /

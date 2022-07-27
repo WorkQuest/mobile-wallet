@@ -136,6 +136,7 @@ class ClientService implements ClientServiceI {
         credentials: _credentials,
       );
     }
+    print('hash: $hash');
 
     int attempts = 0;
     TransactionReceipt? result;
