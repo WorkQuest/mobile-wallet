@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -142,7 +143,6 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           contract: _contract,
           function: _contract.function('swap'),
           gasPrice: _gas,
-          maxGas: 2000000,
           parameters: [
             ///nonce uint256
             BigInt.from(_nonce),
@@ -201,14 +201,19 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     final _spender =
         EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _gas = await service.getGas();
+    // final _maxGas = await service.getEstimateGas(Transaction.callContract(
+    //   contract: contract,
+    //   function: function,
+    //   parameters: parameters,
+    // ));
     final _degree = await Web3Utils.getDegreeToken(contract);
+
     final _txHashApprove = await contract.approve(
       _spender,
-      BigInt.from(amount * pow(10, _degree)),
+      (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
       credentials: _cred,
       transaction: Transaction(
         gasPrice: _gas,
-        maxGas: 2000000,
         value: EtherAmount.zero(),
       ),
     );
@@ -280,7 +285,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         function: _contract.self.function('approve'),
         parameters: [
           _spender,
-          BigInt.from(amount * pow(10, _degree)),
+          (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt()
         ],
         from: _cred.address,
       ),
