@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/settings/settings_page.dart';
-import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/wallet_page.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
@@ -37,7 +36,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = Provider.of<NotifyPage>(context, listen: false).controller;
-    GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
   }
 
