@@ -34,7 +34,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
     return InkWell(
       onTap: _showDialog,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.only(right: 16.0, left: 4.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

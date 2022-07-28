@@ -62,7 +62,7 @@ class _SwapPageState extends State<SwapPage> {
       body: ObserverListener(
         store: store,
         onSuccess: () {
-          if (store.isConnect && store.successData!) {
+          if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
@@ -73,6 +73,9 @@ class _SwapPageState extends State<SwapPage> {
             store.setNetwork(null);
             _amountController.clear();
             AlertDialogUtils.showSuccessDialog(context);
+          } else if (store.successData == SwapStoreState.approve) {
+            Navigator.of(context, rootNavigator: true).pop();
+            _onPressedSend();
           }
         },
         onFailure: () {
@@ -307,21 +310,8 @@ class _SwapPageState extends State<SwapPage> {
             tokenSymbol: 'USDT',
             onTabOk: () async {
               print('onTabOk');
-              try {
-                _showLoading(message: 'Approving...');
-                await store.approve();
-                Navigator.of(context, rootNavigator: true).pop();
-                _onPressedSend();
-              } on FormatException catch (e) {
-                Navigator.of(context, rootNavigator: true).pop();
-                AlertDialogUtils.showInfoAlertDialog(context,
-                    title: 'meta.error'.tr(), content: e.message);
-              } catch (e, trace) {
-                print('store.approve() | $e\n$trace');
-                Navigator.of(context, rootNavigator: true).pop();
-                AlertDialogUtils.showInfoAlertDialog(context,
-                    title: 'meta.error'.tr(), content: e.toString());
-              }
+              _showLoading(message: 'Approving...');
+              store.approve();
             },
           );
           return;
@@ -355,8 +345,7 @@ class _SwapPageState extends State<SwapPage> {
 
   _unFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus &&
-        currentFocus.focusedChild != null) {
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }

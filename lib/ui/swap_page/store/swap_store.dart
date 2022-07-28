@@ -23,7 +23,7 @@ enum SwapToken { usdt }
 
 class SwapStore = SwapStoreBase with _$SwapStore;
 
-abstract class SwapStoreBase extends IStore<bool> with Store {
+abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   double? courseWQT;
 
   String? hashWorknetTrx;
@@ -93,7 +93,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       }
       await getMaxBalance();
       isConnect = true;
-      onSuccess(false);
+      onSuccess(SwapStoreState.setNetwork);
     } catch (e) {
       isConnect = false;
       onError(e.toString());
@@ -122,6 +122,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     hashWorknetTrx = null;
     shouldReconnect = true;
     try {
+      print('createSwap');
       onLoading();
       Web3Client _client = service.ethClient!;
       final _address = AccountRepository().userWallet!.address!;
@@ -162,10 +163,11 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       int _attempts = 0;
       while (_attempts < 100) {
         final result = await _client.getTransactionReceipt(_hashTx);
+        print('result swap: $result');
         if (result != null && hashWorknetTrx != null) {
           shouldReconnect = false;
           _notificationChannel?.sink.close();
-          onSuccess(true);
+          onSuccess(SwapStoreState.createSwap);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
@@ -183,50 +185,59 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   approve() async {
-    final contract = Erc20(
-      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
-      client: service.ethClient!,
-    );
-    final _cred =
-        await service.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender =
-        EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
-    final _gas = await service.getGas();
-    final _degree = await Web3Utils.getDegreeToken(contract);
-    final _isEth = network! == SwapNetworks.ETH;
-    print('_gas.getInWei: ${_gas.getInWei}');
-    print('_gas new: ${EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
-          .toBigInt(),
-    ).getInWei}');
-    final _txHashApprove = await contract.approve(
-      _spender,
-      (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
-      credentials: _cred,
-      transaction: Transaction(
-        gasPrice: EtherAmount.fromUnitAndValue(
-          EtherUnit.wei,
-          (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
-              .toBigInt(),
+    try {
+      onLoading();
+      print('approve');
+      final contract = Erc20(
+        address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
+        client: service.ethClient!,
+      );
+      final _cred =
+          await service.getCredentials(AccountRepository().userWallet!.privateKey!);
+      final _spender =
+          EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
+      final _gas = await service.getGas();
+      final _degree = await Web3Utils.getDegreeToken(contract);
+      final _isEth = network! == SwapNetworks.ETH;
+      print('_gas.getInWei: ${_gas.getInWei}');
+      print('_gas new: ${EtherAmount.fromUnitAndValue(
+        EtherUnit.wei,
+        (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+            .toBigInt(),
+      ).getInWei}');
+      final _txHashApprove = await contract.approve(
+        _spender,
+        (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
+        credentials: _cred,
+        transaction: Transaction(
+          gasPrice: EtherAmount.fromUnitAndValue(
+            EtherUnit.wei,
+            (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+                .toBigInt(),
+          ),
+          value: EtherAmount.zero(),
         ),
-        value: EtherAmount.zero(),
-      ),
-    );
-    int _attempts = 0;
-    while (_attempts < 100) {
-      final result = await service.ethClient!.getTransactionReceipt(_txHashApprove);
-      if (result != null) {
-        getMaxBalance();
-        onSuccess(true);
-        return;
+      );
+      int _attempts = 0;
+      while (_attempts < 100) {
+        final result = await service.ethClient!.getTransactionReceipt(_txHashApprove);
+        print('result approve: $result');
+        if (result != null) {
+          getMaxBalance();
+          onSuccess(SwapStoreState.approve);
+          return;
+        }
+        await Future.delayed(const Duration(seconds: 3));
+        _attempts++;
       }
-      await Future.delayed(const Duration(seconds: 3));
-      _attempts++;
+      final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
+      onError(
+          'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
+      onError(e.toString());
     }
-    final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
-    onError(
-        'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
   }
 
   Future<bool> needApprove() async {
@@ -403,3 +414,5 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     isSuccessCourse = false;
   }
 }
+
+enum SwapStoreState {setNetwork, createSwap, approve}
