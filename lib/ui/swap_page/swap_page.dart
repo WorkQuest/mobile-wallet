@@ -288,6 +288,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _onPressedSend() async {
+    _unFocus();
     if (_formKey.currentState!.validate()) {
       try {
         _showLoading();
@@ -349,6 +350,14 @@ class _SwapPageState extends State<SwapPage> {
         print('_onPressedSend | $e\n$trace');
         Navigator.of(context, rootNavigator: true).pop();
       }
+    }
+  }
+
+  _unFocus() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus &&
+        currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
     }
   }
 
