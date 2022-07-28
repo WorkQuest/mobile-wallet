@@ -140,7 +140,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       print('_gas.getInWei: ${_gas.getInWei}');
       print('_gas new: ${EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0')).toBigInt(),
+        (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+            .toBigInt(),
       ).getInWei}');
       final _hashTx = await _client.sendTransaction(
         _cred,
@@ -150,28 +151,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           function: _contract.function('swap'),
           gasPrice: EtherAmount.fromUnitAndValue(
             EtherUnit.wei,
-            (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0')).toBigInt(),
+            (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+                .toBigInt(),
           ),
-          // maxGas: _maxGas.toInt(),
-          parameters: [
-            ///nonce uint256
-            BigInt.from(_nonce),
-
-            ///chainTo uint256
-            BigInt.from(1.0),
-
-            ///amount uint256
-            BigInt.from(amount * pow(10, _degree)),
-
-            ///recipient address
-            EthereumAddress.fromHex(AccountRepository().userAddress),
-
-            ///userId string
-            '1',
-
-            ///symbol string
-            'USDT'
-          ],
+          parameters: _setParameters(nonce: _nonce, degree: _degree),
         ),
         chainId: _chainId.toInt(),
       );
@@ -182,14 +165,12 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         if (result != null && hashWorknetTrx != null) {
           shouldReconnect = false;
           _notificationChannel?.sink.close();
-          getMaxBalance();
           onSuccess(true);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
         _attempts++;
       }
-      getMaxBalance();
       final _link = Web3Utils.getLinkToExplorer(network!, _hashTx);
       shouldReconnect = false;
       _notificationChannel?.sink.close();
@@ -216,7 +197,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     print('_gas.getInWei: ${_gas.getInWei}');
     print('_gas new: ${EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0')).toBigInt(),
+      (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+          .toBigInt(),
     ).getInWei}');
     final _txHashApprove = await contract.approve(
       _spender,
@@ -225,7 +207,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       transaction: Transaction(
         gasPrice: EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
-          (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0')).toBigInt(),
+          (Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isEth ? '1.1' : '1.0'))
+              .toBigInt(),
         ),
         value: EtherAmount.zero(),
       ),
@@ -331,25 +314,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         from: EthereumAddress.fromHex(_address),
         contract: _contract,
         function: _contract.function('swap'),
-        parameters: [
-          ///nonce uint256
-          BigInt.from(_nonce),
-
-          ///chainTo uint256
-          BigInt.from(1.0),
-
-          ///amount uint256
-          BigInt.from(amount * pow(10, _degree)),
-
-          ///recipient address
-          EthereumAddress.fromHex(AccountRepository().userAddress),
-
-          ///userId string
-          '1',
-
-          ///symbol string
-          'USDT'
-        ],
+        parameters: _setParameters(nonce: _nonce, degree: _degree),
       ),
     );
     final _fee = Web3Utils.getGas(
@@ -399,6 +364,31 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         }
       },
     );
+  }
+
+  List<dynamic> _setParameters({
+    required int nonce,
+    required int degree,
+  }) {
+    return [
+      ///nonce uint256
+      BigInt.from(nonce),
+
+      ///chainTo uint256
+      BigInt.from(1.0),
+
+      ///amount uint256
+      BigInt.from(amount * pow(10, degree)),
+
+      ///recipient address
+      EthereumAddress.fromHex(AccountRepository().userAddress),
+
+      ///userId string
+      '1',
+
+      ///symbol string
+      'USDT'
+    ];
   }
 
   @action
