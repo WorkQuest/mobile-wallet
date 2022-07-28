@@ -12,6 +12,7 @@ import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
+import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/widgets/animation/login_button.dart';
 import 'package:workquest_wallet_app/widgets/shimmer.dart';
 
@@ -40,7 +41,7 @@ class ListTransactions extends StatelessWidget {
             ),
           );
         }
-        if (store.isSuccess) {
+        if (store.isSuccess && !GetIt.I.get<WalletStore>().isLoading) {
           final _isOtherNetwork = AccountRepository().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
