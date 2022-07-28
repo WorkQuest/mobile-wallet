@@ -106,8 +106,12 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             from: _from,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
-            .toStringAsFixed(18);
+        fee = Web3Utils.getGas(
+          estimateGas: _estimateGas,
+          gas: _gas.getInWei,
+          degree: 18,
+          isETH: Web3Utils.isETH(),
+        ).toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
@@ -121,8 +125,12 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             value: _value,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
-            .toStringAsFixed(18);
+        fee = Web3Utils.getGas(
+          estimateGas: _estimateGas,
+          gas: _gas.getInWei,
+          degree: 18,
+          isETH: Web3Utils.isETH(),
+        ).toStringAsFixed(18);
       }
     } on SocketException catch (_) {
       // onError("Lost connection to server");
@@ -156,9 +164,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18))
               .toDecimal();
       if (_amount < Decimal.zero) {
-        return 0.0.toStringAsFixed(18);
+        return 0.0.toString();
       } else {
-        return _amount.toStringAsFixed(18);
+        return _amount.toString();
       }
     }
 

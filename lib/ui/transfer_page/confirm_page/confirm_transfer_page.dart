@@ -37,61 +37,74 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: DefaultAppBar(
-        title: 'wallet.transfer'.tr(),
-      ),
-      body: Padding(
-        padding: _padding,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            _InformationWidget(
-              fee: widget.fee,
-              typeCoin: widget.typeCoin,
-              addressTo: widget.addressTo,
-              amount: widget.amount,
-            ),
-            Expanded(child: Container()),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: double.infinity,
-                  ),
-                  ObserverListener(
-                    onFailure: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      return false;
-                    },
-                    store: store,
-                    onSuccess: () async {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      await AlertDialogUtils.showSuccessDialog(context);
-                      Navigator.pop(context, true);
-                    },
-                    child: Observer(
+    return ObserverListener<ConfirmTransferStore>(
+      store: store,
+      onSuccess: () async {
+        Navigator.of(context, rootNavigator: true).pop();
+        await AlertDialogUtils.showSuccessDialog(context);
+        Navigator.pop(context, true);
+      },
+      onFailure: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        if (store.errorMessage!.contains('The waiting time is over')) {
+          AlertDialogUtils.showInfoAlertDialog(
+            context,
+            title: 'meta.warning'.tr(),
+            content: store.errorMessage!,
+            okPressed: () {
+              Navigator.pop(context, true);
+            },
+          );
+          return true;
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: DefaultAppBar(
+          title: 'wallet.transfer'.tr(),
+        ),
+        body: Padding(
+          padding: _padding,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 12,
+              ),
+              _InformationWidget(
+                fee: widget.fee,
+                typeCoin: widget.typeCoin,
+                addressTo: widget.addressTo,
+                amount: widget.amount,
+              ),
+              Expanded(child: Container()),
+              Padding(
+                padding:
+                    EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      width: double.infinity,
+                    ),
+                    Observer(
                       builder: (_) => LoginButton(
                         onTap: () {
-                          AlertDialogUtils.showLoadingDialog(context);
-                          store.sendTransaction(
-                              widget.addressTo, widget.amount, widget.typeCoin, Decimal.parse(widget.fee));
+                          AlertDialogUtils.showLoadingDialog(context,
+                              message:
+                                  'Processing, please wait for the confirmation process to be completed.');
+                          store.sendTransaction(widget.addressTo, widget.amount,
+                              widget.typeCoin, Decimal.parse(widget.fee));
                         },
                         title: 'meta.confirm'.tr(),
                         enabled: store.isLoading,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -118,8 +131,7 @@ class _InformationWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+          borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -200,5 +212,4 @@ class _InformationWidget extends StatelessWidget {
         return 'WQT';
     }
   }
-
 }

@@ -157,7 +157,7 @@ class _TransferPageState extends State<TransferPage> {
                         return false;
                       },
                       onSuccess: () {
-                        _amountController.text = store.amount;
+                        _amountController.text = (store.maxAmount ?? 0.0).toString();
                       },
                       child: CupertinoButton(
                         padding: const EdgeInsets.only(right: 12.5),
@@ -179,6 +179,14 @@ class _TransferPageState extends State<TransferPage> {
                   ),
                 ),
                 _divider,
+                Text(
+                  _getTitleAvailableTx(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColor.enabledButton,
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Observer(
                   builder: (_) => Text(
                     _getTitleTrxFee(),
@@ -282,6 +290,15 @@ class _TransferPageState extends State<TransferPage> {
         Navigator.pop(context);
       }
     }
+  }
+
+  _getTitleAvailableTx() {
+    final value = store.maxAmount ?? 0.0;
+    final network = store.currentCoin?.title;
+    if (network != null) {
+      return 'Available balance: $value $network';
+    }
+    return 'Available balance: ';
   }
 
   _getTitleTrxFee() {

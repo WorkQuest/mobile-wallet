@@ -105,14 +105,21 @@ class ClientService implements ClientServiceI {
     final _privateKey = AccountRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
     String _addressToken = Web3Utils.getAddressToken(coin);
-
+    final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+    final _gas = await getGas();
+    final _isETH = Web3Utils.isETH();
+    final _gasPrice = EtherAmount.fromUnitAndValue(
+      EtherUnit.wei,
+      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0'))
+          .toBigInt()),
+    );
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
         BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString()),
       );
       final _to = EthereumAddress.fromHex(addressTo);
-      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+
       final _chainId = await ethClient!.getChainId();
       hash = await ethClient!.sendTransaction(
         _credentials,
@@ -120,6 +127,7 @@ class ClientService implements ClientServiceI {
           to: _to,
           from: _from,
           value: _value,
+          gasPrice: _gasPrice,
         ),
         chainId: _chainId.toInt(),
       );
@@ -134,6 +142,10 @@ class ClientService implements ClientServiceI {
         BigInt.parse(
             (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree)).toString()),
         credentials: _credentials,
+        transaction: Transaction(
+          from: _from,
+          gasPrice: _gasPrice,
+        ),
       );
     }
     print('hash: $hash');

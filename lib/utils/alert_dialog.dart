@@ -60,8 +60,7 @@ class AlertDialogUtils {
     }
   }
 
-  static Future<void> showLoadingDialog(BuildContext context,
-      {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -113,11 +112,18 @@ class AlertDialogUtils {
     BuildContext context, {
     required String title,
     required String content,
+    Function()? okPressed,
   }) {
     showCupertinoDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) {
+        _onTabOk() {
+          Navigator.of(context, rootNavigator: true).pop();
+          if (okPressed != null) {
+            okPressed.call();
+          }
+        }
         return Platform.isIOS
             ? CupertinoAlertDialog(
                 title: Text(title),
@@ -125,7 +131,7 @@ class AlertDialogUtils {
                 actions: [
                   CupertinoDialogAction(
                     child: const Text("OK"),
-                    onPressed: Navigator.of(context, rootNavigator: true).pop,
+                    onPressed: _onTabOk,
                   )
                 ],
               )
@@ -135,7 +141,7 @@ class AlertDialogUtils {
                 actions: [
                   CupertinoDialogAction(
                     child: const Text("OK"),
-                    onPressed: Navigator.of(context, rootNavigator: true).pop,
+                    onPressed: _onTabOk,
                   )
                 ],
               );

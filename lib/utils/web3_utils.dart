@@ -15,7 +15,7 @@ class Web3Utils {
     final _client = AccountRepository().getClient();
     final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
     final _isNativeToken = AccountRepository().isOtherNetwork
-        ?   typeCoin == TokenSymbols.ETH ||
+        ? typeCoin == TokenSymbols.ETH ||
             typeCoin == TokenSymbols.BNB ||
             typeCoin == TokenSymbols.MATIC
         : typeCoin == TokenSymbols.WQT;
@@ -101,6 +101,11 @@ class Web3Utils {
       case NetworkName.polygonTestnet:
         return Network.testnet;
     }
+  }
+
+  static bool isETH() {
+    return AccountRepository().networkName.value == NetworkName.ethereumMainnet ||
+        AccountRepository().networkName.value == NetworkName.ethereumTestnet;
   }
 
   static NetworkName getNetworkName(String name) {
