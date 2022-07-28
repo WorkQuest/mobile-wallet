@@ -361,8 +361,8 @@
     "failedToGetBalance": "Failed to get balance",
     "swipeUpdate": "Swipe to update",
     "invalidMnemonic": "Invalid mnemonic",
-    "notHaveEnoughTx": "Not have enough {token} for the transaction",
-    "notHaveEnoughTxToken": "Not have enough {token} for the transaction"
+    "notHaveEnoughTx": "Insufficient funds to complete the transaction.",
+    "notHaveEnoughTxToken": "Insufficient funds to complete the transaction."
   },
   "deposit": {
     "numberCard": "Number of card",

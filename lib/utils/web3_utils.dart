@@ -25,20 +25,17 @@ class Web3Utils {
           (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18))
               .toDouble();
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
-        throw FormatException(
-            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else {
       final _balanceToken =
           await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken.toDouble()) {
-        throw FormatException('errors.notHaveEnoughTxToken'
-            .tr(namedArgs: {'token': getTitleToken(typeCoin)}));
+        throw FormatException('errors.notHaveEnoughTxToken'.tr());
       }
       fee = fee * Decimal.fromInt(10).pow(18);
       if (_balanceNative.getInWei < fee.toBigInt()) {
-        throw FormatException(
-            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     }
   }
