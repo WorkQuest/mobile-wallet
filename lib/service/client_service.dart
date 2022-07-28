@@ -144,7 +144,7 @@ class ClientService implements ClientServiceI {
       result = await ethClient!.getTransactionReceipt(hash);
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 100) {
         throw const FormatException("The waiting time is over. Expect a balance update.");
       }
     }
