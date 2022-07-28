@@ -173,7 +173,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
         await Future.delayed(const Duration(seconds: 3));
         _attempts++;
       }
-      final _link = Web3Utils.getLinkToExplorer(network!, _hashTx);
+      final _link = Web3Utils.getLinkToExplorerFromSwap(network!, _hashTx);
       shouldReconnect = false;
       _notificationChannel?.sink.close();
       onError(
@@ -230,7 +230,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
         await Future.delayed(const Duration(seconds: 3));
         _attempts++;
       }
-      final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
+      final _link = Web3Utils.getLinkToExplorerFromSwap(network!, _txHashApprove);
       onError(
           'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
     } on FormatException catch (e) {

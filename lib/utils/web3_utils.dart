@@ -222,7 +222,28 @@ class Web3Utils {
     }
   }
 
-  static String getLinkToExplorer(SwapNetworks name, String tx) {
+  static String getLinkToExplorer(NetworkName name, String tx) {
+    switch (name) {
+      case NetworkName.workNetMainnet:
+        return 'https://explorer.workquest.co/tx/$tx';
+      case NetworkName.workNetTestnet:
+        return 'https://testnet-explorer.workquest.co/tx/$tx';
+      case NetworkName.ethereumMainnet:
+        return 'https://etherscan.io/tx/$tx';
+      case NetworkName.ethereumTestnet:
+        return 'https://rinkeby.etherscan.io/tx/$tx';
+      case NetworkName.bscMainnet:
+        return 'https://bscscan.com/tx/$tx';
+      case NetworkName.bscTestnet:
+        return 'https://testnet.bscscan.com/tx/$tx';
+      case NetworkName.polygonMainnet:
+        return 'https://polygonscan.com/tx/$tx';
+      case NetworkName.polygonTestnet:
+        return 'https://mumbai.polygonscan.com/tx/$tx';
+    }
+  }
+
+  static String getLinkToExplorerFromSwap(SwapNetworks name, String tx) {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:

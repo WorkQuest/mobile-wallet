@@ -157,6 +157,7 @@ class ClientService implements ClientServiceI {
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
       if (attempts == 100) {
+        // final _link = Web3Utils.getLinkToExplorerFromSwap(network!, _txHashApprove);
         throw const FormatException("The waiting time is over. Expect a balance update.");
       }
     }
