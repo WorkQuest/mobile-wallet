@@ -1,4 +1,4 @@
-package com.example.workquest_wallet_app
+package com.company.workquest_wallet_app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
