@@ -115,9 +115,13 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
               )
             ],
           ),
-          content: SizedBox(
-            height: 250.0,
-            width: 250.0,
+          buttonPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
+          actionsOverflowButtonSpacing: 0.0,
+          content: Container(
+            height: 300.0,
+            width: MediaQuery.of(context).size.width - 32.0,
+            // margin: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Scrollbar(
               child: ListView(
                 physics: const BouncingScrollPhysics(
@@ -202,9 +206,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                   width: double.infinity,
                   height: 1,
                   color: Colors.grey,
-                ),
-                const SizedBox(
-                  height: 6.0,
+                  margin: const EdgeInsets.only(left: 8.0, right: 8.0),
                 ),
                 SizedBox(
                   width: double.infinity,
