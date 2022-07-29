@@ -116,7 +116,7 @@ class ClientService implements ClientServiceI {
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString()),
+        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
 
