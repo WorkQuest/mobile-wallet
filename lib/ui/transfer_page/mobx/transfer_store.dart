@@ -5,6 +5,7 @@ import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:decimal/decimal.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
@@ -178,9 +179,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       final _balanceInWei = _balance.getInWei;
       await getFee();
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
-      final _amount =
-          ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18))
-              .toDecimal();
+      final _amount = ((Decimal.parse(_balanceInWei.toString()) -
+                  (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
+              Decimal.fromInt(10).pow(18))
+          .toDecimal();
       if (_amount < Decimal.zero) {
         return 0.0.toString();
       } else {
@@ -195,7 +197,4 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   }
 }
 
-enum TransferStoreState {
-  checkBeforeSend, getMaxAmount
-}
-
+enum TransferStoreState { checkBeforeSend, getMaxAmount }

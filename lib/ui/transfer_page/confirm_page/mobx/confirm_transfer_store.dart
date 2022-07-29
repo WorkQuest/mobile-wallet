@@ -34,11 +34,14 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");
-    } on RPCError catch (e) {
+    } on RPCError catch (e, trace) {
+      print('sendTransaction RPCError: $e\n$trace');
       onError(e.message);
-    } on FormatException catch (e) {
+    } on FormatException catch (e, trace) {
+      print('sendTransaction FormatException: $e\n$trace');
       onError(e.message);
-    } catch (e) {
+    } catch (e, trace) {
+      print('sendTransaction: $e\n$trace');
       onError(e.toString());
     }
   }
