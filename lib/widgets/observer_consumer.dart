@@ -108,9 +108,10 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = isLink(word)
                                         ? () async {
-                                            if (await canLaunchUrl(Uri.parse(word))) {
-                                              launchUrl(Uri.parse(word));
-                                            }
+                                            // if (await canLaunchUrl(Uri.parse(word))) {
+                                            //   launchUrl(Uri.parse(word));
+                                              launch(word);
+                                            // }
                                           }
                                         : null);
                             }).toList()),
