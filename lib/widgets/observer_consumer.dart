@@ -64,28 +64,29 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text(title),
-                      content: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: '',
-                            style: DefaultTextStyle.of(context).style,
-                            children: _words.map((word) {
-                              return TextSpan(
-                                  text: '$word ',
-                                  style: TextStyle(
-                                    color: isLink(word)
-                                        ? AppColor.enabledButton
-                                        : Colors.black,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = isLink(word)
-                                        ? () async {
-                                            if (await canLaunchUrl(Uri.parse(word))) {
-                                              launchUrl(Uri.parse(word));
+                      content: Builder(
+                        builder: (_) => RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                              text: '',
+                              children: _words.map((word) {
+                                return TextSpan(
+                                    text: '$word ',
+                                    style: TextStyle(
+                                      color: isLink(word)
+                                          ? AppColor.enabledButton
+                                          : Colors.black,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = isLink(word)
+                                          ? () async {
+                                              if (await canLaunchUrl(Uri.parse(word))) {
+                                                launchUrl(Uri.parse(word));
+                                              }
                                             }
-                                          }
-                                        : null);
-                            }).toList()),
+                                          : null);
+                              }).toList()),
+                        ),
                       ),
                       actions: [
                         CupertinoDialogAction(
