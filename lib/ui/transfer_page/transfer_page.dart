@@ -286,6 +286,7 @@ class _TransferPageState extends State<TransferPage> {
             title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
+      await store.getFee();
       final result = await PageRouter.pushNewRoute(
         context,
         ConfirmTransferPage(

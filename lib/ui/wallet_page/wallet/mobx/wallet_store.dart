@@ -14,7 +14,6 @@ part 'wallet_store.g.dart';
 class WalletStore = WalletStoreBase with _$WalletStore;
 
 abstract class WalletStoreBase extends IStore<bool> with Store {
-
   @observable
   TokenSymbols currentToken = TokenSymbols.WQT;
 
@@ -25,7 +24,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   setCurrentToken(TokenSymbols value) => currentToken = value;
 
   @action
-  getCoins({bool isForce = true, bool tryAgain = true}) async {
+  getCoins({bool isForce = true, bool tryAgain = true, bool fromSwap = false}) async {
     if (isForce) {
       onLoading();
       coins.clear();
@@ -41,14 +40,18 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
       if (isForce) {
         currentToken = coins.first.symbol;
         GetIt.I.get<TransactionsStore>().setType(currentToken);
-        GetIt.I.get<TransactionsStore>().getTransactions();
+        GetIt.I.get<TransactionsStore>().transactions =
+            ObservableList.of(GetIt.I.get<TransactionsStore>().transactions);
+        if (!fromSwap) {
+          GetIt.I.get<TransactionsStore>().getTransactions();
+        }
       }
       onSuccess(true);
     } catch (e, trace) {
       print('getCoins | $e\n$trace');
       await Future.delayed(const Duration(seconds: 1));
       if (tryAgain) {
-        await getCoins(isForce: true, tryAgain: false);
+        await getCoins(isForce: true, tryAgain: false, fromSwap: fromSwap);
       } else {
         onError(e.toString());
       }

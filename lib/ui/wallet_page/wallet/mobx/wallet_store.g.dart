@@ -45,9 +45,9 @@ mixin _$WalletStore on WalletStoreBase, Store {
       AsyncAction('WalletStoreBase.getCoins', context: context);
 
   @override
-  Future getCoins({bool isForce = true, bool tryAgain = true}) {
+  Future getCoins({bool isForce = true, bool tryAgain = true, bool fromSwap = false}) {
     return _$getCoinsAsyncAction
-        .run(() => super.getCoins(isForce: isForce, tryAgain: tryAgain));
+        .run(() => super.getCoins(isForce: isForce, tryAgain: tryAgain, fromSwap: fromSwap));
   }
 
   late final _$WalletStoreBaseActionController =

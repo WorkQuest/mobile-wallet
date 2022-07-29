@@ -23,9 +23,12 @@ class WebSocket {
 
   int closeCode = 4001;
 
+  String? currentWss;
+
   init() async {
     shouldReconnectFlag = true;
-    channel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
+    currentWss = AccountRepository().getConfigNetworkWorknet().wss;
+    channel = IOWebSocketChannel.connect(currentWss!);
     channel!.sink.add("""
     {
         "jsonrpc": "2.0",
@@ -63,16 +66,15 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
+    if (currentWss == AccountRepository().getConfigNetworkWorknet().wss) {
+      return;
+    }
     _closeWalletSocket();
   }
 
   String get myAddress => AccountRepository().userWallet!.address!;
 
   void handleSubscription(dynamic jsonResponse) async {
-    final _isNotWorknet = AccountRepository().isOtherNetwork;
-    if (_isNotWorknet) {
-      return;
-    }
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       final _events = transaction.result?.events;

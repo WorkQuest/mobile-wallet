@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/bottom_sheet.dart';
@@ -66,12 +68,13 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             store.setNetwork(null);
             _amountController.clear();
+            Provider.of<NotifyPage>(context, listen: false).setIndex(0);
             AlertDialogUtils.showSuccessDialog(context);
           } else if (store.successData == SwapStoreState.approve) {
             Navigator.of(context, rootNavigator: true).pop();
@@ -85,12 +88,13 @@ class _SwapPageState extends State<SwapPage> {
           if (store.errorMessage!.contains('Waiting time has expired')) {
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             store.setNetwork(null);
             _amountController.clear();
+            Provider.of<NotifyPage>(context, listen: false).setIndex(0);
           }
           return false;
         },
