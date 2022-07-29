@@ -112,6 +112,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       if (result!.isEmpty) {
         canMoreLoading = false;
       }
+      _setTypeCoinInTxs(result);
       transactions.addAll(result);
       isMoreLoading = false;
       onSuccess(true);

@@ -10,6 +10,7 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/account_repository.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
+import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/utils/bottom_sheet.dart';
 import 'package:workquest_wallet_app/utils/validators.dart';
@@ -199,6 +200,7 @@ class _SwapPageState extends State<SwapPage> {
                           keyboardType:
                               const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
+                            DecimalFormatter(),
                             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                           ],
                           suffixIcon: CupertinoButton(
