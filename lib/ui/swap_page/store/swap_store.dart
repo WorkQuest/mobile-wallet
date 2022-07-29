@@ -161,7 +161,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       );
       _connectSocket();
       int _attempts = 0;
-      while (_attempts < 100) {
+      while (_attempts < 140) {
         final result = await _client.getTransactionReceipt(_hashTx);
         print('result swap: $result');
         if (result != null && hashWorknetTrx != null) {
@@ -219,7 +219,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
         ),
       );
       int _attempts = 0;
-      while (_attempts < 100) {
+      while (_attempts < 140) {
         final result = await service.ethClient!.getTransactionReceipt(_txHashApprove);
         print('result approve: $result');
         if (result != null) {
