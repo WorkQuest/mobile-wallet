@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/keys.dart';
-
+class Commission {
+  static const commissionBuy = 0.98;
+}
 class Images {
   static const _imagePath = "assets/images";
   static const _svgPath = "assets/svg";
