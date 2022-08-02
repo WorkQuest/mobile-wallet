@@ -45,6 +45,12 @@ class _SwapPageState extends State<SwapPage> {
   @override
   void initState() {
     store = GetIt.I.get<SwapStore>();
+    final _swapNetwork =
+        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value!);
+    Future.delayed(const Duration(milliseconds: 350)).then(
+      (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
+    );
+
     _amountController = TextEditingController();
     _amountController.addListener(() {
       store.setAmount(double.tryParse(_amountController.text) ?? 0.0);
@@ -69,11 +75,12 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              AccountRepository()
+                  .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              AccountRepository()
+                  .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
-            store.setNetwork(null);
             _amountController.clear();
             Provider.of<NotifyPage>(context, listen: false).setIndex(0);
             AlertDialogUtils.showSuccessDialog(context);
@@ -89,11 +96,12 @@ class _SwapPageState extends State<SwapPage> {
           if (store.errorMessage!.contains('Waiting time has expired')) {
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              AccountRepository()
+                  .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              AccountRepository()
+                  .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
-            store.setNetwork(null);
             _amountController.clear();
             Provider.of<NotifyPage>(context, listen: false).setIndex(0);
           }

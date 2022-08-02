@@ -90,7 +90,11 @@ class _WalletPageState extends State<WalletPage> {
         value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
     AccountRepository().changeNetwork(_newNetwork);
     final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
-    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
+    Future.delayed(const Duration(milliseconds: 350)).then(
+      (value) => GetIt.I
+          .get<SwapStore>()
+          .setNetwork(_swapNetwork ?? GetIt.I.get<SwapStore>().network!),
+    );
     return value;
   }
 
