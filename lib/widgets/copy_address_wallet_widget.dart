@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/dropdown_card.dart';
@@ -34,18 +34,18 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
   }
 
   String get address {
-    if (AccountRepository().isOtherNetwork) {
-      return AccountRepository().userWallet?.address ?? '111111111111111111';
+    if (SessionRepository().isOtherNetwork) {
+      return SessionRepository().userWallet?.address ?? '111111111111111111';
     }
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(AccountRepository().userWallet?.address ?? '111111111111111111')
-        : AccountRepository().userWallet?.address ?? '111111111111111111';
+        ? AddressService.hexToBech32(SessionRepository().userWallet?.address ?? '111111111111111111')
+        : SessionRepository().userWallet?.address ?? '111111111111111111';
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<NetworkName?>(
-      valueListenable: AccountRepository().networkName,
+      valueListenable: SessionRepository().networkName,
       builder: (_, value, child) {
         return SliverToBoxAdapter(
           child: AnimatedSize(
@@ -54,7 +54,7 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!AccountRepository().isOtherNetwork)
+                if (!SessionRepository().isOtherNetwork)
                   Column(
                     children: [
                       const SizedBox(

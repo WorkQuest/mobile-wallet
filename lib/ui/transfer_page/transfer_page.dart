@@ -8,7 +8,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
@@ -53,7 +53,7 @@ class _TransferPageState extends State<TransferPage> {
 
   late Timer timer;
 
-  List<DataCoins> get tokens => AccountRepository().getConfigNetwork().dataCoins;
+  List<DataCoins> get tokens => SessionRepository().getConfigNetwork().dataCoins;
 
   @override
   void initState() {
@@ -278,14 +278,14 @@ class _TransferPageState extends State<TransferPage> {
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
             AddressService.hexToBech32(
-                AccountRepository().userWallet!.address!.toLowerCase())) {
+                SessionRepository().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
         if (store.addressTo.toLowerCase() ==
-            AccountRepository().userWallet!.address!.toLowerCase()) {
+            SessionRepository().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;

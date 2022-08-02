@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/model/trx_ethereum_response.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -27,7 +27,7 @@ class WebSocket {
 
   init() async {
     shouldReconnectFlag = true;
-    currentWss = AccountRepository().getConfigNetworkWorknet().wss;
+    currentWss = SessionRepository().getConfigNetworkWorknet().wss;
     channel = IOWebSocketChannel.connect(currentWss!);
     channel!.sink.add("""
     {
@@ -66,13 +66,13 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
-    if (currentWss == AccountRepository().getConfigNetworkWorknet().wss) {
+    if (currentWss == SessionRepository().getConfigNetworkWorknet().wss) {
       return;
     }
     _closeWalletSocket();
   }
 
-  String get myAddress => AccountRepository().userWallet!.address!;
+  String get myAddress => SessionRepository().userWallet!.address!;
 
   void handleSubscription(dynamic jsonResponse) async {
     try {

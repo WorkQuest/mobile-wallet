@@ -10,7 +10,7 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
@@ -55,7 +55,7 @@ class ClientService implements ClientServiceI {
       ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
-      if (AccountRepository().isOtherNetwork) {
+      if (SessionRepository().isOtherNetwork) {
         Future.delayed(const Duration(seconds: 2)).then((value) {
           try {
             final _stream = ethClient!.socketConnector!.call();
@@ -102,10 +102,10 @@ class ClientService implements ClientServiceI {
   }) async {
     String? hash;
     int? degree;
-    final _privateKey = AccountRepository().privateKey;
+    final _privateKey = SessionRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
     String _addressToken = Web3Utils.getAddressToken(coin);
-    final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+    final _from = EthereumAddress.fromHex(SessionRepository().userAddress);
     final _gas = await getGas();
     final _isETH = Web3Utils.isETH();
     final _gasPrice = EtherAmount.fromUnitAndValue(
@@ -164,8 +164,8 @@ class ClientService implements ClientServiceI {
     final _tx = Tx(
       hash: hash,
       fromAddressHash: AddressHash(
-        bech32: AddressService.hexToBech32(AccountRepository().userAddress),
-        hex: AccountRepository().userAddress,
+        bech32: AddressService.hexToBech32(SessionRepository().userAddress),
+        hex: SessionRepository().userAddress,
       ),
       toAddressHash: AddressHash(
         bech32: AddressService.hexToBech32(isToken ? _addressToken : addressTo),
@@ -193,7 +193,7 @@ class ClientService implements ClientServiceI {
     address = address.toLowerCase();
     final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
     final balance = await contract
-        .balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+        .balanceOf(EthereumAddress.fromHex(SessionRepository().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
     return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
         .toDecimal();

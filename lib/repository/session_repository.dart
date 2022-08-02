@@ -12,12 +12,12 @@ import '../constants.dart';
 import '../ui/wallet_page/transactions/mobx/transactions_store.dart';
 import '../utils/storage.dart';
 
-class AccountRepository {
-  static final AccountRepository _instance = AccountRepository._internal();
+class SessionRepository {
+  static final SessionRepository _instance = SessionRepository._internal();
 
-  factory AccountRepository() => _instance;
+  factory SessionRepository() => _instance;
 
-  AccountRepository._internal();
+  SessionRepository._internal();
 
   Wallet? userWallet;
   ClientService? client;

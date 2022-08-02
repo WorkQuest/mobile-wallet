@@ -5,7 +5,7 @@ import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
@@ -31,7 +31,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     }
     try {
       final _tokens =
-          Configs.configsNetwork[AccountRepository().networkName.value]!.dataCoins;
+          Configs.configsNetwork[SessionRepository().networkName.value]!.dataCoins;
       await Future.delayed(const Duration(milliseconds: 500));
 
       final _listCoinsEntity = await _getCoinEntities(_tokens);
@@ -70,7 +70,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
 
   Future<List<_CoinEntity>> _getCoinEntities(List<DataCoins> coins) async {
     List<_TokenCourse> _courses = List.empty();
-    if (!AccountRepository().isOtherNetwork) {
+    if (!SessionRepository().isOtherNetwork) {
       final _result = await Api().getCourseTokens();
       if (_result != null) {
         _courses = _getListTokenCourse(_result);
@@ -78,10 +78,10 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     }
 
     List<_CoinEntity> _result = [];
-    final _client = AccountRepository().getClient();
+    final _client = SessionRepository().getClient();
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _balance = await _client.getBalance(SessionRepository().privateKey);
         final _amount =
             (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18))
                 .toDouble()

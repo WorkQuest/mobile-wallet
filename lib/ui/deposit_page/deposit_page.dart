@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_bank_card.dart';
 import 'package:workquest_wallet_app/utils/snack_bar.dart';
@@ -79,14 +79,14 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   @override
   void initState() {
-    _format = AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    _format = SessionRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
     super.initState();
   }
 
   String get address {
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
-        : AccountRepository().userWallet!.address!;
+        ? AddressService.hexToBech32(SessionRepository().userWallet!.address!)
+        : SessionRepository().userWallet!.address!;
   }
 
   @override
@@ -117,7 +117,7 @@ class _WalletAddressState extends State<_WalletAddress> {
             const SizedBox(
               height: 10,
             ),
-            if (!AccountRepository().isOtherNetwork)
+            if (!SessionRepository().isOtherNetwork)
               SwitchFormatAddressWidget(
                 format: _format,
                 onChanged: (FormatAddress value) {

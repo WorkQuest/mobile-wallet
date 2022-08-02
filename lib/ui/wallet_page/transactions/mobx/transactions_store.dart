@@ -2,7 +2,7 @@ import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 import '../../../../constants.dart';
@@ -27,9 +27,9 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   setType(TokenSymbols value) => type = value;
 
-  String get myAddress => AccountRepository().userWallet!.address!;
+  String get myAddress => SessionRepository().userWallet!.address!;
 
-  NetworkName get _typeNetwork => AccountRepository().networkName.value!;
+  NetworkName get _typeNetwork => SessionRepository().networkName.value!;
 
   @action
   clearData() {
@@ -58,13 +58,13 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
       if (type == TokenSymbols.WQT) {
         result = await Api().getTransactions(
-          AccountRepository().userAddress,
+          SessionRepository().userAddress,
           limit: 10,
           offset: transactions.length,
         );
       } else {
         result = await Api().getTransactionsByToken(
-          address: AccountRepository().userAddress,
+          address: SessionRepository().userAddress,
           addressToken: _addressToken,
           limit: 10,
           offset: transactions.length,
@@ -97,13 +97,13 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       final _addressToken = Web3Utils.getAddressToken(type);
       if (type == TokenSymbols.WQT) {
         result = await Api().getTransactions(
-          AccountRepository().userAddress,
+          SessionRepository().userAddress,
           limit: 10,
           offset: transactions.length,
         );
       } else {
         result = await Api().getTransactionsByToken(
-          address: AccountRepository().userAddress,
+          address: SessionRepository().userAddress,
           addressToken: _addressToken,
           limit: 10,
           offset: transactions.length,
@@ -138,7 +138,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         return;
       }
       final increase = transaction.fromAddressHash!.hex! !=
-          (AccountRepository().userWallet?.address ?? '1234');
+          (SessionRepository().userWallet?.address ?? '1234');
       transaction.coin = increase
           ? _getTitleCoin(
               transaction.fromAddressHash!.hex!,
@@ -164,7 +164,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
       final increase = tran.fromAddressHash!.hex! !=
-          (AccountRepository().userWallet?.address ?? '1234');
+          (SessionRepository().userWallet?.address ?? '1234');
       tran.coin = increase
           ? _getTitleCoin(
               tran.fromAddressHash!.hex!, tran.token_contract_address_hash?.hex)
@@ -179,7 +179,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     bool fromSocket = false,
   }) {
     if (type == TokenSymbols.WQT || fromSocket) {
-      final _dataTokens = AccountRepository().getConfigNetworkWorknet().dataCoins;
+      final _dataTokens = SessionRepository().getConfigNetworkWorknet().dataCoins;
       final _address = contractAddress ?? addressContract;
       if (_address ==
           _dataTokens
@@ -206,7 +206,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
     } else {
       if (contractAddress != null) {
-        final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+        final _dataTokens = SessionRepository().getConfigNetwork().dataCoins;
         if (contractAddress ==
             _dataTokens
                 .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)

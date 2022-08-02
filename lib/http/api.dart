@@ -10,7 +10,7 @@ import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/http_client.dart';
 import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 
 import '../main.dart';
 import '../model/course_tokens_response.dart';
@@ -22,7 +22,7 @@ class Api {
 
   Api._internal();
 
-  Network get _network => AccountRepository().notifierNetwork.value;
+  Network get _network => SessionRepository().notifierNetwork.value;
 
   String get _courseWQT {
     if (_network == Network.testnet) {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/settings/settings_page.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
@@ -121,7 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 },
               ),
               ValueListenableBuilder<NetworkName?>(
-                valueListenable: AccountRepository().networkName,
+                valueListenable: SessionRepository().networkName,
                 builder: (_, value, child) {
                   final _title =
                       Web3Utils.getTitleOtherNetwork(value ?? NetworkName.workNetMainnet);

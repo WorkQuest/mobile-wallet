@@ -11,7 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -49,7 +49,7 @@ class _WalletPageState extends State<WalletPage> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: ValueListenableBuilder<NetworkName?>(
-              valueListenable: AccountRepository().networkName,
+              valueListenable: SessionRepository().networkName,
               builder: (_, value, child) {
                 final _networkName = Web3Utils.getNetworkNameForSwitch(
                     value ?? NetworkName.workNetMainnet);
@@ -87,8 +87,8 @@ class _WalletPageState extends State<WalletPage> {
 
   _onChangedSwitchNetwork(dynamic value) {
     final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-        value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
-    AccountRepository().changeNetwork(_newNetwork);
+        value as SwitchNetworkNames, SessionRepository().notifierNetwork.value);
+    SessionRepository().changeNetwork(_newNetwork);
     final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
     Future.delayed(const Duration(milliseconds: 350)).then(
       (value) => GetIt.I
@@ -136,7 +136,7 @@ class _WalletPageLayout extends StatelessWidget {
               onRefresh: onRefresh,
             ),
           CopyAddressWalletWidget(
-            format: AccountRepository().isOtherNetwork
+            format: SessionRepository().isOtherNetwork
                 ? FormatAddress.HEX
                 : FormatAddress.BECH32,
           ),
@@ -212,7 +212,7 @@ class _WalletPageLayout extends StatelessWidget {
       return false;
     }
     final _networkName =
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+        SessionRepository().networkName.value ?? NetworkName.workNetMainnet;
     if (_networkName == NetworkName.workNetTestnet ||
         _networkName == NetworkName.workNetMainnet) {
       try {

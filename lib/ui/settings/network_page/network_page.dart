@@ -8,7 +8,7 @@ import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 
-import '../../../repository/account_repository.dart';
+import '../../../repository/session_repository.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 
@@ -47,7 +47,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             DefaultRadio(
-                              status: AccountRepository().notifierNetwork.value == network,
+                              status: SessionRepository().notifierNetwork.value == network,
                             ),
                             const SizedBox(
                               width: 10,
@@ -81,10 +81,10 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   _onPressedChange(Network newNetwork) {
-    if (AccountRepository().notifierNetwork.value != newNetwork) {
-      final _newNetworkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
-      AccountRepository().notifierNetwork.value = newNetwork;
-      AccountRepository().changeNetwork(_newNetworkName);
+    if (SessionRepository().notifierNetwork.value != newNetwork) {
+      final _newNetworkName = Web3Utils.getNetworkNameSwap(SessionRepository().networkName.value!);
+      SessionRepository().notifierNetwork.value = newNetwork;
+      SessionRepository().changeNetwork(_newNetworkName);
       Future.delayed(const Duration(milliseconds: 450)).then((value){
         if (GetIt.I.get<SwapStore>().network != null) {
           GetIt.I.get<SwapStore>().getMaxBalance();

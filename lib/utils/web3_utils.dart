@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/keys.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 
 class Web3Utils {
@@ -12,9 +12,9 @@ class Web3Utils {
     required double amount,
     required Decimal fee,
   }) async {
-    final _client = AccountRepository().getClient();
-    final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
-    final _isNativeToken = AccountRepository().isOtherNetwork
+    final _client = SessionRepository().getClient();
+    final _balanceNative = await _client.getBalance(SessionRepository().privateKey);
+    final _isNativeToken = SessionRepository().isOtherNetwork
         ? typeCoin == TokenSymbols.ETH ||
             typeCoin == TokenSymbols.BNB ||
             typeCoin == TokenSymbols.MATIC
@@ -69,7 +69,7 @@ class Web3Utils {
 
   static String getAddressToken(TokenSymbols typeCoin) {
     try {
-      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _dataTokens = SessionRepository().getConfigNetwork().dataCoins;
       return _dataTokens
           .firstWhere((element) => element.symbolToken == typeCoin)
           .addressToken!;
@@ -100,8 +100,8 @@ class Web3Utils {
   }
 
   static bool isETH() {
-    return AccountRepository().networkName.value == NetworkName.ethereumMainnet ||
-        AccountRepository().networkName.value == NetworkName.ethereumTestnet;
+    return SessionRepository().networkName.value == NetworkName.ethereumMainnet ||
+        SessionRepository().networkName.value == NetworkName.ethereumTestnet;
   }
 
   static NetworkName getNetworkName(String name) {
@@ -210,7 +210,7 @@ class Web3Utils {
   }
 
   static NetworkName getNetworkNameFromSwapNetworks(SwapNetworks name) {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = SessionRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
         return _isMainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
@@ -243,7 +243,7 @@ class Web3Utils {
   }
 
   static String getLinkToExplorerFromSwap(SwapNetworks name, String tx) {
-    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = SessionRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
         return _isMainnet
@@ -261,7 +261,7 @@ class Web3Utils {
   }
 
   static String getRpcNetworkForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = SessionRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
@@ -279,7 +279,7 @@ class Web3Utils {
   }
 
   static String getTokenUSDTForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = SessionRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
@@ -297,7 +297,7 @@ class Web3Utils {
   }
 
   static String getAddressContractForSwap(SwapNetworks network) {
-    final _networkType = AccountRepository().notifierNetwork.value;
+    final _networkType = SessionRepository().notifierNetwork.value;
     switch (network) {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
@@ -316,7 +316,7 @@ class Web3Utils {
 
   static String getNativeToken() {
     final _networkName =
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+        SessionRepository().networkName.value ?? NetworkName.workNetMainnet;
     switch (_networkName) {
       case NetworkName.workNetMainnet:
         return 'WQT';

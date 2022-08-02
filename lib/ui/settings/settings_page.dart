@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
 import 'package:workquest_wallet_app/page_router.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
@@ -109,11 +109,11 @@ class _SettingsPageState extends State<SettingsPage> {
     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
     GetIt.I.get<TransferStore>().setCoin(null);
-    AccountRepository().clearData();
+    SessionRepository().clearData();
   }
 
   String _getCurrentNetworkName() {
-    final _name = (AccountRepository().notifierNetwork.value).name;
+    final _name = (SessionRepository().notifierNetwork.value).name;
     return '${_name.substring(0, 1).toUpperCase()}${_name.substring(1)}';
   }
 

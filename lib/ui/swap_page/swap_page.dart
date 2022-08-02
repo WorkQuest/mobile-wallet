@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
@@ -46,7 +46,7 @@ class _SwapPageState extends State<SwapPage> {
   void initState() {
     store = GetIt.I.get<SwapStore>();
     final _swapNetwork =
-        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value!);
+        Web3Utils.getSwapNetworksFromNetworkName(SessionRepository().networkName.value!);
     Future.delayed(const Duration(milliseconds: 350)).then(
       (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
     );
@@ -73,12 +73,12 @@ class _SwapPageState extends State<SwapPage> {
         onSuccess: () {
           if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
-            final _network = AccountRepository().notifierNetwork.value;
+            final _network = SessionRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository()
+              SessionRepository()
                   .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository()
+              SessionRepository()
                   .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
@@ -94,12 +94,12 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop('dialog');
           }
           if (store.errorMessage!.contains('Waiting time has expired')) {
-            final _network = AccountRepository().notifierNetwork.value;
+            final _network = SessionRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository()
+              SessionRepository()
                   .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository()
+              SessionRepository()
                   .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
@@ -376,7 +376,7 @@ class _SwapPageState extends State<SwapPage> {
 
   String _getTitleCoinFee() {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+        SessionRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -433,7 +433,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+    final _isTestnet = SessionRepository().notifierNetwork.value == Network.testnet;
     if (_isTestnet) {
       return 'T${token.name}'.toUpperCase();
     }
@@ -597,7 +597,7 @@ class _ListBottomWidget extends StatelessWidget {
 
   String _getName(dynamic value) {
     if (value is SwapToken) {
-      final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+      final _isTestnet = SessionRepository().notifierNetwork.value == Network.testnet;
       if (_isTestnet) {
         return 'T${value.name}'.toUpperCase();
       }

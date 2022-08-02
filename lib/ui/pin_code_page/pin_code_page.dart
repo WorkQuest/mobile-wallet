@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/notify/notify_page.dart';
@@ -71,11 +71,11 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       onSuccess: () async {
         if (store.statePin == StatePinCode.toLogin) {
           /// Failed
-          AccountRepository().clearData();
+          SessionRepository().clearData();
           PageRouter.pushNewRemoveRoute(context, const LoginPage());
         } else if (store.successData == StatePinCode.success) {
           /// Success
-          AccountRepository().connectClient();
+          SessionRepository().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
           PageRouter.pushNewRemoveRoute(

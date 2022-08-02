@@ -6,7 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'package:web3dart/json_rpc.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/repository/account_repository.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
@@ -21,10 +21,10 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
     onLoading();
     try {
       final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens = SessionRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       await Web3Utils.checkPossibilityTx(typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
-      await AccountRepository().client!.sendTransaction(
+      await SessionRepository().client!.sendTransaction(
             isToken: _isToken,
             addressTo: _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
             amount: amount,
