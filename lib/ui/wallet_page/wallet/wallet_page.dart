@@ -53,18 +53,9 @@ class _WalletPageState extends State<WalletPage> {
               builder: (_, value, child) {
                 final _networkName = Web3Utils.getNetworkNameForSwitch(
                     value ?? NetworkName.workNetMainnet);
-                return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                return SwitchNetworkWidget<SwitchNetworkNames>(
                   value: _networkName,
-                  onChanged: (value) {
-                    final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                        value as SwitchNetworkNames,
-                        AccountRepository().notifierNetwork.value);
-                    AccountRepository().changeNetwork(_newNetwork);
-                    final _swapNetwork =
-                        Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
-                    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
-                    return value;
-                  },
+                  onChanged: _onChangedSwitchNetwork,
                   items: SwitchNetworkNames.values,
                   colorText: Colors.black,
                   haveIcon: true,
@@ -76,22 +67,50 @@ class _WalletPageState extends State<WalletPage> {
       ),
       body: Padding(
         padding: _padding,
-        child: Platform.isIOS ? _mainLayout() : _mainLayout(),
+        child: Platform.isAndroid
+            ? RefreshIndicator(
+                displacement: 20,
+                triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                onRefresh: _onRefresh,
+                child: _WalletPageLayout(
+                  scrollController: _scrollController,
+                  onRefresh: _onRefresh,
+                ),
+              )
+            : _WalletPageLayout(
+                scrollController: _scrollController,
+                onRefresh: _onRefresh,
+              ),
       ),
     );
   }
 
-  Widget _mainLayout() {
-    return Platform.isAndroid
-        ? RefreshIndicator(
-            displacement: 20,
-            triggerMode: RefreshIndicatorTriggerMode.anywhere,
-            onRefresh: _onRefresh,
-            child: layout())
-        : layout();
+  _onChangedSwitchNetwork(dynamic value) {
+    final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+        value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+    AccountRepository().changeNetwork(_newNetwork);
+    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
+    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
+    return value;
   }
 
-  Widget layout() {
+  Future _onRefresh() async {
+    return GetIt.I.get<WalletStore>().getCoins();
+  }
+}
+
+class _WalletPageLayout extends StatelessWidget {
+  final ScrollController scrollController;
+  final Future Function()? onRefresh;
+
+  const _WalletPageLayout({
+    Key? key,
+    required this.scrollController,
+    required this.onRefresh,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (ScrollEndNotification scrollEnd) {
         final metrics = scrollEnd.metrics;
@@ -103,14 +122,14 @@ class _WalletPageState extends State<WalletPage> {
         return true;
       },
       child: CustomScrollView(
-        controller: _scrollController,
+        controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(
           parent: BouncingScrollPhysics(),
         ),
         slivers: [
           if (Platform.isIOS)
             CupertinoSliverRefreshControl(
-              onRefresh: _onRefresh,
+              onRefresh: onRefresh,
             ),
           CopyAddressWalletWidget(
             format: AccountRepository().isOtherNetwork
@@ -177,7 +196,7 @@ class _WalletPageState extends State<WalletPage> {
           ),
           ListTransactions(
             key: UniqueKey(),
-            scrollController: _scrollController,
+            scrollController: scrollController,
           ),
         ],
       ),
@@ -205,10 +224,6 @@ class _WalletPageState extends State<WalletPage> {
       }
     }
     return false;
-  }
-
-  Future _onRefresh() async {
-    return GetIt.I.get<WalletStore>().getCoins();
   }
 }
 

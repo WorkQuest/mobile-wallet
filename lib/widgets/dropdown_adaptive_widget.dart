@@ -7,14 +7,14 @@ import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 
 import '../constants.dart';
 
-class DropDownAdaptiveWidget<T> extends StatefulWidget {
+class SwitchNetworkWidget<T> extends StatefulWidget {
   final T value;
   final List<T> items;
   final dynamic Function(dynamic value) onChanged;
   final Color colorText;
   final bool haveIcon;
 
-  const DropDownAdaptiveWidget({
+  const SwitchNetworkWidget({
     Key? key,
     required this.value,
     required this.onChanged,
@@ -24,10 +24,10 @@ class DropDownAdaptiveWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropDownAdaptiveWidgetState<T> createState() => _DropDownAdaptiveWidgetState<T>();
+  _SwitchNetworkWidgetState<T> createState() => _SwitchNetworkWidgetState<T>();
 }
 
-class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
+class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
   @override
   Widget build(BuildContext context) {
     final _isWorkNet = _getTitleItem(widget.value.toString()) == 'WORKNET';
