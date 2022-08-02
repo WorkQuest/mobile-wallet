@@ -78,6 +78,9 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   @action
   getFee() async {
     print('getFee');
+    if (currentCoin == null) {
+      return;
+    }
     try {
       final _client = AccountRepository().getClient();
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);

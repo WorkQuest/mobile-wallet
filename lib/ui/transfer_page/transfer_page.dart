@@ -13,6 +13,7 @@ import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/formatters.dart';
 import 'package:workquest_wallet_app/utils/validators.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
@@ -28,22 +29,6 @@ import '../../widgets/dismiss_keyboard.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 const _divider = SizedBox(height: 15);
-
-class DecimalFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    String truncated = newValue.text;
-    TextSelection newSelection = newValue.selection;
-    if (newValue.text.contains(",")) {
-      truncated = newValue.text.replaceFirst(RegExp(','), '.');
-    }
-    return TextEditingValue(
-      text: truncated,
-      selection: newSelection,
-    );
-  }
-}
 
 class TransferPage extends StatefulWidget {
   const TransferPage({
@@ -367,83 +352,10 @@ class _TransferPageState extends State<TransferPage> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ..._coins
-                            .map(
-                              (coin) => Column(
-                                children: [
-                                  Material(
-                                    color: Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      onTap: coin.isEnable
-                                          ? () {
-                                              _selectCoin(coin);
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 6.5,
-                                        ),
-                                        child: InkWell(
-                                          child: Container(
-                                            height: 32,
-                                            width: double.infinity,
-                                            color: Colors.transparent,
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Container(
-                                                  decoration: const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      colors: [
-                                                        AppColor.enabledButton,
-                                                        AppColor.blue,
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  child: SizedBox(
-                                                    width: 32,
-                                                    height: 32,
-                                                    child: SvgPicture.asset(
-                                                      coin.iconPath,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  coin.title,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: coin.isEnable
-                                                        ? Colors.black
-                                                        : AppColor.disabledText,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: AppColor.disabledButton,
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ],
+                      children: _coins
+                          .map((coin) =>
+                              _CoinItemWidget(coin: coin, onPressed: _selectCoin))
+                          .toList(),
                     ),
                   ],
                 ),
@@ -459,6 +371,90 @@ class _TransferPageState extends State<TransferPage> {
     store.setAmount('');
     _amountController.clear();
     store.setCoin(coin);
+  }
+}
+
+class _CoinItemWidget extends StatelessWidget {
+  final CoinItem coin;
+  final Function(CoinItem) onPressed;
+
+  const _CoinItemWidget({
+    Key? key,
+    required this.coin,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Material(
+          color: Colors.transparent,
+          shadowColor: Colors.transparent,
+          child: InkWell(
+            splashColor: Colors.transparent,
+            onTap: coin.isEnable
+                ? () {
+                    onPressed.call(coin);
+                    Navigator.pop(context);
+                  }
+                : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 6.5,
+              ),
+              child: InkWell(
+                child: Container(
+                  height: 32,
+                  width: double.infinity,
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColor.enabledButton,
+                              AppColor.blue,
+                            ],
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: SvgPicture.asset(
+                            coin.iconPath,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        coin.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: AppColor.disabledButton,
+        ),
+      ],
+    );
   }
 }
 
