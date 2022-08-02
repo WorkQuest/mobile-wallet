@@ -46,28 +46,31 @@ class _WalletPageState extends State<WalletPage> {
       appBar: MainAppBar(
         title: 'wallet.wallet'.tr(),
         actions: [
-          ValueListenableBuilder<NetworkName?>(
-            valueListenable: AccountRepository().networkName,
-            builder: (_, value, child) {
-              final _networkName =
-                  Web3Utils.getNetworkNameForSwitch(value ?? NetworkName.workNetMainnet);
-              return DropDownAdaptiveWidget<SwitchNetworkNames>(
-                value: _networkName,
-                onChanged: (value) {
-                  final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-                      value as SwitchNetworkNames,
-                      AccountRepository().notifierNetwork.value);
-                  AccountRepository().changeNetwork(_newNetwork);
-                  final _swapNetwork =
-                      Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
-                  GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
-                  return value;
-                },
-                items: SwitchNetworkNames.values,
-                colorText: Colors.black,
-                haveIcon: true,
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: ValueListenableBuilder<NetworkName?>(
+              valueListenable: AccountRepository().networkName,
+              builder: (_, value, child) {
+                final _networkName = Web3Utils.getNetworkNameForSwitch(
+                    value ?? NetworkName.workNetMainnet);
+                return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                  value: _networkName,
+                  onChanged: (value) {
+                    final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+                        value as SwitchNetworkNames,
+                        AccountRepository().notifierNetwork.value);
+                    AccountRepository().changeNetwork(_newNetwork);
+                    final _swapNetwork =
+                        Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
+                    GetIt.I.get<SwapStore>().setNetwork(_swapNetwork);
+                    return value;
+                  },
+                  items: SwitchNetworkNames.values,
+                  colorText: Colors.black,
+                  haveIcon: true,
+                );
+              },
+            ),
           )
         ],
       ),
@@ -382,7 +385,6 @@ class _InfoCardBalance extends StatefulWidget {
 class _InfoCardBalanceState extends State<_InfoCardBalance> {
   final CarouselController _controller = CarouselController();
   late final WalletStore store;
-
 
   @override
   void initState() {
