@@ -184,7 +184,7 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
             .addressToken ==
         null;
     if (_isNotToken) {
-      final _balance = await _client.getBalance(SessionRepository().privateKey);
+      final _balance = await _client.getBalance();
       final _balanceInWei = _balance.getInWei;
       await getFee();
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);

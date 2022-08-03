@@ -1,14 +1,12 @@
 import 'dart:io';
 
 import 'package:decimal/decimal.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/json_rpc.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
-import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'confirm_transfer_store.g.dart';
@@ -17,20 +15,23 @@ class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStor
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) async {
+  sendTransaction(
+      String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) async {
     onLoading();
     try {
       final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
       final _currentListTokens = SessionRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
-      await Web3Utils.checkPossibilityTx(typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
-      await SessionRepository().client!.sendTransaction(
+      final _credentials = await SessionRepository().client!.getCredentials();
+      await Web3Utils.checkPossibilityTx(
+          typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
+      await SessionRepository().client!.sendFunctions.sendTrx(
             isToken: _isToken,
             addressTo: _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
             amount: amount,
             coin: typeCoin,
+            credentials: _credentials,
           );
-      GetIt.I.get<WalletStore>().getCoins();
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");

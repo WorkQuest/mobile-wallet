@@ -40,5 +40,6 @@ enum StorageKeys {
   email,
   timeTimer,
   networkName,
-  network
+  network,
+  privateKey,
 }

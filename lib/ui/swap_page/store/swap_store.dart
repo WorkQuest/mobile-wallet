@@ -60,7 +60,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   @computed
   bool get statusSend =>
       isSuccessCourse && maxAmount != null && isConnect && convertWQT != null;
-  
+
   @action
   setToken(SwapToken value) => token = value;
 
@@ -128,9 +128,8 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       onLoading();
       Web3Client _client = service!.ethClient!;
       final _address = SessionRepository().userWallet!.address!;
-      final _privateKey = SessionRepository().userWallet!.privateKey!;
       final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
-      final _cred = await service!.getCredentials(_privateKey);
+      final _cred = await service!.getCredentials();
       final _gas = await service!.getGas();
       final _chainId = await service!.ethClient!.getChainId();
       final _contract = await _getContract();
@@ -194,8 +193,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
         address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
         client: service!.ethClient!,
       );
-      final _cred =
-          await service!.getCredentials(SessionRepository().userWallet!.privateKey!);
+      final _cred = await service!.getCredentials();
       final _spender =
           EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
       final _gas = await service!.getGas();
@@ -283,8 +281,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
       client: service!.ethClient!,
     );
-    final _cred =
-        await service!.getCredentials(SessionRepository().userWallet!.privateKey!);
+    final _cred = await service!.getCredentials();
     final _spender =
         EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _degree = await Web3Utils.getDegreeToken(_contract);
@@ -417,4 +414,4 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   }
 }
 
-enum SwapStoreState {setNetwork, createSwap, approve}
+enum SwapStoreState { setNetwork, createSwap, approve }

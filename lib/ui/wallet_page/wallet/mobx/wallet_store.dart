@@ -81,7 +81,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     final _client = SessionRepository().getClient();
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
-        final _balance = await _client.getBalance(SessionRepository().privateKey);
+        final _balance = await _client.getBalance();
         final _amount =
             (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18))
                 .toDouble()

@@ -13,7 +13,7 @@ class Web3Utils {
     required Decimal fee,
   }) async {
     final _client = SessionRepository().getClient();
-    final _balanceNative = await _client.getBalance(SessionRepository().privateKey);
+    final _balanceNative = await _client.getBalance();
     final _isNativeToken = SessionRepository().isOtherNetwork
         ? typeCoin == TokenSymbols.ETH ||
             typeCoin == TokenSymbols.BNB ||

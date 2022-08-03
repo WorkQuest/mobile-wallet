@@ -9,46 +9,27 @@ import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:workquest_wallet_app/constants.dart';
-import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
-import 'package:workquest_wallet_app/service/address_service.dart';
+import 'package:workquest_wallet_app/service/send_functions.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
-import 'package:workquest_wallet_app/ui/wallet_page/transactions/mobx/transactions_store.dart';
 import 'package:workquest_wallet_app/ui/wallet_page/wallet/mobx/wallet_store.dart';
+import 'package:workquest_wallet_app/utils/storage.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 abstract class ClientServiceI {
-  Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
-
-  Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
-
-  Future<List<BalanceItem>> getAllBalance(String privateKey);
-
-  Future<EthPrivateKey> getCredentials(String privateKey);
-
-  Future<Decimal> getBalanceFromContract(String address);
-
-  Future<EtherAmount> getBalance(String privateKey);
-
-  Future<String> getSignature(String privateKey);
-
-  Erc20 getContract(String address);
-
   Future<EtherAmount> getGas();
-
+  Future<EtherAmount> getBalance();
+  Future<EthPrivateKey> getCredentials();
+  Future<Decimal> getBalanceFromContract(String address);
+  Future<String> getSignature();
   Future<BigInt> getEstimateGas(Transaction transaction);
-
-  Future sendTransaction({
-    required bool isToken,
-    required String addressTo,
-    required String amount,
-    required TokenSymbols coin,
-  });
 }
 
 class ClientService implements ClientServiceI {
   Web3Client? ethClient;
   StreamSubscription<String>? stream;
+
+  SendFunctions get sendFunctions => SendFunctions(ethClient!);
 
   ClientService(ConfigNetwork config) {
     try {
@@ -67,16 +48,7 @@ class ClientService implements ClientServiceI {
             "params": ["newHeads"]
           }
         """);
-            stream = _stream.stream.listen((event) {
-              final _walletStore = GetIt.I.get<WalletStore>();
-              if (!_walletStore.isLoading) {
-                _walletStore.getCoins(isForce: false, fromSwap: true);
-              }
-              final _swapStore = GetIt.I.get<SwapStore>();
-              if (_swapStore.network != null && !_swapStore.isLoading) {
-                _swapStore.getMaxBalance();
-              }
-            });
+            stream = _stream.stream.listen(_updateToNewBlocks);
           } catch (e) {
             // print('ethClient!.socketConnector!.call | $e\n$trace');
           }
@@ -88,105 +60,23 @@ class ClientService implements ClientServiceI {
     }
   }
 
-  @override
-  Future<EthPrivateKey> getCredentials(String privateKey) async {
-    return EthPrivateKey.fromHex(privateKey);
+  _updateToNewBlocks(dynamic event){
+    final _walletStore = GetIt.I.get<WalletStore>();
+    if (!_walletStore.isLoading) {
+      _walletStore.getCoins(isForce: false, fromSwap: true);
+    }
+    final _swapStore = GetIt.I.get<SwapStore>();
+    if (_swapStore.network != null && !_swapStore.isLoading) {
+      _swapStore.getMaxBalance();
+    }
   }
 
   @override
-  Future sendTransaction({
-    required bool isToken,
-    required String addressTo,
-    required String amount,
-    required TokenSymbols coin,
-  }) async {
-    String? hash;
-    int? degree;
-    final _privateKey = SessionRepository().privateKey;
-    final _credentials = await getCredentials(_privateKey);
-    String _addressToken = Web3Utils.getAddressToken(coin);
-    final _from = EthereumAddress.fromHex(SessionRepository().userAddress);
-    final _gas = await getGas();
-    final _isETH = Web3Utils.isETH();
-    final _gasPrice = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0'))
-          .toBigInt()),
-    );
-    if (!isToken) {
-      final _value = EtherAmount.fromUnitAndValue(
-        EtherUnit.wei,
-        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
-      );
-      final _to = EthereumAddress.fromHex(addressTo);
-
-      final _chainId = await ethClient!.getChainId();
-      hash = await ethClient!.sendTransaction(
-        _credentials,
-        Transaction(
-          to: _to,
-          from: _from,
-          value: _value,
-          gasPrice: _gasPrice,
-        ),
-        chainId: _chainId.toInt(),
-      );
-    } else {
-      final contract = Erc20(
-        address: EthereumAddress.fromHex(_addressToken),
-        client: ethClient!,
-      );
-      degree = await Web3Utils.getDegreeToken(contract);
-      hash = await contract.transfer(
-        EthereumAddress.fromHex(addressTo),
-        BigInt.parse(
-            (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree)).toString()),
-        credentials: _credentials,
-        transaction: Transaction(
-          from: _from,
-          gasPrice: _gasPrice,
-        ),
-      );
-    }
-    print('hash: $hash');
-
-    int attempts = 0;
-    TransactionReceipt? result;
-    while (result == null) {
-      result = await ethClient!.getTransactionReceipt(hash);
-      await Future.delayed(const Duration(seconds: 3));
-      attempts++;
-      if (attempts == 100) {
-        // final _link = Web3Utils.getLinkToExplorerFromSwap(network!, _txHashApprove);
-        throw const FormatException("The waiting time is over. Expect a balance update.");
-      }
-    }
-    final _tx = Tx(
-      hash: hash,
-      fromAddressHash: AddressHash(
-        bech32: AddressService.hexToBech32(SessionRepository().userAddress),
-        hex: SessionRepository().userAddress,
-      ),
-      toAddressHash: AddressHash(
-        bech32: AddressService.hexToBech32(isToken ? _addressToken : addressTo),
-        hex: isToken ? _addressToken : addressTo,
-      ),
-      amount: isToken
-          ? null
-          : (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString(),
-      insertedAt: DateTime.now(),
-      block: Block(timestamp: DateTime.now()),
-      tokenTransfers: !isToken
-          ? null
-          : [
-              TokenTransfer(
-                amount:
-                    (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!)).toString(),
-              ),
-            ],
-    );
-    GetIt.I.get<TransactionsStore>().addTransaction(_tx);
+  Future<EthPrivateKey> getCredentials() async {
+    final _privateKey = await Storage.read(StorageKeys.privateKey.name);
+    return EthPrivateKey.fromHex(_privateKey!);
   }
+
 
   @override
   Future<Decimal> getBalanceFromContract(String address) async {
@@ -200,8 +90,8 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<String> getSignature(String privateKey) async {
-    final credentials = await getCredentials(privateKey);
+  Future<String> getSignature() async {
+    final credentials = await getCredentials();
     final address = await credentials.extractAddress();
     final result = await credentials.signPersonalMessage(
       Uint8List.fromList(address.addressBytes),
@@ -215,39 +105,9 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<EtherAmount> getBalance(String privateKey) async {
-    final credentials = await getCredentials(privateKey);
+  Future<EtherAmount> getBalance() async {
+    final credentials = await getCredentials();
     return ethClient!.getBalance(credentials.address);
-  }
-
-  @override
-  Future<List<BalanceItem>> getBalanceFromList(
-      List<EtherUnit> units, String privateKey) async {
-    if (units.isEmpty) {
-      throw Exception("List units is empty");
-    }
-
-    final list = await Stream.fromIterable(units).asyncMap((unit) async {
-      final balance = await getBalanceInUnit(unit, privateKey);
-      return BalanceItem(unit.name, balance.toString());
-    }).toList();
-
-    return list;
-  }
-
-  @override
-  Future<List<BalanceItem>> getAllBalance(String privateKey) async {
-    final list = await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
-      final balance = await getBalanceInUnit(unit, privateKey);
-      return BalanceItem(unit.name, balance.toString());
-    }).toList();
-    return list;
-  }
-
-  @override
-  Future<num> getBalanceInUnit(EtherUnit unit, String privateKey) async {
-    final balance = await getBalance(privateKey);
-    return balance.getValueInUnit(unit);
   }
 
   @override
@@ -262,21 +122,4 @@ class ClientService implements ClientServiceI {
     );
   }
 
-  @override
-  Erc20 getContract(String address) {
-    address = address.toLowerCase();
-    return Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
-  }
-}
-
-class BalanceItem {
-  String title;
-  String amount;
-
-  BalanceItem(this.title, this.amount);
-
-  @override
-  String toString() {
-    return 'BalanceItem {title: $title, amount: $amount}';
-  }
 }

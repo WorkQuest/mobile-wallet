@@ -27,8 +27,6 @@ class SessionRepository {
 
   String get userAddress => userWallet!.address!;
 
-  String get privateKey => userWallet!.privateKey!;
-
   bool get isOtherNetwork =>
       networkName.value != NetworkName.workNetTestnet &&
       networkName.value != NetworkName.workNetMainnet;
@@ -69,6 +67,7 @@ class SessionRepository {
 
   setWallet(Wallet wallet) {
     userWallet = wallet;
+    Storage.write(StorageKeys.privateKey.name, wallet.privateKey!);
   }
 
   clearData() {
