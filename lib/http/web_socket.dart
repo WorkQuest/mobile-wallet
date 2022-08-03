@@ -66,7 +66,8 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
-    if (currentWss == GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().wss) {
+    if (currentWss ==
+        GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().wss) {
       return;
     }
     _closeWalletSocket();
@@ -85,11 +86,13 @@ class WebSocket {
       } catch (e) {
         _sender = _events?['message.sender']?[2].toString().toLowerCase();
       }
-      final _txHash = _events?['ethereum_tx.ethereumTxHash']?[0]?.toString().toLowerCase();
+      final _txHash =
+          _events?['ethereum_tx.ethereumTxHash']?[0]?.toString().toLowerCase();
       final _blockNumber = _events?['tx.height']?[0];
       final _block = DateTime.now();
       final _value = _events?['ethereum_tx.amount']?[0];
-      final _transactionFee = _events?['tx.fee']?[0].toString().split('a').first;
+      final _transactionFee =
+          _events?['tx.fee']?[0].toString().split('a').first;
 
       if (_recipient.toString().toLowerCase() == myAddress.toLowerCase()) {
         if (double.parse(_value) == 0.0) {
@@ -117,7 +120,10 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
         }
       } else {
-        final _txLog = json.decode(transaction.result!.events!['tx_log.txLog']![0].toString().replaceAll('\\', ""));
+        final _txLog = json.decode(transaction
+            .result!.events!['tx_log.txLog']![0]
+            .toString()
+            .replaceAll('\\', ""));
         final _address = _txLog['topics'][2].toString().split('x').first +
             'x' +
             _txLog['topics'][2].toString().split('x').last.substring(24);

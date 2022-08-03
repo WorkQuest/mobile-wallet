@@ -60,7 +60,7 @@ class ClientService implements ClientServiceI {
     }
   }
 
-  _updateToNewBlocks(dynamic event){
+  _updateToNewBlocks(dynamic event) {
     final _walletStore = GetIt.I.get<WalletStore>();
     if (!_walletStore.isLoading) {
       _walletStore.getCoins(isForce: false, fromSwap: true);
@@ -77,15 +77,16 @@ class ClientService implements ClientServiceI {
     return EthPrivateKey.fromHex(_privateKey!);
   }
 
-
   @override
   Future<Decimal> getBalanceFromContract(String address) async {
     address = address.toLowerCase();
-    final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
-    final balance = await contract
-        .balanceOf(EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userWallet!.address!));
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
+    final balance = await contract.balanceOf(EthereumAddress.fromHex(
+        GetIt.I.get<SessionRepository>().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
-    return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
+    return (Decimal.parse(balance.toString()) /
+            Decimal.fromInt(10).pow(_degree))
         .toDecimal();
   }
 
@@ -121,5 +122,4 @@ class ClientService implements ClientServiceI {
       amountOfGas: transaction.gasPrice?.getInWei,
     );
   }
-
 }

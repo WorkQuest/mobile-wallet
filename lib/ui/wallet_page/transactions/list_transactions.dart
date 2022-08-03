@@ -42,7 +42,8 @@ class ListTransactions extends StatelessWidget {
           );
         }
         if (store.isSuccess) {
-          final _isOtherNetwork = GetIt.I.get<SessionRepository>().isOtherNetwork;
+          final _isOtherNetwork =
+              GetIt.I.get<SessionRepository>().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
               if (GetIt.I.get<WalletStore>().isLoading) {
@@ -63,7 +64,8 @@ class ListTransactions extends StatelessWidget {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (store.isMoreLoading && index == store.transactions.length) {
+                  if (store.isMoreLoading &&
+                      index == store.transactions.length) {
                     return Column(
                       children: const [
                         SizedBox(
@@ -116,8 +118,9 @@ class ListTransactions extends StatelessWidget {
   }
 
   _onPressedGoToExplorer() {
-    final _urlExplorer = GetIt.I.get<SessionRepository>().getConfigNetwork().urlExplorer +
-        GetIt.I.get<SessionRepository>().userAddress;
+    final _urlExplorer =
+        GetIt.I.get<SessionRepository>().getConfigNetwork().urlExplorer +
+            GetIt.I.get<SessionRepository>().userAddress;
     launchUrl(Uri.parse(_urlExplorer));
   }
 }
@@ -138,7 +141,8 @@ class TransactionItem extends StatefulWidget {
   _TransactionItemState createState() => _TransactionItemState();
 }
 
-class _TransactionItemState extends State<TransactionItem> with TickerProviderStateMixin {
+class _TransactionItemState extends State<TransactionItem>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -170,7 +174,9 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
         return Transform.translate(
           filterQuality: FilterQuality.low,
           offset: Offset(
-              widget.opacity ? (50 - (50 * _animationController.value - 0.001)) : 0.0,
+              widget.opacity
+                  ? (50 - (50 * _animationController.value - 0.001))
+                  : 0.0,
               0.0),
           child: AnimatedOpacity(
             opacity: widget.opacity ? _animationController.value : 1.0,
@@ -211,9 +217,11 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
       return BigInt.parse(tx.amount!).toDouble() * pow(10, -18);
     }
     if (widget.coin == TokenSymbols.USDT) {
-      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -6);
+      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+          pow(10, -6);
     }
-    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() * pow(10, -18);
+    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+        pow(10, -18);
   }
 }
 
@@ -335,8 +343,9 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           ),
           _ItemInfoFromTransaction(
             info: AddressService.hexToBech32(address),
-            title:
-                increase ? "settings.education.from".tr() : "settings.education.to".tr(),
+            title: increase
+                ? "settings.education.from".tr()
+                : "settings.education.to".tr(),
           ),
         ],
       ),
@@ -361,7 +370,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: "$title: ",
-        style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+        style:
+            const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
         children: [
           TextSpan(
             text: info,
@@ -369,7 +379,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
               color: isEnabled ? AppColor.enabledButton : Colors.black,
               decoration: isEnabled ? TextDecoration.underline : null,
             ),
-            recognizer: TapGestureRecognizer()..onTap = isEnabled ? _onTapTxHash : null,
+            recognizer: TapGestureRecognizer()
+              ..onTap = isEnabled ? _onTapTxHash : null,
           ),
         ],
       ),
@@ -378,7 +389,8 @@ class _ItemInfoFromTransaction extends StatelessWidget {
   }
 
   _onTapTxHash() {
-    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+        Network.mainnet;
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {
@@ -402,8 +414,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
               height: 34,
               width: 34,
               padding: const EdgeInsets.all(10.0),
-              decoration:
-                  const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
             ),
           ),
           const SizedBox(
@@ -417,7 +429,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                   height: 20,
                   width: 120,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(
@@ -428,7 +441,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                   height: 14,
                   width: 150,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -443,7 +457,8 @@ class _ShimmerTransactionItem extends StatelessWidget {
                 height: 20,
                 width: 100,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0), color: Colors.white),
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.white),
               ),
             ),
           )

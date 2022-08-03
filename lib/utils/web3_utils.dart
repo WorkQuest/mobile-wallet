@@ -22,9 +22,9 @@ class Web3Utils {
         : typeCoin == TokenSymbols.WQT;
 
     if (_isNativeToken) {
-      final _balanceWQTInWei =
-          (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18))
-              .toDouble();
+      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) /
+              Decimal.fromInt(10).pow(18))
+          .toDouble();
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
@@ -64,13 +64,15 @@ class Web3Utils {
     required String amount,
     required int degree,
   }) {
-    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree))
+    return (Decimal.tryParse(amount) ??
+            Decimal.zero * Decimal.fromInt(10).pow(degree))
         .toBigInt();
   }
 
   static String getAddressToken(TokenSymbols typeCoin) {
     try {
-      final _dataTokens = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+      final _dataTokens =
+          GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
       return _dataTokens
           .firstWhere((element) => element.symbolToken == typeCoin)
           .addressToken!;
@@ -101,8 +103,10 @@ class Web3Utils {
   }
 
   static bool isETH() {
-    return GetIt.I.get<SessionRepository>().networkName.value == NetworkName.ethereumMainnet ||
-        GetIt.I.get<SessionRepository>().networkName.value == NetworkName.ethereumTestnet;
+    return GetIt.I.get<SessionRepository>().networkName.value ==
+            NetworkName.ethereumMainnet ||
+        GetIt.I.get<SessionRepository>().networkName.value ==
+            NetworkName.ethereumTestnet;
   }
 
   static NetworkName getNetworkName(String name) {
@@ -211,14 +215,19 @@ class Web3Utils {
   }
 
   static NetworkName getNetworkNameFromSwapNetworks(SwapNetworks name) {
-    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+        Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
-        return _isMainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
+        return _isMainnet
+            ? NetworkName.ethereumMainnet
+            : NetworkName.ethereumTestnet;
       case SwapNetworks.BSC:
         return _isMainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
       case SwapNetworks.POLYGON:
-        return _isMainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
+        return _isMainnet
+            ? NetworkName.polygonMainnet
+            : NetworkName.polygonTestnet;
     }
   }
 
@@ -244,7 +253,8 @@ class Web3Utils {
   }
 
   static String getLinkToExplorerFromSwap(SwapNetworks name, String tx) {
-    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+        Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
         return _isMainnet
@@ -316,8 +326,8 @@ class Web3Utils {
   }
 
   static String getNativeToken() {
-    final _networkName =
-        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet;
+    final _networkName = GetIt.I.get<SessionRepository>().networkName.value ??
+        NetworkName.workNetMainnet;
     switch (_networkName) {
       case NetworkName.workNetMainnet:
         return 'WQT';

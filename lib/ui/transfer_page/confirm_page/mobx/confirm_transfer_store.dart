@@ -12,23 +12,27 @@ import 'package:workquest_wallet_app/utils/web3_utils.dart';
 
 part 'confirm_transfer_store.g.dart';
 
-class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStore;
+class ConfirmTransferStore = ConfirmTransferStoreBase
+    with _$ConfirmTransferStore;
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(
-      String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) async {
+  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin,
+      Decimal fee) async {
     onLoading();
     try {
       final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
-      final _currentListTokens = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+      final _currentListTokens =
+          GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
-      final _credentials = await GetIt.I.get<SessionRepository>().client!.getCredentials();
+      final _credentials =
+          await GetIt.I.get<SessionRepository>().client!.getCredentials();
       await Web3Utils.checkPossibilityTx(
           typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
       await GetIt.I.get<SessionRepository>().client!.sendFunctions.sendTrx(
             isToken: _isToken,
-            addressTo: _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
+            addressTo:
+                _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
             amount: amount,
             coin: typeCoin,
             credentials: _credentials,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/keys.dart';
+
 class Commission {
   static const commissionBuy = 0.98;
   static const percentTransfer = 1.01;
 }
+
 class Images {
   static const _imagePath = "assets/images";
   static const _svgPath = "assets/svg";
@@ -95,6 +97,7 @@ class Configs {
         ),
       ],
     ),
+
     ///Test-net
     NetworkName.workNetTestnet: ConfigNetwork(
       rpc: 'https://testnet-gate.workquest.co/',
@@ -127,6 +130,7 @@ class Configs {
         ),
       ],
     ),
+
     ///Dev-net
     // NetworkName.workNetTestnet: ConfigNetwork(
     //   rpc: 'https://dev-node-ams3.workquest.co/',
@@ -183,8 +187,7 @@ class Configs {
       ],
     ),
     NetworkName.ethereumTestnet: ConfigNetwork(
-      rpc:
-          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby',
+      rpc: 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby',
       wss:
           'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby/ws',
       urlExplorer: 'https://rinkeby.etherscan.io/address/',
@@ -230,8 +233,7 @@ class Configs {
       ],
     ),
     NetworkName.bscTestnet: ConfigNetwork(
-      rpc:
-          'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet',
+      rpc: 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet',
       wss:
           'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet/ws',
       urlExplorer: 'https://testnet.bscscan.com/address/',

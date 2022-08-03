@@ -23,7 +23,8 @@ class Api {
 
   Api._internal();
 
-  Network get _network => GetIt.I.get<SessionRepository>().notifierNetwork.value;
+  Network get _network =>
+      GetIt.I.get<SessionRepository>().notifierNetwork.value;
 
   String get _courseWQT {
     if (_network == Network.testnet) {

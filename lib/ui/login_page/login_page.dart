@@ -96,7 +96,8 @@ class _ContentScreenState extends State<_ContentScreen> {
             isPassword: true,
             suffixIcon: null,
             inputFormatters: null,
-            validator: (value) => Validators.loginMnemonic(mnemonicController.text),
+            validator: (value) =>
+                Validators.loginMnemonic(mnemonicController.text),
             prefitIcon: null,
           ),
         ),
@@ -113,7 +114,8 @@ class _ContentScreenState extends State<_ContentScreen> {
               },
               onSuccess: () async {
                 await AlertDialogUtils.showSuccessDialog(context);
-                PageRouter.pushNewReplacementRoute(context, const PinCodePage());
+                PageRouter.pushNewReplacementRoute(
+                    context, const PinCodePage());
               },
               child: Observer(
                 builder: (_) {
@@ -187,7 +189,8 @@ class _HeaderScreen extends StatelessWidget {
           bottomLeft: Radius.circular(4.0),
         ),
         image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.66), BlendMode.dstOut),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.66), BlendMode.dstOut),
           image: const AssetImage(Images.loginImage),
           fit: BoxFit.fill,
         ),

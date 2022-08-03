@@ -80,7 +80,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = isLink(word)
                                           ? () async {
-                                              if (await canLaunchUrl(Uri.parse(word))) {
+                                              if (await canLaunchUrl(
+                                                  Uri.parse(word))) {
                                                 launchUrl(Uri.parse(word));
                                               }
                                             }
@@ -91,7 +92,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed: Navigator.of(context, rootNavigator: true).pop,
+                          onPressed:
+                              Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     )
@@ -126,7 +128,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                       actions: [
                         CupertinoDialogAction(
                           child: const Text("OK"),
-                          onPressed: Navigator.of(context, rootNavigator: true).pop,
+                          onPressed:
+                              Navigator.of(context, rootNavigator: true).pop,
                         )
                       ],
                     );

@@ -125,7 +125,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
 
   @override
   Future checkBeforeSend({bool isTimerUpdate = false}) {
-    return _$checkBeforeSendAsyncAction.run(() => super.checkBeforeSend(isTimerUpdate: isTimerUpdate));
+    return _$checkBeforeSendAsyncAction
+        .run(() => super.checkBeforeSend(isTimerUpdate: isTimerUpdate));
   }
 
   late final _$TransferStoreBaseActionController =

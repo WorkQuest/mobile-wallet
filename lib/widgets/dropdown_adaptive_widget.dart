@@ -44,7 +44,8 @@ class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
               borderRadius: BorderRadius.circular(6.0),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 9.5, horizontal: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 9.5, horizontal: 10.0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -134,7 +135,8 @@ class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
                             widget.onChanged(widget.items[i]);
                             Navigator.pop(context);
                           },
-                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                          title: _getName(
+                              _getTitleItem(widget.items[i].toString())),
                         )
                       else
                         _ItemNetworkWidget(
@@ -143,12 +145,15 @@ class _SwitchNetworkWidgetState<T> extends State<SwitchNetworkWidget> {
                             widget.onChanged(widget.items[i]);
                             Navigator.pop(context);
                           },
-                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                          title: _getName(
+                              _getTitleItem(widget.items[i].toString())),
                           pathIcon: widget.haveIcon
-                              ? _getPathIcons(_getTitleItem(widget.items[i].toString()))
+                              ? _getPathIcons(
+                                  _getTitleItem(widget.items[i].toString()))
                               : null,
                           haveGradient:
-                              _getTitleItem(widget.items[i].toString()) == 'WORKNET',
+                              _getTitleItem(widget.items[i].toString()) ==
+                                  'WORKNET',
                         )
                   ],
                 ),
@@ -219,12 +224,15 @@ class _ItemEnvironmentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(Icons.check,
-                  color: isEnabled ? Colors.black : Colors.transparent, size: 25),
+                  color: isEnabled ? Colors.black : Colors.transparent,
+                  size: 25),
               const SizedBox(width: 10),
               Text(
                 title,
                 style: const TextStyle(
-                    fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               )
             ],
           ),

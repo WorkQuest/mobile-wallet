@@ -13,12 +13,12 @@ import '../ui/wallet_page/transactions/mobx/transactions_store.dart';
 import '../utils/storage.dart';
 
 class SessionRepository {
-
   Wallet? userWallet;
   ClientService? client;
 
   ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
-  ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
+  ValueNotifier<Network> notifierNetwork =
+      ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
@@ -51,7 +51,7 @@ class SessionRepository {
     notifierNetwork.value = _network;
   }
 
-  changeNetwork(NetworkName networkName,{bool updateTrxList = false}) {
+  changeNetwork(NetworkName networkName, {bool updateTrxList = false}) {
     _saveNetwork(networkName);
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();

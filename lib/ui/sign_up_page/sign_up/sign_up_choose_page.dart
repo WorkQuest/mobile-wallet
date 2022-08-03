@@ -128,7 +128,8 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                         }, //april problem kingdom rug confirm rally jazz hurt wrap wagon baby salmon
                         onSuccess: () async {
                           await AlertDialogUtils.showSuccessDialog(context);
-                          PageRouter.pushNewRemoveRoute(context, const PinCodePage());
+                          PageRouter.pushNewRemoveRoute(
+                              context, const PinCodePage());
                         },
                         child: Observer(
                           builder: (_) => LoginButton(

@@ -24,7 +24,8 @@ class DepositPage extends StatefulWidget {
   _DepositPageState createState() => _DepositPageState();
 }
 
-class _DepositPageState extends State<DepositPage> with SingleTickerProviderStateMixin {
+class _DepositPageState extends State<DepositPage>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -80,13 +81,16 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   @override
   void initState() {
-    _format = GetIt.I.get<SessionRepository>().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    _format = GetIt.I.get<SessionRepository>().isOtherNetwork
+        ? FormatAddress.HEX
+        : FormatAddress.BECH32;
     super.initState();
   }
 
   String get address {
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(GetIt.I.get<SessionRepository>().userWallet!.address!)
+        ? AddressService.hexToBech32(
+            GetIt.I.get<SessionRepository>().userWallet!.address!)
         : GetIt.I.get<SessionRepository>().userWallet!.address!;
   }
 
@@ -132,7 +136,8 @@ class _WalletAddressState extends State<_WalletAddress> {
             ),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(

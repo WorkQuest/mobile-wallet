@@ -84,15 +84,20 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
     }
     try {
       final _client = GetIt.I.get<SessionRepository>().getClient();
-      final _from = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
+      final _from =
+          EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
       String _amount = amount.isEmpty ? '1.0' : amount;
       String _address = AddressService.convertToHexAddress(
-        addressTo.isEmpty ? GetIt.I.get<SessionRepository>().userAddress : addressTo,
+        addressTo.isEmpty
+            ? GetIt.I.get<SessionRepository>().userAddress
+            : addressTo,
       );
       final _gas = await _client.getGas();
 
-      final _currentListTokens = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
-      final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
+      final _currentListTokens =
+          GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+      final _isToken =
+          currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
 
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(currentCoin!.typeCoin);
@@ -179,9 +184,11 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
 
   Future<String> _getMaxAmount() async {
     final _client = GetIt.I.get<SessionRepository>().getClient();
-    final _dataCoins = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+    final _dataCoins =
+        GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
     final _isNotToken = _dataCoins
-            .firstWhere((element) => element.symbolToken == currentCoin!.typeCoin)
+            .firstWhere(
+                (element) => element.symbolToken == currentCoin!.typeCoin)
             .addressToken ==
         null;
     if (_isNotToken) {
@@ -190,7 +197,8 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       await getFee();
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
       final _amount = ((Decimal.parse(_balanceInWei.toString()) -
-                  (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
+                  (_gas *
+                      Decimal.parse(Commission.percentTransfer.toString()))) /
               Decimal.fromInt(10).pow(18))
           .toDecimal();
       if (_amount < Decimal.zero) {
@@ -200,9 +208,11 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       }
     }
 
-    final _balance = await GetIt.I.get<SessionRepository>()
+    final _balance = await GetIt.I
+        .get<SessionRepository>()
         .getClient()
-        .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
+        .getBalanceFromContract(
+            Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);
   }
 }

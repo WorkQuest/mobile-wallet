@@ -108,9 +108,10 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
       Wallet? wallet = await Wallet.derive(mnemonic!);
       if (GetIt.I.get<SessionRepository>().networkName.value == null) {
         final _networkName =
-        GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
+            GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+                    Network.mainnet
+                ? NetworkName.workNetMainnet
+                : NetworkName.workNetTestnet;
         GetIt.I.get<SessionRepository>().setNetwork(_networkName);
       }
       GetIt.I.get<SessionRepository>().setWallet(wallet);

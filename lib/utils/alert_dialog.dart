@@ -60,7 +60,8 @@ class AlertDialogUtils {
     }
   }
 
-  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context,
+      {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -127,6 +128,7 @@ class AlertDialogUtils {
             okPressed.call();
           }
         }
+
         return Platform.isIOS
             ? CupertinoAlertDialog(
                 title: Text(title),

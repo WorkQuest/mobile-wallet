@@ -53,11 +53,12 @@ class SendFunctions implements SendFunctionsI {
     String _addressToken = '';
     int _degree = 0;
     final _gasPrice = await _getGasPrice();
-    final _fromAddress = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
+    final _fromAddress =
+        EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
     if (isToken) {
       _addressToken = Web3Utils.getAddressToken(coin);
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(_addressToken), client: _web3client);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(_addressToken), client: _web3client);
       _degree = await Web3Utils.getDegreeToken(contract);
       _hash = await sendToken(
         coin: coin,
@@ -99,7 +100,8 @@ class SendFunctions implements SendFunctionsI {
       (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
     );
     final _to = EthereumAddress.fromHex(addressTo);
-    final _from = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
+    final _from =
+        EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
     final _chainId = await _web3client.getChainId();
     final hash = await _web3client.sendTransaction(
       credentials,
@@ -132,7 +134,8 @@ class SendFunctions implements SendFunctionsI {
     final degree = await Web3Utils.getDegreeToken(contract);
     final hash = await contract.transfer(
       EthereumAddress.fromHex(addressTo),
-      BigInt.parse((Decimal.parse(amount) * Decimal.fromInt(10).pow(degree)).toString()),
+      BigInt.parse(
+          (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree)).toString()),
       credentials: credentials,
       transaction: Transaction(
         from: fromAddress,
@@ -152,7 +155,8 @@ class SendFunctions implements SendFunctionsI {
       attempts++;
       if (attempts == 100) {
         // final _link = Web3Utils.getLinkToExplorerFromSwap(network!, _txHashApprove);
-        throw const FormatException("The waiting time is over. Expect a balance update.");
+        throw const FormatException(
+            "The waiting time is over. Expect a balance update.");
       }
     }
     return hashTx;
@@ -163,7 +167,8 @@ class SendFunctions implements SendFunctionsI {
     final _isETH = Web3Utils.isETH();
     final _gasPrice = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0'))
+      ((Decimal.fromBigInt(_gas.getInWei) *
+              Decimal.parse(_isETH ? '1.05' : '1.0'))
           .toBigInt()),
     );
     return _gasPrice;
@@ -180,11 +185,13 @@ class SendFunctions implements SendFunctionsI {
       Tx(
         hash: hash,
         fromAddressHash: AddressHash(
-          bech32: AddressService.hexToBech32(GetIt.I.get<SessionRepository>().userAddress),
+          bech32: AddressService.hexToBech32(
+              GetIt.I.get<SessionRepository>().userAddress),
           hex: GetIt.I.get<SessionRepository>().userAddress,
         ),
         toAddressHash: AddressHash(
-          bech32: AddressService.hexToBech32(isToken ? addressToken : addressTo),
+          bech32:
+              AddressService.hexToBech32(isToken ? addressToken : addressTo),
           hex: isToken ? addressToken : addressTo,
         ),
         amount: isToken
@@ -196,8 +203,9 @@ class SendFunctions implements SendFunctionsI {
             ? null
             : [
                 TokenTransfer(
-                  amount: (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree))
-                      .toString(),
+                  amount:
+                      (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree))
+                          .toString(),
                 ),
               ],
       );

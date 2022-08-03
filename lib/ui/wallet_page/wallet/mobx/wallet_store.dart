@@ -24,14 +24,18 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   setCurrentToken(TokenSymbols value) => currentToken = value;
 
   @action
-  getCoins({bool isForce = true, bool tryAgain = true, bool fromSwap = false}) async {
+  getCoins(
+      {bool isForce = true,
+      bool tryAgain = true,
+      bool fromSwap = false}) async {
     if (isForce) {
       onLoading();
       coins.clear();
     }
     try {
-      final _tokens =
-          Configs.configsNetwork[GetIt.I.get<SessionRepository>().networkName.value]!.dataCoins;
+      final _tokens = Configs
+          .configsNetwork[GetIt.I.get<SessionRepository>().networkName.value]!
+          .dataCoins;
       await Future.delayed(const Duration(milliseconds: 500));
 
       final _listCoinsEntity = await _getCoinEntities(_tokens);
@@ -61,7 +65,8 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
   _setCoins(List<_CoinEntity> listCoins) {
     if (coins.isNotEmpty) {
       coins.map((element) {
-        element.amount = listCoins.firstWhere((el) => el.symbol == element.symbol).amount;
+        element.amount =
+            listCoins.firstWhere((el) => el.symbol == element.symbol).amount;
       }).toList();
     } else {
       coins.addAll(listCoins);
@@ -82,20 +87,24 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
         final _balance = await _client.getBalance();
-        final _amount =
-            (Decimal.fromBigInt(_balance.getInWei) / Decimal.fromInt(10).pow(18))
-                .toDouble()
-                .toStringAsFixed(8);
+        final _amount = (Decimal.fromBigInt(_balance.getInWei) /
+                Decimal.fromInt(10).pow(18))
+            .toDouble()
+            .toStringAsFixed(8);
         final _index =
             _courses.indexWhere((element) => element.token == coin.symbolToken);
-        final _pricePerDollar = _index == -1 ? null : _courses[_index].pricePerDollar;
+        final _pricePerDollar =
+            _index == -1 ? null : _courses[_index].pricePerDollar;
         _result.add(_CoinEntity(coin.symbolToken, _amount, _pricePerDollar));
       } else {
-        final _amount = await _client.getBalanceFromContract(coin.addressToken!);
+        final _amount =
+            await _client.getBalanceFromContract(coin.addressToken!);
         final _index =
             _courses.indexWhere((element) => element.token == coin.symbolToken);
-        final _pricePerDollar = _index == -1 ? null : _courses[_index].pricePerDollar;
-        _result.add(_CoinEntity(coin.symbolToken, _amount.toString(), _pricePerDollar));
+        final _pricePerDollar =
+            _index == -1 ? null : _courses[_index].pricePerDollar;
+        _result.add(
+            _CoinEntity(coin.symbolToken, _amount.toString(), _pricePerDollar));
       }
     }).toList();
 

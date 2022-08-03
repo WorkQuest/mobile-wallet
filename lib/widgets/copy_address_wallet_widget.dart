@@ -22,7 +22,8 @@ class CopyAddressWalletWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CopyAddressWalletWidget> createState() => _CopyAddressWalletWidgetState();
+  State<CopyAddressWalletWidget> createState() =>
+      _CopyAddressWalletWidgetState();
 }
 
 class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
@@ -36,11 +37,15 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
 
   String get address {
     if (GetIt.I.get<SessionRepository>().isOtherNetwork) {
-      return GetIt.I.get<SessionRepository>().userWallet?.address ?? '111111111111111111';
+      return GetIt.I.get<SessionRepository>().userWallet?.address ??
+          '111111111111111111';
     }
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(GetIt.I.get<SessionRepository>().userWallet?.address ?? '111111111111111111')
-        : GetIt.I.get<SessionRepository>().userWallet?.address ?? '111111111111111111';
+        ? AddressService.hexToBech32(
+            GetIt.I.get<SessionRepository>().userWallet?.address ??
+                '111111111111111111')
+        : GetIt.I.get<SessionRepository>().userWallet?.address ??
+            '111111111111111111';
   }
 
   @override
@@ -143,8 +148,9 @@ class _CopyAddressWalletWidgetState extends State<CopyAddressWalletWidget> {
                         height: 34,
                         width: 34,
                         padding: const EdgeInsets.all(7.0),
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: AppColor.disabledButton),
                         child: SvgPicture.asset(
                           Images.walletCopyIcon,
                           color: AppColor.enabledButton,

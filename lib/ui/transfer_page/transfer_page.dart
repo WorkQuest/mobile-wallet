@@ -47,13 +47,14 @@ class _TransferPageState extends State<TransferPage> {
 
   late TransferStore store;
   late final List<CoinItem> _coins = tokens
-      .map((coin) =>
-          CoinItem(coin.iconPath, coin.symbolToken.name, coin.symbolToken, true))
+      .map((coin) => CoinItem(
+          coin.iconPath, coin.symbolToken.name, coin.symbolToken, true))
       .toList();
 
   late Timer timer;
 
-  List<DataCoins> get tokens => GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+  List<DataCoins> get tokens =>
+      GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
 
   @override
   void initState() {
@@ -88,7 +89,8 @@ class _TransferPageState extends State<TransferPage> {
         if (store.successData == TransferStoreState.getMaxAmount) {
           _amountController.text = (store.maxAmount ?? 0.0).toString();
         } else if (store.successData == TransferStoreState.checkBeforeSend) {
-          if (_key.currentState!.validate() && _keyAmount.currentState!.validate()) {
+          if (_key.currentState!.validate() &&
+              _keyAmount.currentState!.validate()) {
             final result = await PageRouter.pushNewRoute(
               context,
               ConfirmTransferPage(
@@ -193,9 +195,11 @@ class _TransferPageState extends State<TransferPage> {
                       ),
                       inputFormatters: [
                         DecimalFormatter(),
-                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,18}')),
                       ],
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                     ),
                   ),
                   _divider,
@@ -229,7 +233,8 @@ class _TransferPageState extends State<TransferPage> {
             child: Observer(
               builder: (_) => DefaultButton(
                 title: 'wallet.withdraw'.tr(),
-                onPressed: store.statusButtonTransfer ? _onPressedTransfer : null,
+                onPressed:
+                    store.statusButtonTransfer ? _onPressedTransfer : null,
               ),
             ),
           ),
@@ -260,7 +265,8 @@ class _TransferPageState extends State<TransferPage> {
       } else {
         final title = 'meta.error'.tr();
         final content = 'crediting.chooseCoin'.tr();
-        AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: title, content: content);
       }
     }
   }
@@ -277,17 +283,26 @@ class _TransferPageState extends State<TransferPage> {
       final _isBech = store.addressTo.substring(0, 2).toLowerCase() == 'wq';
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
-            AddressService.hexToBech32(
-                GetIt.I.get<SessionRepository>().userWallet!.address!.toLowerCase())) {
+            AddressService.hexToBech32(GetIt.I
+                .get<SessionRepository>()
+                .userWallet!
+                .address!
+                .toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
         if (store.addressTo.toLowerCase() ==
-            GetIt.I.get<SessionRepository>().userWallet!.address!.toLowerCase()) {
+            GetIt.I
+                .get<SessionRepository>()
+                .userWallet!
+                .address!
+                .toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
-              title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
+              title: 'meta.error'.tr(),
+              content: 'errors.provideYourAddress'.tr());
           return;
         }
       }
@@ -310,7 +325,8 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   _getTitleTrxFee() {
-    final _value = store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
+    final _value =
+        store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
     return '${'wallet.table.trxFee'.tr()}: ${_value.toStringAsFixed(7)} '
         '${Web3Utils.getNativeToken()}';
   }
@@ -353,8 +369,8 @@ class _TransferPageState extends State<TransferPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: _coins
-                          .map((coin) =>
-                              _CoinItemWidget(coin: coin, onPressed: _selectCoin))
+                          .map((coin) => _CoinItemWidget(
+                              coin: coin, onPressed: _selectCoin))
                           .toList(),
                     ),
                   ],
@@ -438,7 +454,9 @@ class _CoinItemWidget extends StatelessWidget {
                         coin.title,
                         style: TextStyle(
                           fontSize: 16,
-                          color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                          color: coin.isEnable
+                              ? Colors.black
+                              : AppColor.disabledText,
                         ),
                       ),
                     ],

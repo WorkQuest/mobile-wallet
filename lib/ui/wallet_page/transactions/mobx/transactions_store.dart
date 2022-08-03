@@ -30,7 +30,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   String get myAddress => GetIt.I.get<SessionRepository>().userWallet!.address!;
 
-  NetworkName get _typeNetwork => GetIt.I.get<SessionRepository>().networkName.value!;
+  NetworkName get _typeNetwork =>
+      GetIt.I.get<SessionRepository>().networkName.value!;
 
   @action
   clearData() {
@@ -151,8 +152,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               transaction.token_contract_address_hash?.hex,
               fromSocket: true,
             );
-      final _index =
-          transactions.indexWhere((element) => element.hash == transaction.hash);
+      final _index = transactions
+          .indexWhere((element) => element.hash == transaction.hash);
       if (_index == -1) {
         transactions.insert(0, transaction);
       }
@@ -180,7 +181,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     bool fromSocket = false,
   }) {
     if (type == TokenSymbols.WQT || fromSocket) {
-      final _dataTokens = GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().dataCoins;
+      final _dataTokens =
+          GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().dataCoins;
       final _address = contractAddress ?? addressContract;
       if (_address ==
           _dataTokens
@@ -207,25 +209,30 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
     } else {
       if (contractAddress != null) {
-        final _dataTokens = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
+        final _dataTokens =
+            GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
         if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.WUSD)
                 .addressToken) {
           return TokenSymbols.WUSD;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.wBNB)
                 .addressToken) {
           return TokenSymbols.wBNB;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.wETH)
                 .addressToken) {
           return TokenSymbols.wETH;
         } else if (contractAddress ==
             _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
+                .firstWhere(
+                    (element) => element.symbolToken == TokenSymbols.USDT)
                 .addressToken) {
           return TokenSymbols.USDT;
         } else {

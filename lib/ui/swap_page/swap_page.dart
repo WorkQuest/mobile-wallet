@@ -45,8 +45,8 @@ class _SwapPageState extends State<SwapPage> {
   @override
   void initState() {
     store = GetIt.I.get<SwapStore>();
-    final _swapNetwork =
-        Web3Utils.getSwapNetworksFromNetworkName(GetIt.I.get<SessionRepository>().networkName.value!);
+    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(
+        GetIt.I.get<SessionRepository>().networkName.value!);
     if (store.network == null) {
       Future.delayed(const Duration(milliseconds: 350)).then(
         (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
@@ -75,13 +75,16 @@ class _SwapPageState extends State<SwapPage> {
         onSuccess: () {
           if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
-            final _network = GetIt.I.get<SessionRepository>().notifierNetwork.value;
+            final _network =
+                GetIt.I.get<SessionRepository>().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              GetIt.I.get<SessionRepository>()
-                  .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              GetIt.I.get<SessionRepository>().changeNetwork(
+                  NetworkName.workNetMainnet,
+                  updateTrxList: true);
             } else if (_network == Network.testnet) {
-              GetIt.I.get<SessionRepository>()
-                  .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              GetIt.I.get<SessionRepository>().changeNetwork(
+                  NetworkName.workNetTestnet,
+                  updateTrxList: true);
             }
             _amountController.clear();
             Provider.of<NotifyPage>(context, listen: false).setIndex(0);
@@ -96,13 +99,16 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop('dialog');
           }
           if (store.errorMessage!.contains('Waiting time has expired')) {
-            final _network = GetIt.I.get<SessionRepository>().notifierNetwork.value;
+            final _network =
+                GetIt.I.get<SessionRepository>().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              GetIt.I.get<SessionRepository>()
-                  .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+              GetIt.I.get<SessionRepository>().changeNetwork(
+                  NetworkName.workNetMainnet,
+                  updateTrxList: true);
             } else if (_network == Network.testnet) {
-              GetIt.I.get<SessionRepository>()
-                  .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+              GetIt.I.get<SessionRepository>().changeNetwork(
+                  NetworkName.workNetTestnet,
+                  updateTrxList: true);
             }
             _amountController.clear();
             Provider.of<NotifyPage>(context, listen: false).setIndex(0);
@@ -137,8 +143,10 @@ class _SwapPageState extends State<SwapPage> {
                         Row(
                           children: [
                             Text(
-                              'swap.choose'.tr(namedArgs: {'object': 'network'}),
-                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                              'swap.choose'
+                                  .tr(namedArgs: {'object': 'network'}),
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
                             ),
                             const Spacer(),
                             if (store.isLoading)
@@ -150,10 +158,12 @@ class _SwapPageState extends State<SwapPage> {
                                   padding: EdgeInsets.zero,
                                   child: Text(
                                     'meta.retry'.tr(),
-                                    style: const TextStyle(color: AppColor.enabledButton),
+                                    style: const TextStyle(
+                                        color: AppColor.enabledButton),
                                   ),
                                   onPressed: () {
-                                    store.setNetwork(store.network!, isForce: true);
+                                    store.setNetwork(store.network!,
+                                        isForce: true);
                                   },
                                 ),
                               ),
@@ -170,7 +180,8 @@ class _SwapPageState extends State<SwapPage> {
                         _spaceDivider,
                         Text(
                           'swap.choose'.tr(namedArgs: {'object': 'token'}),
-                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
                         ),
                         _divider,
                         SelectedItem(
@@ -188,8 +199,8 @@ class _SwapPageState extends State<SwapPage> {
                                   'swap.amountBalance'.tr(namedArgs: {
                                     'maxAmount': '${store.maxAmount ?? ''}'
                                   }),
-                                  style:
-                                      const TextStyle(fontSize: 16, color: Colors.black),
+                                  style: const TextStyle(
+                                      fontSize: 16, color: Colors.black),
                                 ),
                               ],
                             ),
@@ -207,11 +218,12 @@ class _SwapPageState extends State<SwapPage> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) =>
                               Validators.swapAmount(value, store.maxAmount),
-                          keyboardType:
-                              const TextInputType.numberWithOptions(decimal: true),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
                           inputFormatters: [
                             DecimalFormatter(),
-                            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d+\.?\d{0,18}')),
                           ],
                           suffixIcon: CupertinoButton(
                             padding: const EdgeInsets.only(right: 12.5),
@@ -309,7 +321,8 @@ class _SwapPageState extends State<SwapPage> {
   _showLoading({bool start = false, String? message}) {
     if (start) {
       Future.delayed(const Duration(milliseconds: 150)).then(
-        (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
+        (value) =>
+            AlertDialogUtils.showLoadingDialog(context, message: message),
       );
     } else {
       AlertDialogUtils.showLoadingDialog(context, message: message);
@@ -347,7 +360,8 @@ class _SwapPageState extends State<SwapPage> {
         AlertDialogUtils.showAlertTxConfirm(
           context,
           fee: _gasSwap,
-          amount: _amountController.text.isEmpty ? '0.0' : _amountController.text,
+          amount:
+              _amountController.text.isEmpty ? '0.0' : _amountController.text,
           typeTx: 'Swap',
           tokenSymbolFee: _getTitleCoinFee(),
           addressTo: _addressTo,
@@ -378,7 +392,8 @@ class _SwapPageState extends State<SwapPage> {
 
   String _getTitleCoinFee() {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet);
+        GetIt.I.get<SessionRepository>().networkName.value ??
+            NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -400,9 +415,13 @@ class _SwapPageState extends State<SwapPage> {
         },
         title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
-          _ModelItem(iconPath: 'assets/svg/eth_logo.svg', item: SwapNetworks.ETH),
-          _ModelItem(iconPath: 'assets/svg/bsc_logo.svg', item: SwapNetworks.BSC),
-          _ModelItem(iconPath: 'assets/svg/polygon_logo.svg', item: SwapNetworks.POLYGON),
+          _ModelItem(
+              iconPath: 'assets/svg/eth_logo.svg', item: SwapNetworks.ETH),
+          _ModelItem(
+              iconPath: 'assets/svg/bsc_logo.svg', item: SwapNetworks.BSC),
+          _ModelItem(
+              iconPath: 'assets/svg/polygon_logo.svg',
+              item: SwapNetworks.POLYGON),
         ],
       ),
     );
@@ -415,7 +434,8 @@ class _SwapPageState extends State<SwapPage> {
         onTap: (value) => store.setToken(value),
         title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
-          _ModelItem(item: SwapToken.usdt, iconPath: 'assets/svg/tusdt_coin_icon.svg'),
+          _ModelItem(
+              item: SwapToken.usdt, iconPath: 'assets/svg/tusdt_coin_icon.svg'),
         ],
       ),
     );
@@ -435,7 +455,8 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    final _isTestnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.testnet;
+    final _isTestnet = GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+        Network.testnet;
     if (_isTestnet) {
       return 'T${token.name}'.toUpperCase();
     }
@@ -599,7 +620,9 @@ class _ListBottomWidget extends StatelessWidget {
 
   String _getName(dynamic value) {
     if (value is SwapToken) {
-      final _isTestnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.testnet;
+      final _isTestnet =
+          GetIt.I.get<SessionRepository>().notifierNetwork.value ==
+              Network.testnet;
       if (_isTestnet) {
         return 'T${value.name}'.toUpperCase();
       }

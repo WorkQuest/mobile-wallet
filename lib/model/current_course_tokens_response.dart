@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-CurrentCourseTokensResponse currentCourseTokensResponseFromJson(String str) => CurrentCourseTokensResponse.fromJson(json.decode(str));
+CurrentCourseTokensResponse currentCourseTokensResponseFromJson(String str) =>
+    CurrentCourseTokensResponse.fromJson(json.decode(str));
 
-String currentCourseTokensResponseToJson(CurrentCourseTokensResponse data) => json.encode(data.toJson());
+String currentCourseTokensResponseToJson(CurrentCourseTokensResponse data) =>
+    json.encode(data.toJson());
 
 class CurrentCourseTokensResponse {
   CurrentCourseTokensResponse({
@@ -17,15 +19,17 @@ class CurrentCourseTokensResponse {
   bool? ok;
   List<Result>? result;
 
-  factory CurrentCourseTokensResponse.fromJson(Map<String, dynamic> json) => CurrentCourseTokensResponse(
-    ok: json["ok"],
-    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
-  );
+  factory CurrentCourseTokensResponse.fromJson(Map<String, dynamic> json) =>
+      CurrentCourseTokensResponse(
+        ok: json["ok"],
+        result:
+            List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "ok": ok,
-    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
-  };
+        "ok": ok,
+        "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+      };
 }
 
 class Result {
@@ -40,14 +44,14 @@ class Result {
   String? timestamp;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    symbol: json["symbol"],
-    price: json["price"],
-    timestamp: json["timestamp"],
-  );
+        symbol: json["symbol"],
+        price: json["price"],
+        timestamp: json["timestamp"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "symbol": symbol,
-    "price": price,
-    "timestamp": timestamp,
-  };
+        "symbol": symbol,
+        "price": price,
+        "timestamp": timestamp,
+      };
 }

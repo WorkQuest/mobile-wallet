@@ -30,7 +30,8 @@ class PinCodePage extends StatefulWidget {
   _PinCodePageState createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage>
+    with SingleTickerProviderStateMixin {
   PinCodeStore store = PinCodeStore();
   AnimationController? animationController;
 
@@ -166,7 +167,9 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                           ),
                         KeyboardButton(
                           child: SvgPicture.asset(
-                            store.isFaceId ? Images.faceIdIcon : Images.biometricIcon,
+                            store.isFaceId
+                                ? Images.faceIdIcon
+                                : Images.biometricIcon,
                             color: store.canBiometrics
                                 ? AppColor.enabledButton
                                 : Colors.transparent,
