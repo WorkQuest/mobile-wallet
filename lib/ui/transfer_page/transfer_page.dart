@@ -53,7 +53,7 @@ class _TransferPageState extends State<TransferPage> {
 
   late Timer timer;
 
-  List<DataCoins> get tokens => SessionRepository().getConfigNetwork().dataCoins;
+  List<DataCoins> get tokens => GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
 
   @override
   void initState() {
@@ -278,14 +278,14 @@ class _TransferPageState extends State<TransferPage> {
       if (_isBech) {
         if (store.addressTo.toLowerCase() ==
             AddressService.hexToBech32(
-                SessionRepository().userWallet!.address!.toLowerCase())) {
+                GetIt.I.get<SessionRepository>().userWallet!.address!.toLowerCase())) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;
         }
       } else {
         if (store.addressTo.toLowerCase() ==
-            SessionRepository().userWallet!.address!.toLowerCase()) {
+            GetIt.I.get<SessionRepository>().userWallet!.address!.toLowerCase()) {
           AlertDialogUtils.showInfoAlertDialog(context,
               title: 'meta.error'.tr(), content: 'errors.provideYourAddress'.tr());
           return;

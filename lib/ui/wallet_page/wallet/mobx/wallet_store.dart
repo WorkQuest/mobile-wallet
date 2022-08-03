@@ -31,7 +31,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     }
     try {
       final _tokens =
-          Configs.configsNetwork[SessionRepository().networkName.value]!.dataCoins;
+          Configs.configsNetwork[GetIt.I.get<SessionRepository>().networkName.value]!.dataCoins;
       await Future.delayed(const Duration(milliseconds: 500));
 
       final _listCoinsEntity = await _getCoinEntities(_tokens);
@@ -70,7 +70,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
 
   Future<List<_CoinEntity>> _getCoinEntities(List<DataCoins> coins) async {
     List<_TokenCourse> _courses = List.empty();
-    if (!SessionRepository().isOtherNetwork) {
+    if (!GetIt.I.get<SessionRepository>().isOtherNetwork) {
       final _result = await Api().getCourseTokens();
       if (_result != null) {
         _courses = _getListTokenCourse(_result);
@@ -78,7 +78,7 @@ abstract class WalletStoreBase extends IStore<bool> with Store {
     }
 
     List<_CoinEntity> _result = [];
-    final _client = SessionRepository().getClient();
+    final _client = GetIt.I.get<SessionRepository>().getClient();
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
         final _balance = await _client.getBalance();

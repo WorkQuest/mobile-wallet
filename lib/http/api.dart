@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/http_client.dart';
 import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
@@ -22,7 +23,7 @@ class Api {
 
   Api._internal();
 
-  Network get _network => SessionRepository().notifierNetwork.value;
+  Network get _network => GetIt.I.get<SessionRepository>().notifierNetwork.value;
 
   String get _courseWQT {
     if (_network == Network.testnet) {

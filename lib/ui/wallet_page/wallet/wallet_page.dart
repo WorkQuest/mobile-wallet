@@ -49,7 +49,7 @@ class _WalletPageState extends State<WalletPage> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: ValueListenableBuilder<NetworkName?>(
-              valueListenable: SessionRepository().networkName,
+              valueListenable: GetIt.I.get<SessionRepository>().networkName,
               builder: (_, value, child) {
                 final _networkName = Web3Utils.getNetworkNameForSwitch(
                     value ?? NetworkName.workNetMainnet);
@@ -87,8 +87,8 @@ class _WalletPageState extends State<WalletPage> {
 
   _onChangedSwitchNetwork(dynamic value) {
     final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
-        value as SwitchNetworkNames, SessionRepository().notifierNetwork.value);
-    SessionRepository().changeNetwork(_newNetwork);
+        value as SwitchNetworkNames, GetIt.I.get<SessionRepository>().notifierNetwork.value);
+    GetIt.I.get<SessionRepository>().changeNetwork(_newNetwork);
     final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(_newNetwork);
     Future.delayed(const Duration(milliseconds: 350)).then(
       (value) => GetIt.I
@@ -136,7 +136,7 @@ class _WalletPageLayout extends StatelessWidget {
               onRefresh: onRefresh,
             ),
           CopyAddressWalletWidget(
-            format: SessionRepository().isOtherNetwork
+            format: GetIt.I.get<SessionRepository>().isOtherNetwork
                 ? FormatAddress.HEX
                 : FormatAddress.BECH32,
           ),
@@ -212,7 +212,7 @@ class _WalletPageLayout extends StatelessWidget {
       return false;
     }
     final _networkName =
-        SessionRepository().networkName.value ?? NetworkName.workNetMainnet;
+        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet;
     if (_networkName == NetworkName.workNetTestnet ||
         _networkName == NetworkName.workNetMainnet) {
       try {

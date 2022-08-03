@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
 import 'package:workquest_wallet_app/constants.dart';
@@ -105,15 +106,15 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
     try {
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic!);
-      if (SessionRepository().networkName.value == null) {
+      if (GetIt.I.get<SessionRepository>().networkName.value == null) {
         final _networkName =
-        SessionRepository().notifierNetwork.value == Network.mainnet
+        GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet
             ? NetworkName.workNetMainnet
             : NetworkName.workNetTestnet;
-        SessionRepository().setNetwork(_networkName);
+        GetIt.I.get<SessionRepository>().setNetwork(_networkName);
       }
-      SessionRepository().setWallet(wallet);
-      SessionRepository().connectClient();
+      GetIt.I.get<SessionRepository>().setWallet(wallet);
+      GetIt.I.get<SessionRepository>().connectClient();
       await _saveToStorage(wallet);
       onSuccess(true);
     } on FormatException catch (e) {

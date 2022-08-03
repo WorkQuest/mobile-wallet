@@ -53,7 +53,7 @@ class SendFunctions implements SendFunctionsI {
     String _addressToken = '';
     int _degree = 0;
     final _gasPrice = await _getGasPrice();
-    final _fromAddress = EthereumAddress.fromHex(SessionRepository().userAddress);
+    final _fromAddress = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
     if (isToken) {
       _addressToken = Web3Utils.getAddressToken(coin);
       final contract =
@@ -99,7 +99,7 @@ class SendFunctions implements SendFunctionsI {
       (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
     );
     final _to = EthereumAddress.fromHex(addressTo);
-    final _from = EthereumAddress.fromHex(SessionRepository().userAddress);
+    final _from = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
     final _chainId = await _web3client.getChainId();
     final hash = await _web3client.sendTransaction(
       credentials,
@@ -180,8 +180,8 @@ class SendFunctions implements SendFunctionsI {
       Tx(
         hash: hash,
         fromAddressHash: AddressHash(
-          bech32: AddressService.hexToBech32(SessionRepository().userAddress),
-          hex: SessionRepository().userAddress,
+          bech32: AddressService.hexToBech32(GetIt.I.get<SessionRepository>().userAddress),
+          hex: GetIt.I.get<SessionRepository>().userAddress,
         ),
         toAddressHash: AddressHash(
           bech32: AddressService.hexToBech32(isToken ? addressToken : addressTo),

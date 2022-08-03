@@ -46,7 +46,7 @@ class _SwapPageState extends State<SwapPage> {
   void initState() {
     store = GetIt.I.get<SwapStore>();
     final _swapNetwork =
-        Web3Utils.getSwapNetworksFromNetworkName(SessionRepository().networkName.value!);
+        Web3Utils.getSwapNetworksFromNetworkName(GetIt.I.get<SessionRepository>().networkName.value!);
     if (store.network == null) {
       Future.delayed(const Duration(milliseconds: 350)).then(
         (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
@@ -75,12 +75,12 @@ class _SwapPageState extends State<SwapPage> {
         onSuccess: () {
           if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
-            final _network = SessionRepository().notifierNetwork.value;
+            final _network = GetIt.I.get<SessionRepository>().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              SessionRepository()
+              GetIt.I.get<SessionRepository>()
                   .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              SessionRepository()
+              GetIt.I.get<SessionRepository>()
                   .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
@@ -96,12 +96,12 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop('dialog');
           }
           if (store.errorMessage!.contains('Waiting time has expired')) {
-            final _network = SessionRepository().notifierNetwork.value;
+            final _network = GetIt.I.get<SessionRepository>().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              SessionRepository()
+              GetIt.I.get<SessionRepository>()
                   .changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              SessionRepository()
+              GetIt.I.get<SessionRepository>()
                   .changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             _amountController.clear();
@@ -378,7 +378,7 @@ class _SwapPageState extends State<SwapPage> {
 
   String _getTitleCoinFee() {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        SessionRepository().networkName.value ?? NetworkName.workNetMainnet);
+        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -435,7 +435,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    final _isTestnet = SessionRepository().notifierNetwork.value == Network.testnet;
+    final _isTestnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.testnet;
     if (_isTestnet) {
       return 'T${token.name}'.toUpperCase();
     }
@@ -599,7 +599,7 @@ class _ListBottomWidget extends StatelessWidget {
 
   String _getName(dynamic value) {
     if (value is SwapToken) {
-      final _isTestnet = SessionRepository().notifierNetwork.value == Network.testnet;
+      final _isTestnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.testnet;
       if (_isTestnet) {
         return 'T${value.name}'.toUpperCase();
       }

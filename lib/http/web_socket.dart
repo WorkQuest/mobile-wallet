@@ -27,7 +27,7 @@ class WebSocket {
 
   init() async {
     shouldReconnectFlag = true;
-    currentWss = SessionRepository().getConfigNetworkWorknet().wss;
+    currentWss = GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().wss;
     channel = IOWebSocketChannel.connect(currentWss!);
     channel!.sink.add("""
     {
@@ -66,13 +66,13 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
-    if (currentWss == SessionRepository().getConfigNetworkWorknet().wss) {
+    if (currentWss == GetIt.I.get<SessionRepository>().getConfigNetworkWorknet().wss) {
       return;
     }
     _closeWalletSocket();
   }
 
-  String get myAddress => SessionRepository().userWallet!.address!;
+  String get myAddress => GetIt.I.get<SessionRepository>().userWallet!.address!;
 
   void handleSubscription(dynamic jsonResponse) async {
     try {

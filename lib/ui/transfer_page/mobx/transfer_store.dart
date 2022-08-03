@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
@@ -82,15 +83,15 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       return;
     }
     try {
-      final _client = SessionRepository().getClient();
-      final _from = EthereumAddress.fromHex(SessionRepository().userAddress);
+      final _client = GetIt.I.get<SessionRepository>().getClient();
+      final _from = EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress);
       String _amount = amount.isEmpty ? '1.0' : amount;
       String _address = AddressService.convertToHexAddress(
-        addressTo.isEmpty ? SessionRepository().userAddress : addressTo,
+        addressTo.isEmpty ? GetIt.I.get<SessionRepository>().userAddress : addressTo,
       );
       final _gas = await _client.getGas();
 
-      final _currentListTokens = SessionRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
       final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
 
       if (_isToken) {
@@ -177,8 +178,8 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   }
 
   Future<String> _getMaxAmount() async {
-    final _client = SessionRepository().getClient();
-    final _dataCoins = SessionRepository().getConfigNetwork().dataCoins;
+    final _client = GetIt.I.get<SessionRepository>().getClient();
+    final _dataCoins = GetIt.I.get<SessionRepository>().getConfigNetwork().dataCoins;
     final _isNotToken = _dataCoins
             .firstWhere((element) => element.symbolToken == currentCoin!.typeCoin)
             .addressToken ==
@@ -199,7 +200,7 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       }
     }
 
-    final _balance = await SessionRepository()
+    final _balance = await GetIt.I.get<SessionRepository>()
         .getClient()
         .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);

@@ -36,7 +36,7 @@ class ClientService implements ClientServiceI {
       ethClient = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
-      if (SessionRepository().isOtherNetwork) {
+      if (GetIt.I.get<SessionRepository>().isOtherNetwork) {
         Future.delayed(const Duration(seconds: 2)).then((value) {
           try {
             final _stream = ethClient!.socketConnector!.call();
@@ -83,7 +83,7 @@ class ClientService implements ClientServiceI {
     address = address.toLowerCase();
     final contract = Erc20(address: EthereumAddress.fromHex(address), client: ethClient!);
     final balance = await contract
-        .balanceOf(EthereumAddress.fromHex(SessionRepository().userWallet!.address!));
+        .balanceOf(EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userWallet!.address!));
     final _degree = await Web3Utils.getDegreeToken(contract);
     return (Decimal.parse(balance.toString()) / Decimal.fromInt(10).pow(_degree))
         .toDecimal();

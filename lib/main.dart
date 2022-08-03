@@ -37,24 +37,25 @@ void main() async {
   GetIt.I.registerSingleton<WalletStore>(WalletStore());
   GetIt.I.registerSingleton<TransferStore>(TransferStore());
   GetIt.I.registerSingleton<SwapStore>(SwapStore());
+  GetIt.I.registerSingleton<SessionRepository>(SessionRepository());
   try {
     final wallet = await Storage.readWallet();
     if (wallet != null) {
-      SessionRepository().setWallet(wallet);
+      GetIt.I.get<SessionRepository>().setWallet(wallet);
     }
     final _networkNameStorage =
         await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
-      SessionRepository().setNetwork(NetworkName.workNetMainnet);
+      GetIt.I.get<SessionRepository>().setNetwork(NetworkName.workNetMainnet);
       await Storage.write(
           StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
-      SessionRepository().setNetwork(_networkName);
+      GetIt.I.get<SessionRepository>().setNetwork(_networkName);
       await Storage.write(StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
-    SessionRepository().clearData();
+    GetIt.I.get<SessionRepository>().clearData();
   }
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -78,13 +79,13 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  bool get hasAccount => SessionRepository().userWallet != null;
+  bool get hasAccount => GetIt.I.get<SessionRepository>().userWallet != null;
 
   @override
   Widget build(BuildContext context) {
     globalContext = context;
     return ValueListenableBuilder<Network?>(
-      valueListenable: SessionRepository().notifierNetwork,
+      valueListenable: GetIt.I.get<SessionRepository>().notifierNetwork,
       builder: (_, value, child) {
         final name = value?.name ?? Network.mainnet.name;
         final visible = name != Network.mainnet.name;

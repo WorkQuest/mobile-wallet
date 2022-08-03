@@ -42,7 +42,7 @@ class ListTransactions extends StatelessWidget {
           );
         }
         if (store.isSuccess) {
-          final _isOtherNetwork = SessionRepository().isOtherNetwork;
+          final _isOtherNetwork = GetIt.I.get<SessionRepository>().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
               if (GetIt.I.get<WalletStore>().isLoading) {
@@ -116,8 +116,8 @@ class ListTransactions extends StatelessWidget {
   }
 
   _onPressedGoToExplorer() {
-    final _urlExplorer = SessionRepository().getConfigNetwork().urlExplorer +
-        SessionRepository().userAddress;
+    final _urlExplorer = GetIt.I.get<SessionRepository>().getConfigNetwork().urlExplorer +
+        GetIt.I.get<SessionRepository>().userAddress;
     launchUrl(Uri.parse(_urlExplorer));
   }
 }
@@ -161,7 +161,7 @@ class _TransactionItemState extends State<TransactionItem> with TickerProviderSt
     }
     widget.transaction.show = true;
     bool increase = widget.transaction.fromAddressHash!.hex! !=
-        SessionRepository().userWallet!.address!;
+        GetIt.I.get<SessionRepository>().userWallet!.address!;
     Color color = increase ? Colors.green : Colors.red;
     double score = _getScore(widget.transaction);
     return AnimatedBuilder(
@@ -378,7 +378,7 @@ class _ItemInfoFromTransaction extends StatelessWidget {
   }
 
   _onTapTxHash() {
-    final _isMainnet = SessionRepository().notifierNetwork.value == Network.mainnet;
+    final _isMainnet = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {

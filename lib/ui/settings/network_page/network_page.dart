@@ -47,7 +47,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             DefaultRadio(
-                              status: SessionRepository().notifierNetwork.value == network,
+                              status: GetIt.I.get<SessionRepository>().notifierNetwork.value == network,
                             ),
                             const SizedBox(
                               width: 10,
@@ -81,10 +81,10 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   _onPressedChange(Network newNetwork) {
-    if (SessionRepository().notifierNetwork.value != newNetwork) {
-      final _newNetworkName = Web3Utils.getNetworkNameSwap(SessionRepository().networkName.value!);
-      SessionRepository().notifierNetwork.value = newNetwork;
-      SessionRepository().changeNetwork(_newNetworkName);
+    if (GetIt.I.get<SessionRepository>().notifierNetwork.value != newNetwork) {
+      final _newNetworkName = Web3Utils.getNetworkNameSwap(GetIt.I.get<SessionRepository>().networkName.value!);
+      GetIt.I.get<SessionRepository>().notifierNetwork.value = newNetwork;
+      GetIt.I.get<SessionRepository>().changeNetwork(_newNetworkName);
       Future.delayed(const Duration(milliseconds: 450)).then((value){
         if (GetIt.I.get<SwapStore>().network != null) {
           GetIt.I.get<SwapStore>().getMaxBalance();

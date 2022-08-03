@@ -109,11 +109,11 @@ class _SettingsPageState extends State<SettingsPage> {
     await PageRouter.pushNewRemoveRoute(context, const LoginPage());
     WebSocket().closeWebSocket();
     GetIt.I.get<TransferStore>().setCoin(null);
-    SessionRepository().clearData();
+    GetIt.I.get<SessionRepository>().clearData();
   }
 
   String _getCurrentNetworkName() {
-    final _name = (SessionRepository().notifierNetwork.value).name;
+    final _name = (GetIt.I.get<SessionRepository>().notifierNetwork.value).name;
     return '${_name.substring(0, 1).toUpperCase()}${_name.substring(1)}';
   }
 

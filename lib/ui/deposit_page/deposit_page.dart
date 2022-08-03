@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:workquest_wallet_app/constants.dart';
@@ -79,14 +80,14 @@ class _WalletAddressState extends State<_WalletAddress> {
 
   @override
   void initState() {
-    _format = SessionRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    _format = GetIt.I.get<SessionRepository>().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
     super.initState();
   }
 
   String get address {
     return _format == FormatAddress.BECH32
-        ? AddressService.hexToBech32(SessionRepository().userWallet!.address!)
-        : SessionRepository().userWallet!.address!;
+        ? AddressService.hexToBech32(GetIt.I.get<SessionRepository>().userWallet!.address!)
+        : GetIt.I.get<SessionRepository>().userWallet!.address!;
   }
 
   @override
@@ -117,7 +118,7 @@ class _WalletAddressState extends State<_WalletAddress> {
             const SizedBox(
               height: 10,
             ),
-            if (!SessionRepository().isOtherNetwork)
+            if (!GetIt.I.get<SessionRepository>().isOtherNetwork)
               SwitchFormatAddressWidget(
                 format: _format,
                 onChanged: (FormatAddress value) {

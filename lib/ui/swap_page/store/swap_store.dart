@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
@@ -90,7 +91,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       isSuccessCourse = false;
       final _networkName = Web3Utils.getNetworkNameFromSwapNetworks(network!);
       if (isForce) {
-        SessionRepository().changeNetwork(_networkName);
+        GetIt.I.get<SessionRepository>().changeNetwork(_networkName);
       }
       await getMaxBalance();
       isConnect = true;
@@ -127,7 +128,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       print('createSwap');
       onLoading();
       Web3Client _client = service!.ethClient!;
-      final _address = SessionRepository().userWallet!.address!;
+      final _address = GetIt.I.get<SessionRepository>().userWallet!.address!;
       final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
       final _cred = await service!.getCredentials();
       final _gas = await service!.getGas();
@@ -250,7 +251,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
     final _spender =
         EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _allowance = await _contract.allowance(
-      EthereumAddress.fromHex(SessionRepository().userAddress),
+      EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress),
       _spender,
     );
     if (_allowance < _amount) {
@@ -309,7 +310,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   }
 
   Future<String> getEstimateGasSwap() async {
-    final _address = SessionRepository().userWallet!.address!;
+    final _address = GetIt.I.get<SessionRepository>().userWallet!.address!;
     final _nonce =
         await service!.ethClient!.getTransactionCount(EthereumAddress.fromHex(_address));
     final _gas = await service!.getGas();
@@ -339,7 +340,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   }
 
   _connectSocket() {
-    final _wsPath = SessionRepository().notifierNetwork.value == Network.testnet
+    final _wsPath = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.testnet
         ? 'wss://testnet-notification.workquest.co/api/v1/notifications'
         : 'wss://mainnet-notification.workquest.co/api/v1/notifications';
     _notificationChannel = IOWebSocketChannel.connect(_wsPath);
@@ -351,7 +352,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
                   "auth": {
                       "headers": {"authorization": null}
                   },
-                  "subs": ["/notifications/bridgeUsdt/${SessionRepository().userAddress}"]
+                  "subs": ["/notifications/bridgeUsdt/${GetIt.I.get<SessionRepository>().userAddress}"]
                 }""");
 
     _notificationChannel!.stream.listen(
@@ -391,7 +392,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       BigInt.from(amount * pow(10, degree)),
 
       ///recipient address
-      EthereumAddress.fromHex(SessionRepository().userAddress),
+      EthereumAddress.fromHex(GetIt.I.get<SessionRepository>().userAddress),
 
       ///userId string
       '1',

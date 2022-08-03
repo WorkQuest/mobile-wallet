@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
@@ -71,11 +72,11 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       onSuccess: () async {
         if (store.statePin == StatePinCode.toLogin) {
           /// Failed
-          SessionRepository().clearData();
+          GetIt.I.get<SessionRepository>().clearData();
           PageRouter.pushNewRemoveRoute(context, const LoginPage());
         } else if (store.successData == StatePinCode.success) {
           /// Success
-          SessionRepository().connectClient();
+          GetIt.I.get<SessionRepository>().connectClient();
           WebSocket().init();
           await AlertDialogUtils.showSuccessDialog(context);
           PageRouter.pushNewRemoveRoute(

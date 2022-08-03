@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
@@ -200,7 +201,7 @@ class _InformationWidget extends StatelessWidget {
 
   String _getTitleCoinFee() {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        SessionRepository().networkName.value ?? NetworkName.workNetMainnet);
+        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';

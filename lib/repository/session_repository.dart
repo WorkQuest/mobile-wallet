@@ -13,11 +13,6 @@ import '../ui/wallet_page/transactions/mobx/transactions_store.dart';
 import '../utils/storage.dart';
 
 class SessionRepository {
-  static final SessionRepository _instance = SessionRepository._internal();
-
-  factory SessionRepository() => _instance;
-
-  SessionRepository._internal();
 
   Wallet? userWallet;
   ClientService? client;

@@ -121,7 +121,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 },
               ),
               ValueListenableBuilder<NetworkName?>(
-                valueListenable: SessionRepository().networkName,
+                valueListenable: GetIt.I.get<SessionRepository>().networkName,
                 builder: (_, value, child) {
                   final _title =
                       Web3Utils.getTitleOtherNetwork(value ?? NetworkName.workNetMainnet);
