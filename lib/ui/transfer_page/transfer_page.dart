@@ -65,7 +65,7 @@ class _TransferPageState extends State<TransferPage> {
       store.setAddressTo(_addressController.text);
     });
     timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      store.getFee();
+      store.checkBeforeSend(isTimerUpdate: true);
     });
     super.initState();
   }

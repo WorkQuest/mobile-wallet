@@ -148,7 +148,13 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   }
 
   @action
-  checkBeforeSend() async {
+  checkBeforeSend({bool isTimerUpdate = false}) async {
+    if (isTimerUpdate) {
+      await getFee();
+      print('fee: $fee');
+      maxAmount = double.parse(await _getMaxAmount());
+      return;
+    }
     try {
       onLoading();
       await getFee();
