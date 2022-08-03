@@ -178,6 +178,7 @@
     "wallet": "Wallet",
     "buyDescriptionWQT": "The easiest way to buy WQT is using USDT.\nNetworks available for purchase: Ethereum, Binance Smart Chain and Polygon. After the purchase, WQT will automatically deposit to your WorkNet network wallet, minus the transaction fee.",
     "goExplorer": "Go to explorer",
+    "emptyListTrx": "We can’t show transaction list at now.",
     "hashTx": "Hash tx",
     "balance": "Balance",
     "amount": "Amount",

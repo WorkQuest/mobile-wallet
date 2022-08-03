@@ -41,6 +41,8 @@ class Images {
   static const faceIdIcon = "$_svgPath/face_id.svg";
   static const removePinIcon = "$_svgPath/remove_pin_icon.svg";
   static const arrowDropDownIcon = "$_svgPath/arrow_dropdown_icon.svg";
+  static const explorerToIcon = "$_svgPath/explorer_to_icon.svg";
+  static const emptyListIcon = "$_svgPath/empty_list_icon.svg";
 }
 
 class AppColor {
@@ -69,7 +71,7 @@ class Configs {
     NetworkName.workNetMainnet: ConfigNetwork(
       rpc: 'https://mainnet-gate.workquest.co/',
       wss: 'wss://mainnet-gate.workquest.co/tendermint-rpc/websocket',
-      urlExplorer: '',
+      urlExplorer: 'https://explorer.workquest.co/address/',
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.WQT,
@@ -102,7 +104,7 @@ class Configs {
     NetworkName.workNetTestnet: ConfigNetwork(
       rpc: 'https://testnet-gate.workquest.co/',
       wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
-      urlExplorer: '',
+      urlExplorer: 'https://testnet-explorer.workquest.co/address/',
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.WQT,
@@ -135,7 +137,7 @@ class Configs {
     // NetworkName.workNetTestnet: ConfigNetwork(
     //   rpc: 'https://dev-node-ams3.workquest.co/',
     //   wss: 'wss://wss-dev-node-ams3.workquest.co/tendermint-rpc/websocket',
-    //   urlExplorer: '',
+    //   urlExplorer: 'https://dev-explorer.workquest.co/address/',
     //   dataCoins: const [
     //     DataCoins(
     //       symbolToken: TokenSymbols.WQT,
