@@ -47,9 +47,11 @@ class _SwapPageState extends State<SwapPage> {
     store = GetIt.I.get<SwapStore>();
     final _swapNetwork =
         Web3Utils.getSwapNetworksFromNetworkName(SessionRepository().networkName.value!);
-    Future.delayed(const Duration(milliseconds: 350)).then(
-      (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
-    );
+    if (store.network == null) {
+      Future.delayed(const Duration(milliseconds: 350)).then(
+        (value) => store.setNetwork(_swapNetwork ?? SwapNetworks.ETH),
+      );
+    }
 
     _amountController = TextEditingController();
     _amountController.addListener(() {
