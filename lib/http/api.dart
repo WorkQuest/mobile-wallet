@@ -9,12 +9,11 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/http_client.dart';
+import 'package:workquest_wallet_app/main.dart';
+import 'package:workquest_wallet_app/model/course_tokens_response.dart';
 import 'package:workquest_wallet_app/model/current_course_tokens_response.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
-
-import '../main.dart';
-import '../model/course_tokens_response.dart';
 
 class Api {
   static final Api _instance = Api._internal();

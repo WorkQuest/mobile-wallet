@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/ui/pin_code_page/pin_code_page.dart';
 import 'package:workquest_wallet_app/ui/sign_up_page/sign_up/mobx/sign_up_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
@@ -12,8 +13,6 @@ import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
-
-import '../../../page_router.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 const _errorColor = Colors.red;
@@ -125,7 +124,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                         store: store,
                         onFailure: () {
                           return false;
-                        }, //april problem kingdom rug confirm rally jazz hurt wrap wagon baby salmon
+                        },
                         onSuccess: () async {
                           await AlertDialogUtils.showSuccessDialog(context);
                           PageRouter.pushNewRemoveRoute(

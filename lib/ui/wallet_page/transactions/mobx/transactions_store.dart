@@ -1,12 +1,11 @@
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:workquest_wallet_app/base_store/i_store.dart';
+import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/api.dart';
 import 'package:workquest_wallet_app/model/transactions_response.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
-
-import '../../../../constants.dart';
 
 part 'transactions_store.g.dart';
 

@@ -149,8 +149,10 @@ class _WalletPageLayout extends StatelessWidget {
                 button: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100)).then((value) =>
-                        Provider.of<NotifyPage>(context, listen: false).setIndex(1));
+                    Future.delayed(const Duration(milliseconds: 100)).then(
+                        (value) =>
+                            Provider.of<NotifyPage>(context, listen: false)
+                                .setIndex(1));
                   },
                   child: Container(
                     height: 43,
@@ -195,7 +197,9 @@ class _WalletPageLayout extends StatelessWidget {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             actions: const [
@@ -215,8 +219,8 @@ class _WalletPageLayout extends StatelessWidget {
     if (GetIt.I.get<WalletStore>().coins.isEmpty) {
       return false;
     }
-    final _networkName =
-        GetIt.I.get<SessionRepository>().networkName.value ?? NetworkName.workNetMainnet;
+    final _networkName = GetIt.I.get<SessionRepository>().networkName.value ??
+        NetworkName.workNetMainnet;
     if (_networkName == NetworkName.workNetTestnet ||
         _networkName == NetworkName.workNetMainnet) {
       try {
@@ -344,7 +348,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                           padding: EdgeInsets.zero,
                           pressedOpacity: 0.2,
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const WithdrawPage());
+                            PageRouter.pushNewRoute(
+                                context, const WithdrawPage());
                           },
                           child: Container(
                             height: 43,
@@ -373,7 +378,8 @@ class _WalletView extends SliverPersistentHeaderDelegate {
                         child: DefaultButton(
                           title: 'wallet'.tr(gender: 'deposit'),
                           onPressed: () {
-                            PageRouter.pushNewRoute(context, const DepositPage());
+                            PageRouter.pushNewRoute(
+                                context, const DepositPage());
                           },
                         ),
                       )
@@ -542,8 +548,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                                  color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );
@@ -562,14 +571,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 children: [
                   Text(
                     'errors.failedToGetBalance'.tr(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   Text(
                     'errors.swipeUpdate'.tr(),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

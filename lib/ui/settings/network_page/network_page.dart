@@ -2,13 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/swap_page/store/swap_store.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_radio.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
-
-import '../../../repository/session_repository.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0);
 

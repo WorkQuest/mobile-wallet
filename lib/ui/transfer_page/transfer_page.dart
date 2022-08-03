@@ -8,24 +8,23 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:workquest_wallet_app/constants.dart';
+import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/service/address_service.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/confirm_page/confirm_transfer_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
 import 'package:workquest_wallet_app/utils/alert_dialog.dart';
+import 'package:workquest_wallet_app/utils/bottom_sheet.dart';
 import 'package:workquest_wallet_app/utils/formatters.dart';
 import 'package:workquest_wallet_app/utils/validators.dart';
 import 'package:workquest_wallet_app/utils/web3_utils.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
+import 'package:workquest_wallet_app/widgets/dismiss_keyboard.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
 import 'package:workquest_wallet_app/widgets/selected_item.dart';
 import 'package:majascan/majascan.dart';
-
-import '../../page_router.dart';
-import '../../utils/bottom_sheet.dart';
-import '../../widgets/dismiss_keyboard.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 const _divider = SizedBox(height: 15);

@@ -5,13 +5,12 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/ui/deposit_page/deposit_bank_card.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/transfer_page.dart';
+import 'package:workquest_wallet_app/utils/alert_dialog.dart';
 import 'package:workquest_wallet_app/widgets/custom_tab_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_app_bar.dart';
 import 'package:workquest_wallet_app/widgets/default_button.dart';
 import 'package:workquest_wallet_app/widgets/default_textfield.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
-
-import '../../utils/alert_dialog.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 

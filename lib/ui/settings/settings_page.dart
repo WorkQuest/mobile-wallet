@@ -10,12 +10,12 @@ import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/transfer_page/mobx/transfer_store.dart';
+import 'package:workquest_wallet_app/utils/snack_bar.dart';
 import 'package:workquest_wallet_app/widgets/gradient_icon.dart';
 import 'package:workquest_wallet_app/widgets/layout_with_scroll.dart';
 import 'package:workquest_wallet_app/widgets/main_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../utils/snack_bar.dart';
 import 'language_page.dart';
 import 'network_page/network_page.dart';
 

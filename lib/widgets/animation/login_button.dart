@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workquest_wallet_app/constants.dart';
-
-import '../default_button.dart';
+import 'package:workquest_wallet_app/widgets/default_button.dart';
 
 const _durationSize = Duration(milliseconds: 400);
 const _durationOpacity = Duration(milliseconds: 200);

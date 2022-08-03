@@ -22,7 +22,8 @@ class ButtonToExplorer extends StatelessWidget {
           children: [
             Text(
               'wallet.goExplorer'.tr(),
-              style: const TextStyle(fontSize: 16, color: AppColor.enabledButton),
+              style:
+                  const TextStyle(fontSize: 16, color: AppColor.enabledButton),
             ),
             const SizedBox(
               width: 14.0,
@@ -40,8 +41,9 @@ class ButtonToExplorer extends StatelessWidget {
   }
 
   _onPressedGoToExplorer() {
-    final _urlExplorer = GetIt.I.get<SessionRepository>().getConfigNetwork().urlExplorer +
-        GetIt.I.get<SessionRepository>().userAddress;
+    final _urlExplorer =
+        GetIt.I.get<SessionRepository>().getConfigNetwork().urlExplorer +
+            GetIt.I.get<SessionRepository>().userAddress;
     launchUrl(Uri.parse(_urlExplorer));
   }
 }

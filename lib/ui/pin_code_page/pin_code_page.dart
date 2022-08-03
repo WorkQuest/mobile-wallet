@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:workquest_wallet_app/constants.dart';
 import 'package:workquest_wallet_app/http/web_socket.dart';
+import 'package:workquest_wallet_app/page_router.dart';
 import 'package:workquest_wallet_app/repository/session_repository.dart';
 import 'package:workquest_wallet_app/ui/login_page/login_page.dart';
 import 'package:workquest_wallet_app/ui/main_page/main_page.dart';
@@ -20,8 +21,6 @@ import 'package:workquest_wallet_app/widgets/animation/animation_color.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_compression.dart';
 import 'package:workquest_wallet_app/widgets/animation/animation_switch.dart';
 import 'package:workquest_wallet_app/widgets/observer_consumer.dart';
-
-import '../../page_router.dart';
 
 class PinCodePage extends StatefulWidget {
   const PinCodePage({Key? key}) : super(key: key);
