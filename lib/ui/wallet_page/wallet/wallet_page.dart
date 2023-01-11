@@ -507,8 +507,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                                     )
                                   else if (balance.pricePerDollar != null)
                                     Text(
-                                      '\$ ${balance.pricePerDollar}',
-                                      // _getCourseDollar(balance.symbol.name, balance.amount!),
+                                      num.parse(balance.amount!) * num.parse(balance.pricePerDollar!) != 0.000000 ? '\$ ${( num.parse(balance.amount!) * num.parse(balance.pricePerDollar!)).toStringAsFixed(6)}' : '\$ ${balance.pricePerDollar}',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: AppColor.unselectedBottomIcon,
