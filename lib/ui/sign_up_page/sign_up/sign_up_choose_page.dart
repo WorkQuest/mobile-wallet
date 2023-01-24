@@ -51,8 +51,8 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 Text(
                   'signUp.chooseWords'.tr(
                     namedArgs: {
-                      'firstIndex': '${store.indexFirstWord}',
-                      'secondIndex': '${store.indexSecondWord}'
+                      'firstIndex': store.ordinal(store.indexFirstWord!),
+                      'secondIndex': store.ordinal(store.indexSecondWord!),
                     },
                   ),
                   style: const TextStyle(
@@ -67,7 +67,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 Text(
                   'signUp.thWord'.tr(
                     namedArgs: {
-                      'index': '${store.indexFirstWord}',
+                      'index': store.ordinal(store.indexFirstWord!),
                     },
                   ),
                   style: const TextStyle(
@@ -90,7 +90,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                 Text(
                   'signUp.thWord'.tr(
                     namedArgs: {
-                      'index': '${store.indexSecondWord}',
+                      'index': store.ordinal(store.indexSecondWord!),
                     },
                   ),
                   style: const TextStyle(
@@ -112,8 +112,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -127,8 +126,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
                         },
                         onSuccess: () async {
                           await AlertDialogUtils.showSuccessDialog(context);
-                          PageRouter.pushNewRemoveRoute(
-                              context, const PinCodePage());
+                          PageRouter.pushNewRemoveRoute(context, const PinCodePage());
                         },
                         child: Observer(
                           builder: (_) => LoginButton(
@@ -208,8 +206,7 @@ class _SignUpChoosePageState extends State<SignUpChoosePage> {
               height: 20,
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: SizedBox(
                 width: double.infinity,
                 child: DefaultButton(

@@ -51,8 +51,7 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
   setIsSaved(bool value) => isSaved = value;
 
   @computed
-  bool get statusGenerateButton =>
-      selectedFirstWord == firstWord && selectedSecondWord == secondWord;
+  bool get statusGenerateButton => selectedFirstWord == firstWord && selectedSecondWord == secondWord;
 
   @action
   selectFirstWord(String? value) => selectedFirstWord = value;
@@ -107,11 +106,9 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
       await Future.delayed(const Duration(milliseconds: 500));
       Wallet? wallet = await Wallet.derive(mnemonic!);
       if (GetIt.I.get<SessionRepository>().networkName.value == null) {
-        final _networkName =
-            GetIt.I.get<SessionRepository>().notifierNetwork.value ==
-                    Network.mainnet
-                ? NetworkName.workNetMainnet
-                : NetworkName.workNetTestnet;
+        final _networkName = GetIt.I.get<SessionRepository>().notifierNetwork.value == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
         GetIt.I.get<SessionRepository>().setNetwork(_networkName);
       }
       GetIt.I.get<SessionRepository>().setWallet(wallet);
@@ -127,5 +124,22 @@ abstract class SignUpStoreBase extends IStore<bool> with Store {
 
   Future _saveToStorage(Wallet wallet) async {
     await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
+  }
+
+  String ordinal(int number) {
+    if (number >= 11 && number <= 13) {
+      return '${number}th';
+    }
+
+    switch (number % 10) {
+      case 1:
+        return '${number}st';
+      case 2:
+        return '${number}nd';
+      case 3:
+        return '${number}rd';
+      default:
+        return '${number}th';
+    }
   }
 }
